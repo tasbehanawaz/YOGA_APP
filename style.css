@@ -1,40 +1,91 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
 }
 
-header, footer {
-    text-align: center;
-    padding: 1rem;
-    background-color: #007BFF;
-    color: white;
+header,
+footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #007bff;
+  color: white;
 }
 
 main {
-    padding: 1rem;
+  padding: 1rem;
 }
 
 .poses-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .pose {
-    border: 1px solid #ddd;
-    margin: 10px;
-    padding: 10px;
-    width: calc(33% - 20px);
-    background-color: white;
+  border: 1px solid #ddd;
+  margin: 10px;
+  padding: 10px;
+  width: calc(33% - 20px);
+  background-color: white;
 }
 
 .pose img {
-    max-width: 100%;
-    height: auto;
+  max-width: 100%;
+  height: auto;
 }
 
 .pose h3 {
-    color: #007BFF;
+  color: #007bff;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Align items vertically */
+}
+
+ul {
+  list-style: none;
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+}
+
+a:link,
+a:visited {
+  text-decoration: none;
+  color: inherit; /* Ensures link color matches the text */
+}
+
+.search-container {
+  display: flex;
+  position: relative;
+}
+
+.search-input {
+  flex-grow: 1; /* Allows input to fill the space */
+  padding-left: 20px; /* Adjust based on actual icon size */
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px; /* Adjust based on preference */
+  top: 0;
+  bottom: 0;
+  margin: auto; /* Center vertically */
+  height: 10px; /* Example size */
+}
+
+.nav_bar {
+  background-color: #b6d5f7;
+  padding: 10px 5px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin: 0; /* Adjusted */
+  border: 1px solid #ccc; /* Example styling */
+  border-radius: 4px; /* Rounded corners */
 }
