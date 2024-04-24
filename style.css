@@ -54,11 +54,6 @@ a:visited {
   color: inherit; /* Ensures link color matches the text */
 }
 
-.search-container {
-  display: flex;
-  position: relative;
-}
-
 li {
   color: white;
 }
@@ -87,4 +82,18 @@ input[type="text"] {
   margin: 0; /* Adjusted */
   border: 1px solid #ccc; /* Example styling */
   border-radius: 4px; /* Rounded corners */
+}
+
+.searchbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+button {
+  padding: 7px;
+  color: white;
+  background-color: #007bff;
+  border: solid white 2px;
 }
