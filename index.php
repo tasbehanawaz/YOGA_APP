@@ -28,7 +28,7 @@ $poses = fetchYogaPoseByName("butterfly"); // Make sure this function exists in 
             <div class="nav_bar">
                 <nav>
                     <ul class="container">
-                        <li class="logo"><a href="#">Logo</a></li>
+                        <li class="logo"><a href="#">MY YOGA APP</a></li>
                         <li><a href="/program.php">Program</a></li>
                         <li><a href="/categories.php">Categories</a></li>
                         <li>
