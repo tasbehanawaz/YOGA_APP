@@ -13,10 +13,6 @@ footer {
   color: white;
 }
 
-main {
-  padding: 1rem;
-}
-
 .poses-list {
   display: flex;
   flex-wrap: wrap;
@@ -42,7 +38,7 @@ main {
 
 .container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center; /* Align items vertically */
 }
 
@@ -63,22 +59,25 @@ a:visited {
   position: relative;
 }
 
+li {
+  color: white;
+}
+
 .search-input {
   flex-grow: 1; /* Allows input to fill the space */
-  padding-left: 20px; /* Adjust based on actual icon size */
+  padding: 0px; /* Adjust based on actual icon size */
 }
 
-.search-icon {
+/* .search-icon {
   position: absolute;
   left: 10px; /* Adjust based on preference */
-  top: 0;
+/* top: 0;
   bottom: 0;
   margin: auto; /* Center vertically */
-  height: 10px; /* Example size */
-}
+/* height: 10px; Example size */
 
 .nav_bar {
-  background-color: #b6d5f7;
+  background-color: #6ba1da;
   padding: 10px 5px;
 }
 
