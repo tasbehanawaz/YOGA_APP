@@ -30,7 +30,7 @@ $poses = fetchYogaPoseByName("butterfly"); // Make sure this function exists in 
                     <ul class="container">
                         <li class="logo"><a href="#">MY YOGA APP</a></li>
                         <li><a href="/program.php">Program</a></li>
-                        <li><a href="/categories.php">Categories</a></li>
+                        <li><a href="/categories.php">My sequences</a></li>
                         <li>
                             <div class="center">
                                 <form action="" class="searchbar">
