@@ -7,6 +7,7 @@ import {
   IconButton,
   Input,
 } from '@material-tailwind/react';
+import { Link } from 'react-router-dom';
 
 export function NavbarWithSearch() {
   const [openNav, setOpenNav] = React.useState(false);
@@ -26,9 +27,9 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <a href="#" className="flex items-center">
+        <Link to="/" className="flex items-center">
           Home
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -36,9 +37,9 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <a href="#" className="flex items-center">
+        <Link to="/categories" className="flex items-center">
           Categories
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -46,9 +47,9 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <a href="#" className="flex items-center">
+        <Link to="/save" className="flex items-center">
           Saved
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -56,9 +57,9 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <a href="#" className="flex items-center">
+        <Link to="/logins" className="flex items-center">
           Logins
-        </a>
+        </Link>
       </Typography>
     </ul>
   );
