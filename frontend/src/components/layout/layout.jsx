@@ -1,12 +1,11 @@
 import { FooterWithSitemap } from '../footer/Footer';
-import { StickyNavbar } from '../navBar/navbar';
+import { NavbarWithSearch } from '../navBar/navbar';
 
 const Layout = ({ children }) => {
   return (
     <>
-      <StickyNavbar />
+      <NavbarWithSearch />
       <main>{children}</main>
-
       <FooterWithSitemap />
     </>
   );
