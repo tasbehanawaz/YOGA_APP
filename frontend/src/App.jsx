@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Program from './Pages/Program/program';
 import Layout from './components/layout/layout';
 import Categories from './Pages/categories/categories';
+import Login from './Pages/login/logins';
 
 function App() {
   return (
@@ -22,6 +23,14 @@ function App() {
           element={
             <Layout>
               <Categories />
+            </Layout>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <Layout>
+              <Login />
             </Layout>
           }
         />
