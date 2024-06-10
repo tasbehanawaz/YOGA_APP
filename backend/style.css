@@ -76,7 +76,7 @@ li {
   padding: 10px 5px;
 }
 
-input[type="text"] {
+input[type='text'] {
   width: 100%;
   padding: 8px 10px;
   margin: 0; /* Adjusted */
