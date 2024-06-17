@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['poseName'])) {
     $poseName = $_GET['poseName'];
     $poseData = fetchYogaPoseByName($poseName);
 
+    // Here you saving each time, will it be worth checking if the item is already saved before resaving
     if (!empty($poseData)) {
         saveYogaPoseToDb($poseData);
     }

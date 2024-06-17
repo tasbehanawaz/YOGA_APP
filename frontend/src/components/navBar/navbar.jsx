@@ -10,9 +10,9 @@ import {
 } from '@material-tailwind/react';
 import { Link } from 'react-router-dom';
 
-export async function NavbarWithSearch() {
+export function NavbarWithSearch() {
   const [openNav, setOpenNav] = React.useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(null);
 
   React.useEffect(() => {
     window.addEventListener(
