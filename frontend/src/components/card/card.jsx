@@ -18,12 +18,15 @@ export function CardDefault() {
       </CardHeader>
       <CardBody>
         <Typography variant="h5" color="blue-gray" className="mb-2">
-          UI/UX Review Check
+          Yoga Poses
         </Typography>
         <Typography>
-          The place is close to Barceloneta Beach and bus stop just 2 min by
-          walk and near to &quot;Naviglio&quot; where you can enjoy the main
-          night life in Barcelona.
+          This pose is called the cat pose. It is a great pose to stretch your
+          back and shoulders. To do this pose, start on your hands and knees.
+          Make sure your hands are directly under your shoulders and your knees
+          are directly under your hips. Inhale as you arch your back and look
+          up. Exhale as you round your back and tuck your chin to your chest.
+          Repeat this movement for 5-10 breaths.
         </Typography>
       </CardBody>
       <CardFooter className="pt-0">

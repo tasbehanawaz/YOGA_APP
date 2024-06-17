@@ -41,10 +41,70 @@ main {
 .pose img {
   max-width: 100px;
   height: auto;
-  display: block;
-  margin-bottom: 10px;
 }
 
-.pose p {
-  margin: 0;
+.pose h3 {
+  color: #007bff;
+}
+
+.container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center; /* Align items vertically */
+}
+
+ul {
+  list-style: none;
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+}
+
+a:link,
+a:visited {
+  text-decoration: none;
+  color: inherit; /* Ensures link color matches the text */
+}
+
+li {
+  color: white;
+}
+
+.search-input {
+  flex-grow: 1; /* Allows input to fill the space */
+  padding: 0px; /* Adjust based on actual icon size */
+}
+
+/* .search-icon {
+  position: absolute;
+  left: 10px; /* Adjust based on preference */
+/* top: 0;
+  bottom: 0;
+  margin: auto; /* Center vertically */
+/* height: 10px; Example size */
+
+.nav_bar {
+  background-color: #6ba1da;
+  padding: 10px 5px;
+}
+
+input[type='text'] {
+  width: 100%;
+  padding: 8px 10px;
+  margin: 0; /* Adjusted */
+  border: 1px solid #ccc; /* Example styling */
+  border-radius: 4px; /* Rounded corners */
+}
+
+.searchbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+button {
+  padding: 7px;
+  color: white;
+  background-color: #007bff;
+  border: solid white 1px;
 }
