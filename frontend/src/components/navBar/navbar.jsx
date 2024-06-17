@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import {
   Navbar,
   MobileNav,
@@ -9,7 +10,7 @@ import {
 } from '@material-tailwind/react';
 import { Link } from 'react-router-dom';
 
-export function NavbarWithSearch() {
+export async function NavbarWithSearch() {
   const [openNav, setOpenNav] = React.useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -20,11 +21,18 @@ export function NavbarWithSearch() {
     );
   }, []);
 
-  const handleSearch = (event) => {
+  const handleSearch = async (event) => {
     event.preventDefault();
-    // Redirect to the backend form.php with the search query as a URL parameter
-    window.location.href = `http://localhost:8001/form.php?poseName=${searchQuery}`;
-
+    // Call the backend fetchYogaposes.php as an API with the search query as a URL parameter
+    // we want to use yhe value the user put in to find the poses
+    try {
+      const response = await axios.get(
+        `http://localhost:8001/FetchYogaPoses.php?poseName=${searchQuery}`
+      );
+      console.log('response.data', response.data);
+    } catch (error) {
+      console.error('Error fetching the pose:', error);
+    }
   };
 
   const navList = (
@@ -84,7 +92,10 @@ export function NavbarWithSearch() {
         </Typography>
         <div className="hidden lg:block">{navList}</div>
         <div className="hidden items-center gap-x-2 lg:flex">
-          <form onSubmit={handleSearch} className="relative flex w-full gap-2 md:w-max">
+          <form
+            onSubmit={handleSearch}
+            className="relative flex w-full gap-2 md:w-max"
+          >
             <Input
               type="search"
               placeholder="Search"
@@ -166,7 +177,10 @@ export function NavbarWithSearch() {
         <div className="container mx-auto">
           {navList}
           <div className="flex flex-col gap-x-2 sm:flex-row sm:items-center">
-            <form onSubmit={handleSearch} className="relative w-full gap-2 md:w-max">
+            <form
+              onSubmit={handleSearch}
+              className="relative w-full gap-2 md:w-max"
+            >
               <Input
                 type="search"
                 placeholder="Search"
@@ -201,7 +215,11 @@ export function NavbarWithSearch() {
                   />
                 </svg>
               </div>
-              <Button type="submit" size="md" className="mt-1 rounded-lg sm:mt-0">
+              <Button
+                type="submit"
+                size="md"
+                className="mt-1 rounded-lg sm:mt-0"
+              >
                 Search
               </Button>
             </form>
