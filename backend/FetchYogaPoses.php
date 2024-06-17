@@ -1,4 +1,5 @@
 <?php
+// this script provides the poses in the search bar using the name of the pose and saves it to the database which includes: name and description. 
 require 'db.php';
 
 header("Access-Control-Allow-Origin: *");
@@ -17,7 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['poseName'])) {
     echo json_encode(['error' => 'Invalid request']);
 }
 
-function fetchYogaPoseByName($poseName) {
+function fetchYogaPoseByName($poseName)
+{
     $apiUrl = "https://yoga-api-nzy4.onrender.com/v1/poses?name=" . urlencode($poseName);
 
     $curl = curl_init();
@@ -43,7 +45,8 @@ function fetchYogaPoseByName($poseName) {
     }
 }
 
-function saveYogaPoseToDb($poseData) {
+function saveYogaPoseToDb($poseData)
+{
     if (!isset($poseData['english_name']) || !isset($poseData['pose_description'])) {
         error_log("Invalid pose data");
         return;
@@ -61,4 +64,3 @@ function saveYogaPoseToDb($poseData) {
         ':description' => $poseData['pose_description']
     ]);
 }
-?>

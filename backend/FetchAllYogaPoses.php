@@ -1,4 +1,5 @@
 <?php
+// this script is an API endpoint that fetches data from another API and returns it as JSON. It's designed to be called with a 'GET' HTTP request.
 require 'db.php';
 
 header("Access-Control-Allow-Origin: *");
@@ -10,7 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     echo json_encode(['error' => 'Invalid request']);
 }
 
-function fetchAllYogaPoses() {
+function fetchAllYogaPoses()
+{
     $apiUrl = "https://yoga-api-nzy4.onrender.com/v1/poses";
 
     $curl = curl_init();
@@ -34,4 +36,3 @@ function fetchAllYogaPoses() {
         return json_decode($response, true);
     }
 }
-?>
