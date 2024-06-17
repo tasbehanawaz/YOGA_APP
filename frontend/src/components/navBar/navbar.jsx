@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Navbar,
   MobileNav,
@@ -10,6 +10,7 @@ import {
 
 export function NavbarWithSearch() {
   const [openNav, setOpenNav] = React.useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   React.useEffect(() => {
     window.addEventListener(
@@ -17,6 +18,13 @@ export function NavbarWithSearch() {
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
   }, []);
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    // Redirect to the backend form.php with the search query as a URL parameter
+    window.location.href = `http://localhost:8001/form.php?poseName=${searchQuery}`;
+
+  };
 
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
@@ -75,10 +83,12 @@ export function NavbarWithSearch() {
         </Typography>
         <div className="hidden lg:block">{navList}</div>
         <div className="hidden items-center gap-x-2 lg:flex">
-          <div className="relative flex w-full gap-2 md:w-max">
+          <form onSubmit={handleSearch} className="relative flex w-full gap-2 md:w-max">
             <Input
               type="search"
               placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               containerProps={{
                 className: 'min-w-[288px]',
               }}
@@ -108,10 +118,10 @@ export function NavbarWithSearch() {
                 />
               </svg>
             </div>
-          </div>
-          <Button size="md" className="rounded-lg ">
-            Search
-          </Button>
+            <Button type="submit" size="md" className="rounded-lg">
+              Search
+            </Button>
+          </form>
         </div>
         <IconButton
           variant="text"
@@ -155,10 +165,12 @@ export function NavbarWithSearch() {
         <div className="container mx-auto">
           {navList}
           <div className="flex flex-col gap-x-2 sm:flex-row sm:items-center">
-            <div className="relative w-full gap-2 md:w-max">
+            <form onSubmit={handleSearch} className="relative w-full gap-2 md:w-max">
               <Input
                 type="search"
                 placeholder="Search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 containerProps={{
                   className: 'min-w-[288px]',
                 }}
@@ -188,10 +200,10 @@ export function NavbarWithSearch() {
                   />
                 </svg>
               </div>
-            </div>
-            <Button size="md" className="mt-1 rounded-lg sm:mt-0">
-              Search
-            </Button>
+              <Button type="submit" size="md" className="mt-1 rounded-lg sm:mt-0">
+                Search
+              </Button>
+            </form>
           </div>
         </div>
       </MobileNav>
