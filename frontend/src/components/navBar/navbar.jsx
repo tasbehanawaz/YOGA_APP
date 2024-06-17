@@ -8,11 +8,13 @@ import {
   IconButton,
   Input,
 } from '@material-tailwind/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export function NavbarWithSearch() {
   const [openNav, setOpenNav] = React.useState(false);
   const [searchQuery, setSearchQuery] = useState(null);
+  const [data, setData] = useState(null);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     window.addEventListener(
@@ -29,7 +31,8 @@ export function NavbarWithSearch() {
       const response = await axios.get(
         `http://localhost:8001/FetchYogaPoses.php?poseName=${searchQuery}`
       );
-      console.log('response.data', response.data);
+      setData(response.data);
+      navigate('/search', data);
     } catch (error) {
       console.error('Error fetching the pose:', error);
     }

@@ -4,6 +4,7 @@ import Program from './Pages/Program/program';
 import Layout from './components/layout/layout';
 import Categories from './Pages/categories/categories';
 import Login from './Pages/login/logins';
+import Result from './Pages/result/result';
 
 function App() {
   return (
@@ -31,6 +32,15 @@ function App() {
           element={
             <Layout>
               <Login />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/search"
+          element={
+            <Layout>
+              <Result />
             </Layout>
           }
         />
