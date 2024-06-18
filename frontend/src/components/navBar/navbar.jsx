@@ -11,9 +11,9 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 
 export function NavbarWithSearch() {
+  const [loading, setLoading] = useState(false);
   const [openNav, setOpenNav] = React.useState(false);
   const [searchQuery, setSearchQuery] = useState(null);
-  const [data, setData] = useState(null);
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -27,14 +27,16 @@ export function NavbarWithSearch() {
     event.preventDefault();
     // Call the backend fetchYogaposes.php as an API with the search query as a URL parameter
     // we want to use yhe value the user put in to find the poses
+    setLoading(true);
     try {
       const response = await axios.get(
         `http://localhost:8001/FetchYogaPoses.php?poseName=${searchQuery}`
       );
-      setData(response.data);
-      navigate('/search', data);
+      setLoading(false);
+      navigate('/search', { state: { data: response.data } });
     } catch (error) {
       console.error('Error fetching the pose:', error);
+      setLoading(false);
     }
   };
 
@@ -88,7 +90,7 @@ export function NavbarWithSearch() {
       <div className="container mx-auto flex flex-wrap items-center justify-between text-blue-gray-900">
         <Typography
           as="a"
-          href="#"
+          href="/"
           className="mr-4 cursor-pointer py-1.5 font-medium"
         >
           Yoga App
@@ -133,7 +135,13 @@ export function NavbarWithSearch() {
                 />
               </svg>
             </div>
-            <Button type="submit" size="md" className="rounded-lg">
+            <Button
+              type="submit"
+              size="md"
+              className="rounded-lg"
+              loading={loading}
+              fullWidth
+            >
               Search
             </Button>
           </form>
@@ -222,6 +230,7 @@ export function NavbarWithSearch() {
                 type="submit"
                 size="md"
                 className="mt-1 rounded-lg sm:mt-0"
+                loading={loading}
               >
                 Search
               </Button>
