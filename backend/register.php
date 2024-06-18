@@ -1,10 +1,11 @@
-<!-- //form for creating an account or choose to login -->
-
-
 <?php
 require 'db.php';
 
-header('Content-Type: application/json');
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+
+// Get database connection
+$pdo = getDbConnection();
 
 $username = $_POST['username'] ?? '';
 $email = $_POST['email'] ?? '';

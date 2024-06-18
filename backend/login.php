@@ -8,6 +8,8 @@ session_start();
 require 'db.php';
 
 header('Content-Type: application/json');
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
 
 $username = $_POST['username'] ?? '';
 $password = $_POST['password'] ?? '';
