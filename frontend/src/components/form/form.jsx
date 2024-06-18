@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Card,
   Input,
@@ -9,21 +10,21 @@ import {
 import './form.css';
 
 export function SimpleRegistrationForm() {
-  // State for the form fields
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Handle form submit
+  const navigate = useNavigate();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError(''); // Clear previous errors
     setSuccess('');
-  
+    
     // Sending data to the PHP backend
-    const response = await fetch('http://localhost:8001/register.php', {  // Updated URL
+    const response = await fetch('http://localhost:8001/register.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -38,13 +39,18 @@ export function SimpleRegistrationForm() {
     if (responseData.error) {
       setError(responseData.error);
     } else {
-      setSuccess(responseData.success);
+      setSuccess("User registered successfully. Redirecting...");
       // Reset fields
       setUsername('');
       setEmail('');
       setPassword('');
+      // Wait 3 seconds before redirecting to the home page
+      setTimeout(() => {
+        navigate('/');  // Adjust the path as needed for your app
+      }, 3000); // Delay in milliseconds (3000ms = 3 seconds)
     }
-  };  
+  };
+  
 
   return (
     <div className="form_container">
