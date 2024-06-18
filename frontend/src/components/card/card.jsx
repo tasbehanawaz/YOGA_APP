@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import {
   Card,
   CardHeader,
@@ -7,28 +8,36 @@ import {
   Button,
 } from '@material-tailwind/react';
 
-export function CardDefault() {
+export function CardDefault({ name, imageUrl, poseDescription }) {
   return (
-    <Card className="mt-6 w-96">
-      <CardHeader color="blue-gray" className="relative h-56">
+    <Card className="mt-6 w-96 transform transition-transform duration-500 hover:scale-105">
+      <CardHeader
+        color="blue-gray"
+        className="relative h-56 transition-height duration-500 hover:h-64"
+      >
         <img
-          src="https://images.unsplash.com/photo-1540553016722-983e48a2cd10?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
+          src={imageUrl}
           alt="card-image"
+          className="transition-opacity duration-500 hover:opacity-80"
         />
       </CardHeader>
       <CardBody>
         <Typography variant="h5" color="blue-gray" className="mb-2">
-          UI/UX Review Check
+          {name}
         </Typography>
-        <Typography>
-          The place is close to Barceloneta Beach and bus stop just 2 min by
-          walk and near to &quot;Naviglio&quot; where you can enjoy the main
-          night life in Barcelona.
-        </Typography>
+        <Typography>{poseDescription}</Typography>
       </CardBody>
       <CardFooter className="pt-0">
-        <Button>Read More</Button>
+        <Button className="transition-colors duration-500 hover:bg-blue-500">
+          Read More
+        </Button>
       </CardFooter>
     </Card>
   );
 }
+
+CardDefault.propTypes = {
+  name: PropTypes.string.isRequired,
+  imageUrl: PropTypes.string.isRequired,
+  poseDescription: PropTypes.string.isRequired,
+};

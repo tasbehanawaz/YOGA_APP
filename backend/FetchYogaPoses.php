@@ -1,18 +1,30 @@
 <?php
+// this script provides the poses in the search bar using the name of the pose and saves it to the database which includes: name and description. 
+require 'db.php';
 
-/**
- * Fetches a yoga pose by name.
- * 
- * @param string $poseName The name of the yoga pose to fetch.
- * @return array An associative array representing the yoga pose, or an empty array on failure.
- */
-function fetchYogaPoseByName($poseName) {
-    $apiUrl = "https://yoga-api-nzy4.onrender.com/v1/poses?name=" . urlencode($poseName); // Use variable poseName
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
 
-    // Initialize cURL session
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['poseName'])) {
+    $poseName = $_GET['poseName'];
+    $poseData = fetchYogaPoseByName($poseName);
+
+    // Here you saving each time, will it be worth checking if the item is already saved before resaving
+    if (!empty($poseData)) {
+        saveYogaPoseToDb($poseData);
+    }
+
+    echo json_encode($poseData);
+} else {
+    echo json_encode(['error' => 'Invalid request']);
+}
+
+function fetchYogaPoseByName($poseName)
+{
+    $apiUrl = "https://yoga-api-nzy4.onrender.com/v1/poses?name=" . urlencode($poseName);
+
     $curl = curl_init();
 
-    // Set cURL options
     curl_setopt_array($curl, [
         CURLOPT_URL => $apiUrl,
         CURLOPT_RETURNTRANSFER => true,
@@ -21,7 +33,6 @@ function fetchYogaPoseByName($poseName) {
         CURLOPT_CUSTOMREQUEST => "GET",
     ]);
 
-    // Execute cURL session and capture response
     $response = curl_exec($curl);
     $err = curl_error($curl);
     curl_close($curl);
@@ -30,9 +41,27 @@ function fetchYogaPoseByName($poseName) {
         error_log("cURL Error #:" . $err);
         return [];
     } else {
-        // Decode and return the data array
         $data = json_decode($response, true);
-        // Return only the first pose if multiple are returned or the pose directly if only one is returned
         return $data[0] ?? $data;
     }
+}
+
+function saveYogaPoseToDb($poseData)
+{
+    if (!isset($poseData['english_name']) || !isset($poseData['pose_description'])) {
+        error_log("Invalid pose data");
+        return;
+    }
+
+    $db = getDbConnection();
+    if ($db === null) {
+        return;
+    }
+
+    $sql = "INSERT INTO yoga_poses (name, description) VALUES (:name, :description)";
+    $stmt = $db->prepare($sql);
+    $stmt->execute([
+        ':name' => $poseData['english_name'],
+        ':description' => $poseData['pose_description']
+    ]);
 }

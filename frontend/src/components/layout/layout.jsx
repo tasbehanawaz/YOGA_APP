@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { FooterWithSitemap } from '../footer/Footer';
 import { NavbarWithSearch } from '../navBar/navbar';
 
@@ -9,6 +10,10 @@ const Layout = ({ children }) => {
       <FooterWithSitemap />
     </>
   );
+};
+
+Layout.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default Layout;

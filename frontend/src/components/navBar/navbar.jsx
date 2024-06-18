@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import {
   Navbar,
   MobileNav,
@@ -7,9 +8,13 @@ import {
   IconButton,
   Input,
 } from '@material-tailwind/react';
+import { Link, useNavigate } from 'react-router-dom';
 
 export function NavbarWithSearch() {
   const [openNav, setOpenNav] = React.useState(false);
+  const [searchQuery, setSearchQuery] = useState(null);
+  const [data, setData] = useState(null);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     window.addEventListener(
@@ -17,6 +22,21 @@ export function NavbarWithSearch() {
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
   }, []);
+
+  const handleSearch = async (event) => {
+    event.preventDefault();
+    // Call the backend fetchYogaposes.php as an API with the search query as a URL parameter
+    // we want to use yhe value the user put in to find the poses
+    try {
+      const response = await axios.get(
+        `http://localhost:8001/FetchYogaPoses.php?poseName=${searchQuery}`
+      );
+      setData(response.data);
+      navigate('/search', data);
+    } catch (error) {
+      console.error('Error fetching the pose:', error);
+    }
+  };
 
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
@@ -26,9 +46,9 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <a href="#" className="flex items-center">
+        <Link to="/" className="flex items-center">
           Home
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -36,9 +56,9 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <a href="#" className="flex items-center">
+        <Link to="/categories" className="flex items-center">
           Categories
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -46,9 +66,9 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <a href="#" className="flex items-center">
+        <Link to="/save" className="flex items-center">
           Saved
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -56,9 +76,9 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <a href="#" className="flex items-center">
+        <Link to="/logins" className="flex items-center">
           Logins
-        </a>
+        </Link>
       </Typography>
     </ul>
   );
@@ -75,10 +95,15 @@ export function NavbarWithSearch() {
         </Typography>
         <div className="hidden lg:block">{navList}</div>
         <div className="hidden items-center gap-x-2 lg:flex">
-          <div className="relative flex w-full gap-2 md:w-max">
+          <form
+            onSubmit={handleSearch}
+            className="relative flex w-full gap-2 md:w-max"
+          >
             <Input
               type="search"
               placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               containerProps={{
                 className: 'min-w-[288px]',
               }}
@@ -108,10 +133,10 @@ export function NavbarWithSearch() {
                 />
               </svg>
             </div>
-          </div>
-          <Button size="md" className="rounded-lg ">
-            Search
-          </Button>
+            <Button type="submit" size="md" className="rounded-lg">
+              Search
+            </Button>
+          </form>
         </div>
         <IconButton
           variant="text"
@@ -155,10 +180,15 @@ export function NavbarWithSearch() {
         <div className="container mx-auto">
           {navList}
           <div className="flex flex-col gap-x-2 sm:flex-row sm:items-center">
-            <div className="relative w-full gap-2 md:w-max">
+            <form
+              onSubmit={handleSearch}
+              className="relative w-full gap-2 md:w-max"
+            >
               <Input
                 type="search"
                 placeholder="Search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 containerProps={{
                   className: 'min-w-[288px]',
                 }}
@@ -188,10 +218,14 @@ export function NavbarWithSearch() {
                   />
                 </svg>
               </div>
-            </div>
-            <Button size="md" className="mt-1 rounded-lg sm:mt-0">
-              Search
-            </Button>
+              <Button
+                type="submit"
+                size="md"
+                className="mt-1 rounded-lg sm:mt-0"
+              >
+                Search
+              </Button>
+            </form>
           </div>
         </div>
       </MobileNav>
