@@ -5,6 +5,7 @@ import Layout from './components/layout/layout';
 import Categories from './Pages/categories/categories';
 import Login from './Pages/login/logins';
 import Result from './Pages/result/result';
+import SignIn from './components/signIn/signIn';
 
 function App() {
   return (
@@ -32,6 +33,14 @@ function App() {
           element={
             <Layout>
               <Login />
+            </Layout>
+          }
+        />
+        <Route
+          path="/signin"
+          element={
+            <Layout>
+              <SignIn />
             </Layout>
           }
         />

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import  { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom'; // Import Link from react-router-dom
 import {
   Card,
   Input,
@@ -50,7 +50,6 @@ export function SimpleRegistrationForm() {
       }, 3000); // Delay in milliseconds (3000ms = 3 seconds)
     }
   };
-  
 
   return (
     <div className="form_container">
@@ -92,7 +91,7 @@ export function SimpleRegistrationForm() {
           <Checkbox label="I agree to the Terms and Conditions" />
           <Button type="submit" className="mt-6" fullWidth>Sign Up</Button>
           <Typography color="gray" className="mt-4 text-center font-normal">
-            Already have an account? <a href="#" className="font-medium text-gray-900">Sign In</a>
+            Already have an account? <Link to="/signin" className="font-medium text-gray-900">Sign In</Link>
           </Typography>
         </form>
       </Card>
