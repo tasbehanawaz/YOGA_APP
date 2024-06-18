@@ -25,6 +25,7 @@ function SignIn() {
         const data = await response.json();
         if (data.success) {
             setSuccess("Sign-in successful. Redirecting..."); // Set success message
+            localStorage.setItem('user', JSON.stringify(data.user)); // Store user data in local storage
             setTimeout(() => {
                 navigate('/');  // Delay and then redirect to the home page
             }, 500); // Delay in milliseconds
