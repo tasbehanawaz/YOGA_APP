@@ -52,6 +52,15 @@ function App() {
               <Result />
             </Layout>
           }
+          />
+
+        <Route
+          path="/profile"
+          element={
+            <Layout>
+              <Profile />
+            </Layout>
+          }
         />
       </Routes>
     </BrowserRouter>
