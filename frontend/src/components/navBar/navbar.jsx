@@ -82,7 +82,33 @@ export function NavbarWithSearch() {
           Logins
         </Link>
       </Typography>
+
+
+      <Typography
+        as="li"
+        variant="small"
+        color="blue-gray"
+        className="flex items-center gap-x-2 p-1 font-medium"
+      >
+        <Link to="/profile" className="flex items-center">
+          Profile
+        </Link>
+      </Typography>
+
+
+      <Typography
+        as="li"
+        variant="small"
+        color="blue-gray"
+        className="flex items-center gap-x-2 p-1 font-medium"
+      >
+        <Link to="/signin" className="flex items-center">
+          Sign In
+        </Link>
+      </Typography>
     </ul>
+
+    
   );
 
   return (
