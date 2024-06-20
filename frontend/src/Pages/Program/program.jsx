@@ -31,7 +31,6 @@ const Program = () => {
           Book your sessions in advance to ensure your spot. We can’t wait to
           embark on this journey of wellness and transformation with you!
         </Typography>
-        
       </div>
     </>
   );
