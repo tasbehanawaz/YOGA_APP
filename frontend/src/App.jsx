@@ -1,11 +1,14 @@
+// src/App.jsx
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Import Routes and Route
 import Program from './Pages/Program/program';
 import Layout from './components/layout/layout';
 import Categories from './Pages/categories/categories';
 import Login from './Pages/login/logins';
 import Result from './Pages/result/result';
 import SignIn from './components/signIn/signIn';
+// import ButtonWithLink from './components/ButtonWithLink'; // Ensure this file exists
+import Sequence from './Pages/sequence/sequence'; // Import the Sequence component
 
 function App() {
   return (
@@ -44,12 +47,19 @@ function App() {
             </Layout>
           }
         />
-
         <Route
           path="/search"
           element={
             <Layout>
               <Result />
+            </Layout>
+          }
+        />
+        <Route
+          path="/sequence"
+          element={
+            <Layout>
+              <Sequence />
             </Layout>
           }
         />
