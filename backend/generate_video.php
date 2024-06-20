@@ -1,6 +1,17 @@
 <?php
 // generate_video.php
 
+// Add CORS headers
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+// Handle preflight request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
 function fetchPoses($poseNames) {
     $poses = [];
     foreach ($poseNames as $pose) {
@@ -10,9 +21,11 @@ function fetchPoses($poseNames) {
             // Handle error in fetching pose
             return ['error' => 'Failed to fetch pose: ' . $pose];
         }
+        // echo $response;
         $poseData = json_decode($response, true);
-        if (isset($poseData[0])) {
-            $poses[] = $poseData[0];
+        if (json_last_error() === JSON_ERROR_NONE) {
+            echo "JSON decoded successfully.\n";
+            $poses[] = $poseData;
         } else {
             return ['error' => 'Invalid response for pose: ' . $pose];
         }
@@ -27,7 +40,7 @@ function createFrames($poses) {
     }
     foreach ($poses as $index => $pose) {
         $imagePath = 'frames/pose' . $index . '.png';
-        $imageContent = file_get_contents($pose['image_url']);
+        $imageContent = file_get_contents($pose['url_png']);
         if ($imageContent === FALSE) {
             return ['error' => 'Failed to fetch image for pose: ' . $pose['name']];
         }
@@ -60,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $poseNames = $input['poses'];
     $poses = fetchPoses($poseNames);
+    error_log(print_r($poses, true));
 
     if (isset($poses['error'])) {
         echo json_encode(['error' => $poses['error']]);
