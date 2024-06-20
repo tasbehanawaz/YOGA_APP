@@ -50,7 +50,7 @@ const Sequence = () => {
 
   return (
     <div className="sequence-container m-8">
-      <h1 className="text-2xl font-bold mb-4">Select Yoga Poses</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">Select Yoga Poses</h1>
       <div className="poses-grid">
         {poses.map((pose, index) => (
           <CardDefault
@@ -63,12 +63,14 @@ const Sequence = () => {
           />
         ))}
       </div>
-      <button
-        className="mt-8 bg-blue-500 text-white py-2 px-4 rounded"
-        onClick={handleGenerateVideo}
-      >
-        Generate Video
-      </button>
+      <div className="sticky-button-container">
+        <button
+          className="bg-blue-500 text-white py-2 px-4 rounded transition-colors duration-500 hover:bg-blue-700"
+          onClick={handleGenerateVideo}
+        >
+          Generate Video
+        </button>
+      </div>
       {videoUrl && (
         <div className="mt-8">
           <h2 className="text-xl font-bold">Generated Video:</h2>
