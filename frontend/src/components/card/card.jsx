@@ -39,8 +39,11 @@ export function CardDefault({
         <Typography>{poseDescription}</Typography>
       </CardBody>
       <CardFooter className="pt-0">
-        <Button className="transition-colors duration-500 hover:bg-blue-500">
+        <Button className="transition-colors duration-500 hover:bg-blue-500 mr-4">
           Read More
+        </Button>
+        <Button className="transition-colors duration-500 hover:bg-blue-500">
+          Save Pose
         </Button>
       </CardFooter>
     </Card>
