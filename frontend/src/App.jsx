@@ -9,6 +9,7 @@ import Result from './Pages/result/result';
 import SignIn from './components/signIn/signIn';
 // import ButtonWithLink from './components/ButtonWithLink'; // Ensure this file exists
 import Sequence from './Pages/sequence/sequence'; // Import the Sequence component
+import Profile from './Pages/profile/profile';
 
 function App() {
   return (
