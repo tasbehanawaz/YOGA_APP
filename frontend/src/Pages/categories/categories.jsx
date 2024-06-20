@@ -24,6 +24,13 @@ const Categories = () => {
 
   return (
     <div className="categories-container m-8">
+    <div className='flex flex-row w-full justify-center' >
+    {poses && poses.length > 0 ? (
+      <h1 className="text-2xl font-bold mb-4">Found {poses.length} results</h1>
+    ) : (
+      <h1 className="text-2xl font-bold mb-4">Loading...</h1>
+    )}
+    </div>
       {poses &&
         poses.map((pose, index) => (
           <CardDefault

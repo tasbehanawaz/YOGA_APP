@@ -14,6 +14,25 @@ The project is divided into two main parts:
 
 2. `backend/`: This is the PHP backend of the application. It includes several scripts for handling different aspects of the application, such as fetching all yoga poses (`FetchAllYogaPoses.php`), fetching a specific yoga pose by name (`FetchYogaPoses.php`), and more.
 
+## Features
+
+- Allows users registarion to the smart accessible Yoga App
+- Display the list of all the available yoga poses with description and images
+- Allow users to select yoga poses and automatically generate yoga session
+
+### Available Yoga Poses
+
+![All Yoga Poses](demo/All%20Yoga%20poses.png)
+
+### Automated Yoga session
+
+- Users can select multiple yoga poses and generate a video
+
+<video width="600" controls>
+  <source src="demo/output.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 ## Installation
 
 - Clone this repo and navigate to root directory
