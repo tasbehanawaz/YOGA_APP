@@ -8,9 +8,14 @@ import {
   Button,
 } from '@material-tailwind/react';
 
-export function CardDefault({ name, imageUrl, poseDescription }) {
+export function CardDefault({ name, imageUrl, poseDescription, onClick, isSelected }) {
   return (
-    <Card className="mt-6 w-96 transform transition-transform duration-500 hover:scale-105">
+    <Card
+      className={`mt-6 w-96 transform transition-transform duration-500 hover:scale-105 card-container ${
+        isSelected ? 'selected' : ''
+      }`}
+      onClick={onClick}
+    >
       <CardHeader
         color="blue-gray"
         className="relative h-56 transition-height duration-500 hover:h-64"
@@ -40,4 +45,11 @@ CardDefault.propTypes = {
   name: PropTypes.string.isRequired,
   imageUrl: PropTypes.string.isRequired,
   poseDescription: PropTypes.string.isRequired,
+  onClick: PropTypes.func,
+  isSelected: PropTypes.bool,
+};
+
+CardDefault.defaultProps = {
+  onClick: () => {},
+  isSelected: false,
 };

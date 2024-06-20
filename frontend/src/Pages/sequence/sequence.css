@@ -1,0 +1,19 @@
+/* src/Pages/sequence/sequence.css */
+.sequence-container {
+  padding: 2rem;
+}
+
+.poses-grid {
+  display: grid;
+  gap: 4rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Ensure 3 cards per row on larger screens */
+}
+
+.card-container {
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+}
+
+.card-container.selected {
+  background-color: rgba(52, 211, 153, 0.3); /* TailwindCSS green-400 with reduced opacity */
+ }

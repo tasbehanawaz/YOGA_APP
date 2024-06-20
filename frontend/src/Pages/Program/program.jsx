@@ -1,6 +1,7 @@
+// src/Pages/Program/program.jsx
 import { CarouselDefault } from '../../components/carousel/carousel';
 import { Typography } from '@material-tailwind/react';
-import { ButtonWithLink } from '../../components/buttonProgram/button';
+import ButtonWithLink from '../../components/buttonWithLink/ButtonWithLink'; // Correct import path with case sensitivity
 
 const Program = () => {
   return (
@@ -11,12 +12,11 @@ const Program = () => {
           <CarouselDefault />
         </div>
         <div className="mt-8">
-          {' '}
           <ButtonWithLink />
         </div>
       </div>
       <div className="about">
-        <Typography variant="h3"> About Us</Typography>
+        <Typography variant="h3">About Us</Typography>
         <Typography variant="paragraph">
           Located in the heart of Canterbury, Yoga App is your ultimate
           destination for holistic well-being. Yoga App offers a variety of yoga
