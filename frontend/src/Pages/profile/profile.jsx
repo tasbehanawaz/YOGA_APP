@@ -1,9 +1,11 @@
-import { AlertDefault } from "../../components/alert/alert";
+import { AlertDefault } from '../../components/alert/alert';
 
 const Profile = () => {
-    return<>
-    <h1>hello world</h1>
+  return (
+    <>
+      <AlertDefault />
     </>
-}
+  );
+};
 
 export default Profile;

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { NavLink } from 'react-router-dom';
 import {
   Navbar,
   MobileNav,
@@ -8,7 +10,6 @@ import {
   IconButton,
   Input,
 } from '@material-tailwind/react';
-import { Link, useNavigate } from 'react-router-dom';
 
 export function NavbarWithSearch() {
   const [loading, setLoading] = useState(false);
@@ -48,9 +49,13 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <Link to="/" className="flex items-center">
+        <NavLink
+          to="/"
+          className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
+          activeClassName="highlight"
+        >
           Home
-        </Link>
+        </NavLink>
       </Typography>
       <Typography
         as="li"
@@ -58,9 +63,13 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <Link to="/categories" className="flex items-center">
+        <NavLink
+          to="/categories"
+          className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
+          activeClassName="highlight"
+        >
           Categories
-        </Link>
+        </NavLink>
       </Typography>
       <Typography
         as="li"
@@ -68,9 +77,13 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <Link to="/save" className="flex items-center">
+        <NavLink
+          to="/save"
+          className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
+          activeClassName="highlight"
+        >
           Saved
-        </Link>
+        </NavLink>
       </Typography>
       <Typography
         as="li"
@@ -78,11 +91,14 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <Link to="/logins" className="flex items-center">
+        <NavLink
+          to="/logins"
+          className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
+          activeClassName="highlight"
+        >
           Logins
-        </Link>
+        </NavLink>
       </Typography>
-
 
       <Typography
         as="li"
@@ -90,11 +106,14 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <Link to="/profile" className="flex items-center">
+        <NavLink
+          to="/profile"
+          className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
+          activeClassName="highlight"
+        >
           Profile
-        </Link>
+        </NavLink>
       </Typography>
-
 
       <Typography
         as="li"
@@ -102,13 +121,15 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-        <Link to="/signin" className="flex items-center">
-          Sign In
-        </Link>
+        <NavLink
+          to="/signin"
+          className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
+          activeClassName="highlight"
+        >
+          Sign in
+        </NavLink>
       </Typography>
     </ul>
-
-    
   );
 
   return (

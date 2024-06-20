@@ -4,7 +4,7 @@ This project is a full-stack application designed to support the creation and ma
 
 ## Project Description
 
-This is a group project by Justice Unanka Eke, Tasbeha Nawaz, Sarah Peters which is divided into: UX design, Frontend and Backend.
+This is a group project by Justice Unanka Eke, Tasbeha Nawaz, and Sarah Peters which is divided into UX design, Frontend and Backend.
 
 ## Project Structure
 
@@ -16,8 +16,8 @@ The project is divided into two main parts:
 
 ## Features
 
-- Allows users registarion to the smart accessible Yoga App
-- Display the list of all the available yoga poses with description and images
+- Allows users registration to the smart accessible Yoga App
+- Display the list of all the available yoga poses with descriptions and images
 - Allow users to select yoga poses and automatically generate yoga session
 
 ### Available Yoga Poses
@@ -35,7 +35,7 @@ The project is divided into two main parts:
 
 ## Installation
 
-- Clone this repo and navigate to root directory
+- Clone this repo and navigate to the root directory
 - Terminal: `cd Yoga_App`
 
 ### Frontend
