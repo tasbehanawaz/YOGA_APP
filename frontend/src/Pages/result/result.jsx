@@ -1,18 +1,31 @@
 import { useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { CardDefault } from '../../components/card/card';
-import PropTypes from 'prop-types'; // Add PropTypes for prop validation
+import PropTypes from 'prop-types';
+import { Modal, Box, Typography, Button } from '@mui/material'; // Import Material-UI components
 
 const Result = () => {
   const location = useLocation();
-  const pose = location.state?.data; // Expect pose to be an object already
+  const pose = location.state?.data;
 
-  // Check if pose is an object and not null
-  if (typeof pose !== 'object' || pose === null) {
-    console.error('Expected pose to be an object, but got:', typeof pose);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof pose === 'object' && pose !== null) {
+      setOpen(true); // Show the modal when pose data is valid
+    } else {
+      console.error('Expected pose to be an object, but got:', typeof pose);
+    }
+  }, [pose]);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  if (!pose || typeof pose !== 'object') {
     return <div>Invalid data passed to component</div>;
   }
 
-  // Check if all required properties are present
   const { english_name, url_png, pose_benefits } = pose;
   if (!english_name || !url_png || !pose_benefits) {
     console.error('Pose data is missing required properties:', pose);
@@ -30,6 +43,36 @@ const Result = () => {
         poseDescription={pose_benefits}
         className="w-72"
       />
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            border: '2px solid #000 rounded',
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Your searched pose is saved
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            You have successfully saved the pose data.
+          </Typography>
+          <Button onClick={handleClose} sx={{ mt: 2 }}>
+            Close
+          </Button>
+        </Box>
+      </Modal>
     </div>
   );
 };
