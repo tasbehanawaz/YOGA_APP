@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { CardDefault } from '../../components/card/card';
 import axios from 'axios';
 
 const SavedPoses = () => {
@@ -7,7 +8,7 @@ const SavedPoses = () => {
     useEffect(() => {
         const fetchSavedPoses = async () => {
             try {
-                const response = await axios.get('http://localhost:8001/backend/get_saved_poses.php');
+                const response = await axios.get('http://localhost:8001/get_saved_poses.php');
                 console.log("Fetched Poses: ", response.data); // Debugging line
                 setSavedPoses(response.data); // Assuming the array is directly in data
             } catch (error) {
@@ -19,13 +20,17 @@ const SavedPoses = () => {
     }, []);
 
     return (
-        <div>
+        <div className="flex flex-wrap justify-center gap-6 py-8">
             {savedPoses.map(pose => (
-                <div key={pose.id}>
-                    <h3>{pose.name}</h3>
-                    {/* <img src={pose.image_url} alt={pose.name} /> */}
-                    <p>{pose.description}</p>
-                </div>
+                <CardDefault
+                    key={pose.id}
+                    name={pose.name}
+                    imageUrl={pose.image_url || 'https://via.placeholder.com/150'} // Placeholder if image_url is not available
+                    poseDescription={pose.description}
+                    onClick={() => console.log(`Clicked on ${pose.name}`)}
+                    onSave={() => console.log(`Saved ${pose.name}`)}
+                    isSelected={false}
+                />
             ))}
         </div>
     );

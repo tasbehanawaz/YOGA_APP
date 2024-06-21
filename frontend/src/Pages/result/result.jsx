@@ -1,6 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { CardDefault } from '../../components/card/card';
 import PropTypes from 'prop-types'; // Add PropTypes for prop validation
+import axios from 'axios'; // Import axios library
 
 const Result = () => {
 const location = useLocation();
@@ -21,6 +22,30 @@ return <div>Incomplete pose data</div>;
 
 console.log(pose, 'pose');
 
+
+const handleSavePose = async (pose) => {
+  console.log('Saving pose:', pose); // Debugging line
+  try {
+    const response = await axios.post('http://localhost:8001/save_pose.php', {
+      english_name: pose.english_name,
+      pose_description: pose.pose_description,
+      url_png: pose.url_png
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    if (response.data.success) {
+      alert('Pose saved successfully!');
+    } else {
+      alert(response.data.message);
+    }
+  } catch (error) {
+    console.error('Error saving the pose:', error);
+    alert('Error saving pose.');
+  }
+};
+
 return (
 <div className="flex flex-col items-center p-5 bg-gray-100">
 <h1 className="text-2xl text-gray-700 mb-5">Here is your Pose</h1>
@@ -28,6 +53,7 @@ return (
      name={english_name}
      imageUrl={url_png}
      poseDescription={pose_benefits}
+     onSave={() => handleSavePose(pose)}
      className="w-72"
    />
 </div>
