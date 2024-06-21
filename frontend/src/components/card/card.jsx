@@ -13,11 +13,12 @@ export function CardDefault({
   imageUrl,
   poseDescription,
   onClick,
+  onSave,
   isSelected,
 }) {
   return (
     <Card
-      className={`mt-6 w-96  transform transition-transform duration-500 hover:scale-105 card-container ${
+      className={`mt-6 w-96 transform transition-transform duration-500 hover:scale-105 card-container ${
         isSelected ? 'selected' : ''
       }`}
       onClick={onClick}
@@ -42,7 +43,10 @@ export function CardDefault({
         <Button className="transition-colors duration-500 hover:bg-blue-500 mr-4">
           Read More
         </Button>
-        <Button className="transition-colors duration-500 hover:bg-blue-500">
+        <Button
+          className="transition-colors duration-500 hover:bg-blue-500"
+          onClick={onSave}
+        >
           Save Pose
         </Button>
       </CardFooter>
@@ -55,10 +59,12 @@ CardDefault.propTypes = {
   imageUrl: PropTypes.string.isRequired,
   poseDescription: PropTypes.string.isRequired,
   onClick: PropTypes.func,
+  onSave: PropTypes.func,
   isSelected: PropTypes.bool,
 };
 
 CardDefault.defaultProps = {
-  onClick: () => {},
+  // onClick: () => {},
+  // onSave: () => {},
   isSelected: false,
 };

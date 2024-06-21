@@ -1,5 +1,5 @@
 <?php
-// this script provides the poses in the search bar using the name of the pose and saves it to the database which includes: name and description. 
+// This script provides the poses in the search bar using the name of the pose and saves it to the database, which includes: name, description, and image URL.
 require 'db.php';
 
 header("Access-Control-Allow-Origin: *");
@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['poseName'])) {
     $poseName = $_GET['poseName'];
     $poseData = fetchYogaPoseByName($poseName);
 
-    // Here you saving each time, will it be worth checking if the item is already saved before resaving
+    // Here you are saving each time; it would be worth checking if the item is already saved before resaving.
     if (!empty($poseData)) {
         saveYogaPoseToDb($poseData);
     }
@@ -48,7 +48,7 @@ function fetchYogaPoseByName($poseName)
 
 function saveYogaPoseToDb($poseData)
 {
-    if (!isset($poseData['english_name']) || !isset($poseData['pose_description'])) {
+    if (!isset($poseData['english_name']) || !isset($poseData['pose_description']) || !isset($poseData['url_png'])) {
         error_log("Invalid pose data");
         return;
     }
@@ -58,10 +58,20 @@ function saveYogaPoseToDb($poseData)
         return;
     }
 
-    $sql = "INSERT INTO yoga_poses (name, description) VALUES (:name, :description)";
-    $stmt = $db->prepare($sql);
-    $stmt->execute([
-        ':name' => $poseData['english_name'],
-        ':description' => $poseData['pose_description']
-    ]);
+    // Check if the pose already exists
+    $checkSql = "SELECT COUNT(*) FROM yoga_poses WHERE name = :name";
+    $checkStmt = $db->prepare($checkSql);
+    $checkStmt->execute([':name' => $poseData['english_name']]);
+    $exists = $checkStmt->fetchColumn() > 0;
+
+    if (!$exists) {
+        $sql = "INSERT INTO yoga_poses (name, description, image_url) VALUES (:name, :description, :image_url)";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([
+            ':name' => $poseData['english_name'],
+            ':description' => $poseData['pose_description'],
+            ':image_url' => $poseData['url_png']
+        ]);
+    }
 }
+?>
