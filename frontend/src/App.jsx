@@ -10,6 +10,7 @@ import SignIn from './components/signIn/signIn';
 // import ButtonWithLink from './components/ButtonWithLink'; // Ensure this file exists
 import Sequence from './Pages/sequence/sequence'; // Import the Sequence component
 import Profile from './Pages/profile/profile';
+import Save from './Pages/saved/savedPoses';
 
 function App() {
   return (
@@ -70,6 +71,14 @@ function App() {
           element={
             <Layout>
               <Sequence />
+            </Layout>
+          }
+        />
+        <Route
+          path="/save"
+          element={
+            <Layout>
+              <Save />
             </Layout>
           }
         />
