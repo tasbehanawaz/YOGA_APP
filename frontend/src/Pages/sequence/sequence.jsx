@@ -86,7 +86,7 @@ const Sequence = () => {
       </div>
       <div className="sticky-button-container">
         <button
-          className="bg-blue-500 text-white py-2 px-4 rounded transition-colors duration-500 hover:bg-blue-700"
+          className="bg-blue-900 transition-colors text-white py-2 px-4 rounded duration-500 hover:bg-blue-500"
           onClick={handleGenerateVideo}
         >
           Generate Video
