@@ -1,0 +1,27 @@
+/* src/Pages/welcome/WelcomePage.css */
+.welcome-container {
+    text-align: center;
+    padding: 50px 20px;
+  }
+  
+  .welcome-header {
+    margin-bottom: 20px;
+  }
+  
+  .welcome-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .welcome-subtitle {
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  .welcome-register {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
