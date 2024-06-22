@@ -48,6 +48,29 @@ const Sequence = () => {
       });
   };
 
+  const handleSavePose = async (pose) => {
+    console.log('Saving pose:', pose); // Debugging line
+    try {
+      const response = await axios.post('http://localhost:8001/save_pose.php', {
+        english_name: pose.english_name,
+        pose_description: pose.pose_description,
+        url_png: pose.url_png
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.data.success) {
+        alert('Pose saved successfully!');
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Error saving the pose:', error);
+      alert('Error saving pose.');
+    }
+  };
+
   return (
     <div className="sequence-container m-8">
       <h1 className="text-2xl font-bold mb-4 text-center">Select Yoga Poses</h1>
@@ -58,6 +81,7 @@ const Sequence = () => {
             name={pose.english_name}
             imageUrl={pose.url_png}
             poseDescription={pose.pose_benefits}
+            onSave={() => handleSavePose(pose)}
             onClick={() => handlePoseSelect(pose.english_name)}
             isSelected={selectedPoses.includes(pose.english_name)}
           />
