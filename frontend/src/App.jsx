@@ -16,8 +16,14 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Welcome page route
-        <Route path="/welcome" element={<Welcome />} /> */}
+        {/* <Route 
+        path="/"
+         element={
+         <Layout>
+          <Welcome />
+         </Layout>
+         }
+          /> */}
 
       <Route
           path="/"
