@@ -6,9 +6,11 @@ import ButtonWithLink from '../../components/buttonWithLink/ButtonWithLink'; // 
 const Program = () => {
   return (
     <>
-      <div className="box mt-8">
-        <Typography variant="h4">Find Your Inner Peace</Typography>
-        <div className="mt-8">
+      <div className="box">
+        <Typography variant="h4" className="m-6">
+          Find Your Inner Peace
+        </Typography>
+        <div className="mt-4">
           <CarouselDefault />
         </div>
         <div className="mt-8">
