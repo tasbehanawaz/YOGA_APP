@@ -50,7 +50,7 @@ export function NavbarWithSearch() {
       >
         <NavLink
           to="/"
-          className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
+          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
           activeClassName="highlight"
         >
           Home
@@ -62,9 +62,8 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-
         <NavLink
-          to="/sequence"
+          to="/categories"
           className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
           activeClassName="highlight"
         >
@@ -83,7 +82,7 @@ export function NavbarWithSearch() {
 
         <NavLink
           to="/categories"
-          className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
+          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
           activeClassName="highlight"
         >
           Categories
@@ -97,7 +96,7 @@ export function NavbarWithSearch() {
       >
         <NavLink
           to="/save"
-          className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
+          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
           activeClassName="highlight"
         >
           Saved
@@ -111,7 +110,7 @@ export function NavbarWithSearch() {
       >
         <NavLink
           to="/logins"
-          className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
+          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
           activeClassName="highlight"
         >
           Logins
@@ -126,7 +125,7 @@ export function NavbarWithSearch() {
       >
         <NavLink
           to="/profile"
-          className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
+          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
           activeClassName="highlight"
         >
           Profile
@@ -139,7 +138,13 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-      
+        {/* <NavLink
+          to="/signin"
+          className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
+          activeClassName="highlight"
+        >
+          Sign in
+        </NavLink> */}
       </Typography>
     </ul>
   );
@@ -299,7 +304,9 @@ export function NavbarWithSearch() {
           </div>
         </MobileNav>
       </Navbar>
-      <div className="pt-[70px]"> {/* Adjust this padding based on the height of your navbar */}
+      <div className="pt-[70px]">
+        {' '}
+        {/* Adjust this padding based on the height of your navbar */}
         {/* Your main content goes here */}
       </div>
     </>
