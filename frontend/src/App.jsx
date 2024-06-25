@@ -18,7 +18,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-<<<<<<< HEAD
         {/* <Route 
         path="/"
          element={
@@ -27,10 +26,9 @@ function App() {
          </Layout>
          }
           /> */}
-=======
         {/* Welcome page route
         <Route path="/welcome" element={<Welcome />} /> */}
->>>>>>> 05ad1b5 (fixing conflicts)
+
 
       <Route
           path="/"
