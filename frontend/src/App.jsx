@@ -29,7 +29,6 @@ function App() {
         {/* Welcome page route
         <Route path="/welcome" element={<Welcome />} /> */}
 
-
       <Route
           path="/"
           element={
