@@ -7,6 +7,7 @@ import './sequence.css';
 const Sequence = () => {
   const [poses, setPoses] = useState([]);
   const [selectedPoses, setSelectedPoses] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [videoUrl, setVideoUrl] = useState('');
   const navigate = useNavigate(); // Initialize useNavigate
 
