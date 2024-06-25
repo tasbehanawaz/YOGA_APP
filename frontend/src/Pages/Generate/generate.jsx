@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import axios from 'axios';
 
 
 
 const VideoGenerator = () => {
-  const [selectedPoses, setSelectedPoses] = useState([]); // Assuming an initial state for selectedPoses
+  const [selectedPoses] = useState([]); // Assuming an initial state for selectedPoses
   const [videoUrl, setVideoUrl] = useState('');
   const [loading, setLoading] = useState(false);
 

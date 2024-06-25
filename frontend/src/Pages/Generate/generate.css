@@ -1,3 +1,4 @@
+
 .generate-container {
   display: flex;
   flex-direction: column;
@@ -38,4 +39,3 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
