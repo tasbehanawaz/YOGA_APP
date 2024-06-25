@@ -12,16 +12,13 @@ import Profile from './Pages/profile/profile';
 import Save from './Pages/saved/savedPoses';
 import Generate from './Pages/Generate/generate';
 import About from './Pages/about/about.jsx';
-
-
-
-
-
+// import Welcome from './Pages/welcome/welcome';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+<<<<<<< HEAD
         {/* <Route 
         path="/"
          element={
@@ -30,6 +27,10 @@ function App() {
          </Layout>
          }
           /> */}
+=======
+        {/* Welcome page route
+        <Route path="/welcome" element={<Welcome />} /> */}
+>>>>>>> 05ad1b5 (fixing conflicts)
 
       <Route
           path="/"
