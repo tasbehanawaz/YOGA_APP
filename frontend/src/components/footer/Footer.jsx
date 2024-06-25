@@ -1,10 +1,13 @@
 import './footer.css';
 import { Typography } from '@material-tailwind/react';
+import { Link } from 'react-router-dom'; // Step 1: Import Link
 
 const SITEMAP = [
   {
     title: 'Contact Us',
-    links: ['About Us'],
+    links: [
+      <Link to="/about" key="about">About Us</Link>
+    ],
   },
   {
     title: 'Help Center',
@@ -28,7 +31,8 @@ export function FooterWithSitemap() {
               <Typography
                 variant="small"
                 color="blue-gray"
-                className="mb-4 font-bold uppercase opacity-50 text-center"
+                className="mb-4 font-bold uppercase opacity-50"
+                // The rest of your component rendering
               >
                 {title}
               </Typography>

@@ -10,7 +10,13 @@ import SignIn from './components/signIn/signIn';
 import Sequence from './Pages/sequence/sequence';
 import Profile from './Pages/profile/profile';
 import Save from './Pages/saved/savedPoses';
-// import Welcome from './Pages/welcome/welcome';
+import Generate from './Pages/Generate/generate';
+import About from './Pages/about/about.jsx';
+
+
+
+
+
 
 function App() {
   return (
@@ -34,6 +40,16 @@ function App() {
           }
         />
 
+
+
+<Route
+          path="/Generate"
+          element={
+            <Layout>
+              <Generate />
+            </Layout>
+          }
+        />
         <Route
           path="/categories"
           element={
@@ -90,6 +106,14 @@ function App() {
             </Layout>
           }
         />
+
+<Route path="/about" 
+element={<Layout>
+<About />
+
+</Layout>
+}
+/>
       </Routes>
     </BrowserRouter>
   );

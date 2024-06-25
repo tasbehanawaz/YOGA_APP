@@ -1,15 +1,15 @@
-// src/Pages/sequence/Sequence.jsx
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './sequence.css';
 
 const Sequence = () => {
   const [poses, setPoses] = useState([]);
   const [selectedPoses, setSelectedPoses] = useState([]);
   const [videoUrl, setVideoUrl] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
 
-  // Call fetchAllPoses when the component mounts or is created initially
   useEffect(() => {
     fetchAllPoses();
   }, []);
@@ -34,19 +34,16 @@ const Sequence = () => {
     });
   };
 
+  // Modify this function to navigate to generate.jsx
   const handleGenerateVideo = () => {
-    axios.post('http://localhost:8001/generate_video.php', { poses: selectedPoses })
-      .then((response) => {
-        if (response.data.videoPath) {
-          setVideoUrl(response.data.videoPath);
-        } else {
-          console.error('Error generating video:', response.data.error);
-        }
-      })
-      .catch((error) => {
-        console.error('Error generating video:', error);
-      });
+    if (selectedPoses.length > 0) {
+      navigate('/generate'); // Assuming '/generate' is the route for generate.jsx
+    } else {
+      alert('Please select at least two pose.');
+    }
   };
+
+  
 
   const handleSavePose = async (pose) => {
     console.log('Saving pose:', pose); // Debugging line
