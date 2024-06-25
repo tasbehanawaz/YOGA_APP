@@ -1,0 +1,103 @@
+
+.about-container h3 {
+  color: #004094; /* existing style */
+  margin-top: 15px; /* existing style */
+  text-align: center; /* centers text horizontally */
+}
+
+
+.instructor-badge {
+  width: 150px; /* Adjust the width as needed */
+  height: auto; /* This will maintain the aspect ratio */
+}
+
+/* Assuming the parent container has a class named 'container' */
+.container {
+  display: flex;
+  justify-content: center; /* Horizontally centers the child elements */
+  align-items: center; /* Vertically centers the child elements if the container has a specified height */
+}
+
+h2 {
+  text-align: center;
+}
+
+.instructor-image-container + p {
+  margin: 50px; /* Adjust the value as needed */
+}
+
+.about-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+
+
+
+.about-container h1 {
+  color: #0056b3;
+  margin-top: 20px;
+  text-align: center;
+   font-weight: 900;
+}
+
+.about-container h2 {
+  color: #0056b3;
+  margin-top: 20px;
+}
+
+.about-container h3 {
+  color: #004094;
+  margin-top: 15px;
+}
+
+.about-container p {
+  color: #666;
+  line-height: 1.6;
+  margin-top: 10px;
+}
+
+.instructor {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+
+
+
+.instructor-image img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-right: 15px;
+  margin-bottom: 10px;
+  }
+
+
+
+.instructors-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .about-container {
+    padding: 10px;
+  }
+
+  .instructor {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+ 
+}
