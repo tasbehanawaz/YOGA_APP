@@ -64,10 +64,10 @@ export function NavbarWithSearch() {
       >
         <NavLink
           to="/categories"
-          className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
+          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
           activeClassName="highlight"
         >
-          Generate 
+          Generate
         </NavLink>
       </Typography>
       <Typography
@@ -76,10 +76,6 @@ export function NavbarWithSearch() {
         color="blue-gray"
         className="flex items-center gap-x-2 p-1 font-medium"
       >
-
- 
-
-
         <NavLink
           to="/categories"
           className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"

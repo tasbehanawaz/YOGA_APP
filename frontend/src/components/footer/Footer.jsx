@@ -9,19 +9,23 @@ const SITEMAP = [
     links: [
       <React.Fragment key="about">
         <Link to="/about">About Us</Link>
-      </React.Fragment>
+      </React.Fragment>,
     ],
   },
   {
     title: 'Help Center',
     links: [
-      <a href="https://github.com" key="github">GitHub</a>
+      <a href="https://github.com" key="github">
+        GitHub
+      </a>,
     ],
   },
   {
     title: 'Resources',
     links: [
-      <a href="https://blog.com" key="blog">Blog</a>
+      <a href="https://blog.com" key="blog">
+        Blog
+      </a>,
     ],
   },
 ];
@@ -38,11 +42,13 @@ export function FooterWithSitemap() {
               <Typography
                 variant="small"
                 color="blue-gray"
-                className="mb-4 font-bold uppercase opacity-50 text-center"
+                className="mb-4 font-bold uppercase opacity-50"
               >
                 {title}
               </Typography>
-              <ul className="space-y-1"> {/* Wrap the JSX expressions inside a <ul> element */}
+              <ul className="space-y-1">
+                {' '}
+                {/* Wrap the JSX expressions inside a <ul> element */}
                 {links.map((link, linkKey) => (
                   <li key={linkKey} className="font-normal text-center">
                     {link}
@@ -52,7 +58,7 @@ export function FooterWithSitemap() {
             </div>
           ))}
         </div>
-        <div className="flex w-full flex-col items-center justify-center border-t border-blue-gray-150 py-4 md:flex-row md:justify-between">
+        <div className="flex w-full flex-col items-center justify-center py-4 md:flex-row md:justify-between">
           <Typography
             variant="small"
             className="mb-4 font-normal text-blue-gray-900 md:mb-0"
