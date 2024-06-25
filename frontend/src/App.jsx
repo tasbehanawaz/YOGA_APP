@@ -26,6 +26,9 @@ function App() {
          </Layout>
          }
           /> */}
+        {/* Welcome page route
+        <Route path="/welcome" element={<Welcome />} /> */}
+
 
       <Route
           path="/"
