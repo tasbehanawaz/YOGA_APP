@@ -1,21 +1,28 @@
 import './footer.css';
+import React from 'react';
 import { Typography } from '@material-tailwind/react';
-import { Link } from 'react-router-dom'; // Step 1: Import Link
+import { Link } from 'react-router-dom';
 
 const SITEMAP = [
   {
     title: 'Contact Us',
     links: [
-      <Link to="/about" key="about">About Us</Link>
+      <React.Fragment key="about">
+        <Link to="/about">About Us</Link>
+      </React.Fragment>
     ],
   },
   {
     title: 'Help Center',
-    links: ['GitHub'],
+    links: [
+      <a href="https://github.com" key="github">GitHub</a>
+    ],
   },
   {
     title: 'Resources',
-    links: ['Blog'],
+    links: [
+      <a href="https://blog.com" key="blog">Blog</a>
+    ],
   },
 ];
 
@@ -31,40 +38,17 @@ export function FooterWithSitemap() {
               <Typography
                 variant="small"
                 color="blue-gray"
-<<<<<<< HEAD
-                className="mb-4 font-bold uppercase opacity-50"
-                // The rest of your component rendering
-              >
-                {title}
-              </Typography>
-              {links.map((link, linkKey) => (
-                <div key={linkKey} className="mb-4">
-                  {link}
-                </div>
-              ))}
-=======
                 className="mb-4 font-bold uppercase opacity-50 text-center"
               >
                 {title}
               </Typography>
-              <ul className="space-y-1">
-                {links.map((link, key) => (
-                  <Typography
-                    key={key}
-                    as="li"
-                    color="blue-gray"
-                    className="font-normal text-center"
-                  >
-                    <a
-                      href="https://github.com/tasbehanawaz/YOGA_APP"
-                      className="inline-block py-1 pr-2 transition-transform hover:scale-105 text-center"
-                    >
-                      {link}
-                    </a>
-                  </Typography>
+              <ul className="space-y-1"> {/* Wrap the JSX expressions inside a <ul> element */}
+                {links.map((link, linkKey) => (
+                  <li key={linkKey} className="font-normal text-center">
+                    {link}
+                  </li>
                 ))}
               </ul>
->>>>>>> 03d1feb (Fix alignment issue in card footer and add flex layout)
             </div>
           ))}
         </div>
