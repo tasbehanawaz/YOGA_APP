@@ -10,7 +10,7 @@ import SignIn from './components/signIn/signIn';
 import Sequence from './Pages/sequence/sequence';
 import Profile from './Pages/profile/profile';
 import Save from './Pages/saved/savedPoses';
-// import Generate from './Pages/Generate/generate';
+import Generate from './Pages/Generate/generate';
 import About from './Pages/about/about.jsx';
 // import Welcome from './Pages/welcome/welcome';
 
@@ -38,14 +38,14 @@ function App() {
           }
         />
 
-       {/* <Route
+       <Route
           path="/Generate"
           element={
             <Layout>
               <Generate />
             </Layout>
           }
-        /> */}
+        /> 
         <Route
           path="/categories"
           element={

@@ -1,22 +1,32 @@
 <?php
-// This script provides the poses in the search bar using the name of the pose and saves it to the database, which includes: name, description, and image URL.
+// This script fetches yoga pose details based on an array of pose names.
+
 require 'db.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['poseName'])) {
-    $poseName = $_GET['poseName'];
-    $poseData = fetchYogaPoseByName($poseName);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
 
-    // Here you are saving each time; it would be worth checking if the item is already saved before resaving.
-    if (!empty($poseData)) {
-        saveYogaPoseToDb($poseData);
+    if (!isset($input['poses']) || !is_array($input['poses'])) {
+        echo json_encode(['error' => 'Invalid input']);
+        exit;
     }
 
-    echo json_encode($poseData);
+    $poseNames = $input['poses'];
+    $poseDetails = [];
+
+    foreach ($poseNames as $poseName) {
+        $poseData = fetchYogaPoseByName($poseName);
+        if (!empty($poseData)) {
+            $poseDetails[] = $poseData;
+        }
+    }
+
+    echo json_encode($poseDetails);
 } else {
-    echo json_encode(['error' => 'Invalid request']);
+    echo json_encode(['error' => 'Invalid request method']);
 }
 
 function fetchYogaPoseByName($poseName)
