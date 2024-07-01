@@ -1,6 +1,4 @@
 <?php
-// generate_video.php
-
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -14,14 +12,31 @@ function fetchPoses($poseNames) {
     $poses = [];
     foreach ($poseNames as $pose) {
         $url = "https://yoga-api-nzy4.onrender.com/v1/poses?name=" . urlencode($pose);
-        $response = file_get_contents($url);
-        if ($response === FALSE) {
+        $response = false;
+        $retryCount = 0;
+        while ($response === false && $retryCount < 3) {
+            $response = file_get_contents($url);
+            if ($response === false) {
+                error_log('Failed to fetch pose: ' . $pose . ' - Retry: ' . ($retryCount + 1));
+                $retryCount++;
+                sleep(1); // Wait for 1 second before retrying
+            }
+        }
+        
+        if ($response === false) {
+            error_log('Failed to fetch pose after retries: ' . $pose);
             return ['error' => 'Failed to fetch pose: ' . $pose];
         }
+        
         $poseData = json_decode($response, true);
-        if (json_last_error() === JSON_ERROR_NONE) {
-            $poses[] = $poseData;
+        if (json_last_error() === JSON_ERROR_NONE && !empty($poseData)) {
+            if (isset($poseData[0])) {
+                $poses[] = $poseData[0]; // Adjusting to match the structure of the API response
+            } else {
+                $poses[] = $poseData; // Handle case where poseData is not wrapped in an array
+            }
         } else {
+            error_log('Invalid response for pose: ' . $pose . ' - Response: ' . $response);
             return ['error' => 'Invalid response for pose: ' . $pose];
         }
     }
@@ -34,20 +49,19 @@ function createFrames($poses) {
         mkdir('frames', 0777, true);
     }
     foreach ($poses as $index => $pose) {
-        $imagePath = 'frames/pose' . $index . '.png';
+        // Create pose frame
+        $imagePath = sprintf('frames/pose%03d.png', $index);
         $imageContent = file_get_contents($pose['url_png']);
         if ($imageContent === FALSE) {
+            error_log('Failed to fetch image for pose: ' . $pose['name']);
             return ['error' => 'Failed to fetch image for pose: ' . $pose['name']];
         }
         file_put_contents($imagePath, $imageContent);
-
-        // Overlay text onto the image
-        $text = $pose['english_name'] . "\n" . $pose['pose_description'] . "\n" . $pose['pose_benefits'];
-        $outputImagePath = 'frames/pose_with_text' . $index . '.png';
-        $command = "ffmpeg -i $imagePath -vf \"drawtext=text='$text':fontcolor=white:fontsize=24:box=1:boxcolor=black@0.5:boxborderw=5:x=10:y=10\" $outputImagePath";
-        shell_exec($command);
-
-        $framePaths[] = $outputImagePath;
+        if (!file_exists($imagePath)) {
+            error_log('Failed to save pose image: ' . $imagePath);
+            return ['error' => 'Failed to save pose image'];
+        }
+        $framePaths[] = $imagePath;
     }
     return $framePaths;
 }
@@ -59,9 +73,10 @@ function generateVideo($framePaths) {
     $frameRate = 1;
     $uniqueId = uniqid();
     $videoPath = 'output/yoga_sequence_' . $uniqueId . '.mp4';
-    $command = "ffmpeg -y -framerate $frameRate -i frames/pose_with_text%d.png $videoPath";
+    $command = "ffmpeg -y -framerate $frameRate -pattern_type glob -i 'frames/pose*.png' $videoPath";
     shell_exec($command);
     if (!file_exists($videoPath)) {
+        error_log('Failed to generate video at: ' . $videoPath);
         return ['error' => 'Failed to generate video'];
     }
     return $videoPath;
@@ -69,7 +84,7 @@ function generateVideo($framePaths) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
-    if (!isset($input['poses'])) {
+    if (!isset($input['poses']) || !is_array($input['poses'])) {
         echo json_encode(['error' => 'Invalid input']);
         exit;
     }
