@@ -1,0 +1,4 @@
+file 'backend/frames/pose000.png'
+duration 30
+file 'backend/frames/pose001.png'
+duration 30
