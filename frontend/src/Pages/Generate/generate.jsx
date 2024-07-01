@@ -15,6 +15,7 @@ const VideoGenerator = () => {
       fetchPoseDetails();
       handleGenerateVideo();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPoses]);
 
   const fetchPoseDetails = async () => {
