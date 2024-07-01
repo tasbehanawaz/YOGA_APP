@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { NavLink } from 'react-router-dom';
@@ -14,15 +14,18 @@ import './navbar.css'; // Import the CSS file
 
 export function NavbarWithSearch() {
   const [loading, setLoading] = useState(false);
-  const [openNav, setOpenNav] = React.useState(false);
-  const [searchQuery, setSearchQuery] = useState(null);
+  const [openNav, setOpenNav] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
-  React.useEffect(() => {
-    window.addEventListener(
-      'resize',
-      () => window.innerWidth >= 960 && setOpenNav(false)
-    );
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 960) {
+        setOpenNav(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const handleSearch = async (event) => {
@@ -112,7 +115,6 @@ export function NavbarWithSearch() {
           Logins
         </NavLink>
       </Typography>
-
       <Typography
         as="li"
         variant="small"
@@ -126,21 +128,6 @@ export function NavbarWithSearch() {
         >
           Profile
         </NavLink>
-      </Typography>
-
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="flex items-center gap-x-2 p-1 font-medium"
-      >
-        {/* <NavLink
-          to="/signin"
-          className="flex items-center hover:bg-teal-700 hover:text-white hover:py-2 hover:px-4"
-          activeClassName="highlight"
-        >
-          Sign in
-        </NavLink> */}
       </Typography>
     </ul>
   );
@@ -170,7 +157,7 @@ export function NavbarWithSearch() {
                 containerProps={{
                   className: 'min-w-[288px]',
                 }}
-                className=" !border-t-blue-gray-300 pl-9 placeholder:text-blue-gray-300 focus:!border-blue-gray-300"
+                className="!border-t-blue-gray-300 pl-9 placeholder:text-blue-gray-300 focus:!border-blue-gray-300"
                 labelProps={{
                   className: 'before:content-none after:content-none',
                 }}
@@ -245,7 +232,7 @@ export function NavbarWithSearch() {
             )}
           </IconButton>
         </div>
-        <MobileNav open={openNav}>
+        <MobileNav open={openNav} className="lg:hidden">
           <div className="container mx-auto">
             {navList}
             <div className="flex flex-col gap-x-2 sm:flex-row sm:items-center">
@@ -261,7 +248,7 @@ export function NavbarWithSearch() {
                   containerProps={{
                     className: 'min-w-[288px]',
                   }}
-                  className=" !border-t-blue-gray-300 pl-9 placeholder:text-blue-gray-300 focus:!border-blue-gray-300"
+                  className="!border-t-blue-gray-300 pl-9 placeholder:text-blue-gray-300 focus:!border-blue-gray-300"
                   labelProps={{
                     className: 'before:content-none after:content-none',
                   }}

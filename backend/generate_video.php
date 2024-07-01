@@ -1,12 +1,8 @@
 <?php
-// generate_video.php
-
-// Add CORS headers
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-// Handle preflight request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -16,17 +12,31 @@ function fetchPoses($poseNames) {
     $poses = [];
     foreach ($poseNames as $pose) {
         $url = "https://yoga-api-nzy4.onrender.com/v1/poses?name=" . urlencode($pose);
-        $response = file_get_contents($url);
-        if ($response === FALSE) {
-            // Handle error in fetching pose
+        $response = false;
+        $retryCount = 0;
+        while ($response === false && $retryCount < 3) {
+            $response = file_get_contents($url);
+            if ($response === false) {
+                error_log('Failed to fetch pose: ' . $pose . ' - Retry: ' . ($retryCount + 1));
+                $retryCount++;
+                sleep(1); // Wait for 1 second before retrying
+            }
+        }
+        
+        if ($response === false) {
+            error_log('Failed to fetch pose after retries: ' . $pose);
             return ['error' => 'Failed to fetch pose: ' . $pose];
         }
-        // echo $response;
+        
         $poseData = json_decode($response, true);
-        if (json_last_error() === JSON_ERROR_NONE) {
-            echo "JSON decoded successfully.\n";
-            $poses[] = $poseData;
+        if (json_last_error() === JSON_ERROR_NONE && !empty($poseData)) {
+            if (isset($poseData[0])) {
+                $poses[] = $poseData[0]; // Adjusting to match the structure of the API response
+            } else {
+                $poses[] = $poseData; // Handle case where poseData is not wrapped in an array
+            }
         } else {
+            error_log('Invalid response for pose: ' . $pose . ' - Response: ' . $response);
             return ['error' => 'Invalid response for pose: ' . $pose];
         }
     }
@@ -39,12 +49,18 @@ function createFrames($poses) {
         mkdir('frames', 0777, true);
     }
     foreach ($poses as $index => $pose) {
-        $imagePath = 'frames/pose' . $index . '.png';
+        // Create pose frame
+        $imagePath = sprintf('frames/pose%03d.png', $index);
         $imageContent = file_get_contents($pose['url_png']);
         if ($imageContent === FALSE) {
+            error_log('Failed to fetch image for pose: ' . $pose['name']);
             return ['error' => 'Failed to fetch image for pose: ' . $pose['name']];
         }
         file_put_contents($imagePath, $imageContent);
+        if (!file_exists($imagePath)) {
+            error_log('Failed to save pose image: ' . $imagePath);
+            return ['error' => 'Failed to save pose image'];
+        }
         $framePaths[] = $imagePath;
     }
     return $framePaths;
@@ -54,11 +70,13 @@ function generateVideo($framePaths) {
     if (!is_dir('output')) {
         mkdir('output', 0777, true);
     }
-    $frameRate = 1; // 1 frame per second
-    $videoPath = 'output/yoga_sequence.mp4';
-    $command = "ffmpeg -framerate $frameRate -i frames/pose%d.png $videoPath";
+    $frameRate = 1;
+    $uniqueId = uniqid();
+    $videoPath = 'output/yoga_sequence_' . $uniqueId . '.mp4';
+    $command = "ffmpeg -y -framerate $frameRate -pattern_type glob -i 'frames/pose*.png' $videoPath";
     shell_exec($command);
     if (!file_exists($videoPath)) {
+        error_log('Failed to generate video at: ' . $videoPath);
         return ['error' => 'Failed to generate video'];
     }
     return $videoPath;
@@ -66,14 +84,13 @@ function generateVideo($framePaths) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
-    if (!isset($input['poses'])) {
+    if (!isset($input['poses']) || !is_array($input['poses'])) {
         echo json_encode(['error' => 'Invalid input']);
         exit;
     }
 
     $poseNames = $input['poses'];
     $poses = fetchPoses($poseNames);
-    error_log(print_r($poses, true));
 
     if (isset($poses['error'])) {
         echo json_encode(['error' => $poses['error']]);
@@ -92,9 +109,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    echo json_encode(['videoPath' => $videoPath]);
+    // Return the full URL
+    $fullUrl = 'http://localhost:8001/' . $videoPath;
+    echo json_encode(['videoPath' => $fullUrl]);
 
-    // Clean up frames after generating video
     foreach ($framePaths as $framePath) {
         unlink($framePath);
     }

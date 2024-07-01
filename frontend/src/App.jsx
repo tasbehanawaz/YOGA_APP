@@ -38,16 +38,14 @@ function App() {
           }
         />
 
-
-
-<Route
+       <Route
           path="/Generate"
           element={
             <Layout>
               <Generate />
             </Layout>
           }
-        />
+        /> 
         <Route
           path="/categories"
           element={
