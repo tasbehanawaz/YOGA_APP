@@ -48,21 +48,21 @@ const VideoGenerator = () => {
   };
 
   return (
-    <div className="generate-container">
+    <div className="generate-container flex flex-col items-center">
       <h1 className="text-3xl font-bold mb-4 text-center">Generated Video</h1>
       {loading ? (
         <p className="text-center">Generating...</p>
       ) : (
         videoUrl && (
-          <div className="video-wrapper mb-8">
+          <div className="video-wrapper mb-8 flex justify-center">
             <video className="video-content" src={videoUrl} controls onError={() => alert('Error loading video.')} />
           </div>
         )
       )}
-      <div className="pose-details">
+      <div className="pose-details w-full max-w-3xl">
         {poseDetails.map((pose, index) => (
-          <div key={index} className="pose-detail">
-            <h2 className="pose-title">{pose.english_name}</h2>
+          <div key={index} className="pose-detail mb-4">
+            <h2 className="pose-title text-xl font-semibold">{pose.english_name}</h2>
             <p><strong>Description:</strong> {pose.pose_description}</p>
             <p><strong>Benefits:</strong> {pose.pose_benefits}</p>
           </div>
