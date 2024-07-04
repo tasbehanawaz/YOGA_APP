@@ -5,8 +5,8 @@ use GuzzleHttp\Client;
 
 function generatePlayHTAudio($description, $filePath) {
     // Directly set the environment variables for testing
-    $apiKey = '977da4c33036487896edb353ce36e567';
-    $userId = 'IN1oH8Zp0tRt3dNygqfpgqny7p62';
+    $apiKey = 'API_KEY';
+    $userId = 'USER_ID';
 
     if (!$apiKey || !$userId) {
         error_log('API key or User ID is not set.');
