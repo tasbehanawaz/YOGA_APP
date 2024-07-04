@@ -29,7 +29,12 @@ const VideoGenerator = () => {
 
   const handleGenerateVideo = () => {
     setLoading(true);
-    axios.post('http://localhost:8001/generate_video.php', { poses: selectedPoses })
+    axios.post('http://localhost:8001/generate_video.php',
+      { 
+        poses: selectedPoses,
+        url_pngs: [],
+        durations: selectedPoses.map(() => 90)
+      })
       .then((response) => {
         setLoading(false);
         console.log(response.data); // Log the response
