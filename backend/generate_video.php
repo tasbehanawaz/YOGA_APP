@@ -8,8 +8,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-require 'generate_audio.php';
-
 function fetchPoses($poseNames) {
     $poses = [];
     foreach ($poseNames as $pose) {
@@ -17,7 +15,7 @@ function fetchPoses($poseNames) {
         $response = false;
         $retryCount = 0;
         while ($response === false && $retryCount < 3) {
-            $response = file_get_contents($url);
+            $response = fetchUrlWithCurl($url);
             if ($response === false) {
                 error_log('Failed to fetch pose: ' . $pose . ' - Retry: ' . ($retryCount + 1));
                 $retryCount++;
@@ -45,6 +43,20 @@ function fetchPoses($poseNames) {
     return $poses;
 }
 
+function fetchUrlWithCurl($url) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    $response = curl_exec($ch);
+    if (curl_errno($ch)) {
+        error_log('cURL error: ' . curl_error($ch));
+        $response = false;
+    }
+    curl_close($ch);
+    return $response;
+}
+
 function createFrames($poses) {
     $framePaths = [];
     if (!is_dir('frames')) {
@@ -64,19 +76,46 @@ function createFrames($poses) {
             return ['error' => 'Failed to save pose image'];
         }
         $framePaths[] = $imagePath;
+        error_log('Saved frame: ' . $imagePath);
     }
     return $framePaths;
 }
 
-function generateVideo($framePaths) {
+function generateVideo($framePaths, $durations) {
     if (!is_dir('output')) {
         mkdir('output', 0777, true);
     }
-    $frameRate = 1;
+
     $uniqueId = uniqid();
     $videoPath = 'output/yoga_sequence_' . $uniqueId . '.mp4';
-    $command = "ffmpeg -y -framerate $frameRate -pattern_type glob -i 'frames/pose*.png' $videoPath";
-    shell_exec($command);
+
+    // Create a list of inputs for ffmpeg
+    $inputs = [];
+    foreach ($framePaths as $index => $framePath) {
+        $duration = $durations[$index];
+        $inputs[] = "-loop 1 -t $duration -i $framePath";
+    }
+    $inputString = implode(' ', $inputs);
+
+    // Create a filter complex to concatenate frames
+    $filterComplexParts = [];
+    foreach ($framePaths as $index => $framePath) {
+        $filterComplexParts[] = "[$index:v]scale=iw*min(640/iw\\,360/ih):ih*min(640/iw\\,360/ih),pad=640:360:(640-iw*min(640/iw\\,360/ih))/2:(360-ih*min(640/iw\\,360/ih))/2,setsar=1[v$index]";
+    }
+    $filterComplexString = implode(";", $filterComplexParts) . ";";
+
+    // Add the concatenation part
+    $concatInputs = implode("", array_map(function($index) {
+        return "[v$index]";
+    }, array_keys($framePaths)));
+    $filterComplexString .= "$concatInputs concat=n=" . count($framePaths) . ":v=1:a=0 [v]";
+
+    $command = "ffmpeg -y $inputString -filter_complex \"$filterComplexString\" -map \"[v]\" -movflags +faststart $videoPath 2>&1";
+    $output = shell_exec($command);
+
+    // Log the ffmpeg output for debugging
+    error_log($output);
+
     if (!file_exists($videoPath)) {
         error_log('Failed to generate video at: ' . $videoPath);
         return ['error' => 'Failed to generate video'];
@@ -84,75 +123,21 @@ function generateVideo($framePaths) {
     return $videoPath;
 }
 
-
-// Generate video with audio function
-
-// function generateVideoWithAudio($framePaths, $poseDescriptions) {
-//     if (!is_dir('output')) {
-//         mkdir('output', 0777, true); 
-// }
-
-// if (!is_dir('audio')) {
-//     mkdir('audio', 0777, true);
-// }
-
-// $audioFiles = [];
-
-// // Generate audio for each pose description
-// $poseDescriptions = []; // Assign an empty array to $poseDescriptions
-// foreach ($poseDescriptions as $index => $description) {
-//     $audioFilePath = "audio/transition-{$index}.mp3";
-//     $success = generatePlayHTAudio($description, $audioFilePath);
-//     if ($success) {
-//         $audioFiles[] = $audioFilePath;
-//     } else {
-//         error_log("Failed to generate audio for description: " . $description);
-//     }
-// }
-
-// if (count($audioFiles) === 0) {
-//     error_log('No audio files generated.');
-//     return ['error' => 'No audio files generated.'];
-// }
-
-// $frameRate = 1;
-// $uniqueId = uniqid();
-// $videoPath = 'output/yoga_sequence_' . $uniqueId . '.mp4';
-
-// $ffmpegCommand = "ffmpeg -y -framerate $frameRate -pattern_type glob -i 'frames/pose*.png'";
-
-// foreach ($audioFiles as $index => $audioFile) {
-//   ($ffmpegCommand . " -i $audioFile");
-// }
-
-// $audioInputCount = count($audioFiles);
-// $ffmpegCommand .= " -filter_complex \"";
-// for ($i = 0; $i < $audioInputCount; $i++) {
-//     $ffmpegCommand .= "[$i:a]";
-// }
-
-// $ffmpegCommand .= "concat=n=$audioInputCount:v=0:a=1[a]\" -map 0:v -map \"[a]\" $videoPath";
-
-// shell_exec($ffmpegCommand);
-
-// if (!file_exists($videoPath)) {
-//     error_log('Failed to generate video at: ' . $videoPath);
-//     return ['error' => 'Failed to generate video'];
-// }
-
-// return $videoPath;
-// }
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
-    if (!isset($input['poses']) || !is_array($input['poses'])) {
+    if (!isset($input['poses']) || !is_array($input['poses']) || !isset($input['durations']) || !is_array($input['durations'])) {
         echo json_encode(['error' => 'Invalid input']);
         exit;
     }
 
     $poseNames = $input['poses'];
-    $poses = fetchPoses($poseNames);
+    $durations = $input['durations'];
+    if (count($poseNames) !== count($durations)) {
+        echo json_encode(['error' => 'Poses and durations count mismatch']);
+        exit;
+    }
 
+    $poses = fetchPoses($poseNames);
     if (isset($poses['error'])) {
         echo json_encode(['error' => $poses['error']]);
         exit;
@@ -164,18 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-
-    $poseDescriptions = array_map(function($pose) {
-        return $pose['english_name'] . " - " . $pose['pose_description'];
-    }, $poses);
-
-    // $videoPath = generateVideoWithAudio($framePaths, $poseDescriptions);
-    // if (isset($videoPath['error'])) {
-    //     echo json_encode(['error' => $videoPath['error']]);
-    //     exit;
-    // }
-
-    $videoPath = generateVideo($framePaths);
+    $videoPath = generateVideo($framePaths, $durations);
     if (isset($videoPath['error'])) {
         echo json_encode(['error' => $videoPath['error']]);
         exit;
@@ -187,10 +161,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     foreach ($framePaths as $framePath) {
         unlink($framePath);
-
-        // foreach ($audioFiles as $audioFile) {
-        //     unlink($audioFile);
-        // }
     }
 }
 ?>
