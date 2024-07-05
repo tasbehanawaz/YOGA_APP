@@ -52,6 +52,26 @@ const VideoGenerator = () => {
       });
   };
 
+  const saveVideoToDatabase = async () => {
+    try {
+      const response = await axios.post('http://localhost:8001/save_video.php', {
+        video_path: videoUrl,
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      if (response.data.success) {
+        alert('Video saved successfully!');
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error('Error saving the video:', error);
+      alert('Error saving video.');
+    }
+  };
+
   return (
     <div className="generate-container flex flex-col items-center">
       <h1 className="text-3xl font-bold mb-4 text-center">Generated Video</h1>
@@ -59,8 +79,14 @@ const VideoGenerator = () => {
         <p className="text-center">Generating...</p>
       ) : (
         videoUrl && (
-          <div className="video-wrapper mb-8 flex justify-center">
+          <div className="video-wrapper mb-8 flex flex-col items-center">
             <video className="video-content" src={videoUrl} controls onError={() => alert('Error loading video.')} />
+            <button 
+              onClick={saveVideoToDatabase} 
+              className="mt-4 px-4 py-2 bg-blue-900 hover:bg-blue-500 text-white rounded"
+            >
+              Save Video
+            </button>
           </div>
         )
       )}

@@ -11,18 +11,22 @@
 }
 
 .video-wrapper {
-  width: 40%;
-  max-width: 1200px; /* Adjust this value to fit your layout */
+  width: 100%;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 0 15px;
+  display: flex;
+  justify-content: center;
 }
 
 .video-content {
   width: 100%;
   height: auto;
+  border: 2px solid #ddd;
+  border-radius: 10px;
 }
 
-button:hover {
+
+/* button:hover {
   background-color: #45a049;
 }
 
@@ -31,9 +35,9 @@ button:disabled {
   cursor: not-allowed;
 }
 
-button {
+/* button {
   background-color: #4CAF50; /* Green */
-  border: none;
+  /* border: none;
   color: white;
   padding: 15px 32px;
   text-align: center;
@@ -42,5 +46,5 @@ button {
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
+  transition: background-color 0.3s ease; */
+
