@@ -4,9 +4,9 @@ require 'vendor/autoload.php';
 use GuzzleHttp\Client;
 
 function generatePlayHTAudio($description, $filePath) {
-    $apiKey = 'API_KEY';
-    $userId = 'USER_ID';
-
+    $apiKey = getenv('YOGA_APP_PLAYHT_API_KEY');
+    $userId = getenv('YOGA_APP_PLAYHT_USER_ID');
+    
     if (!$apiKey || !$userId) {
         error_log('API key or User ID is not set.');
         return false;

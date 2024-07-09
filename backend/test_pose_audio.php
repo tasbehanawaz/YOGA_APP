@@ -56,6 +56,21 @@ function generateAudioForPose($poseDescription, $index) {
     }
 }
 
+// function generateAudioWithVideo($poseDescription, $videoPath, $audioPath) {
+//     if (!is_dir('audio')) {
+//         mkdir('audio', 0777, true);
+//     }
+
+//     $audioFilePath = "audio/transition-{$index}.mp3";
+//     $success = generatePlayHTAudioWithVideo($poseDescription, $videoPath, $audioPath);
+//     if ($success) {
+//         return $audioFilePath;
+//     } else {
+//         error_log("Failed to generate audio for description: " . $poseDescription);
+//         return false;
+//     }
+// }
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
     if (!isset($input['pose']) || !is_string($input['pose'])) {
@@ -74,6 +89,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $poseDescription = $pose['english_name'] . " - " . $pose['pose_description'];
     $audioFilePath = generateAudioForPose($poseDescription, 0);
 
+
+    
     if ($audioFilePath === false) {
         echo json_encode(['error' => 'Failed to generate audio']);
         exit;
