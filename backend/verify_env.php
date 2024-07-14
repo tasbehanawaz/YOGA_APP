@@ -1,4 +1,4 @@
 <?php
-echo 'PLAYHT_API_KEY: ' . getenv('PLAYHT_API_KEY') . "\n";
-echo 'PLAYHT_USER_ID: ' . getenv('PLAYHT_USER_ID') . "\n";
+echo 'YOGA_APP_OPENAI_API_KEY: ' . getenv('YOGA_APP_OPENAI_API_KEY') . "\n";
+// echo 'YOGA_APP_PLAYHT_USER_ID: ' . getenv('YOGA_APP_PLAYHT_USER_ID') . "\n";
 ?>

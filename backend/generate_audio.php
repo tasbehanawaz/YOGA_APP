@@ -3,33 +3,30 @@ require 'vendor/autoload.php';
 
 use GuzzleHttp\Client;
 
-function generatePlayHTAudio($description, $filePath) {
-    $apiKey = 'API_KEY';
-    $userId = 'USER_ID';
-
-    if (!$apiKey || !$userId) {
-        error_log('API key or User ID is not set.');
+function generateOpenAIAudio($description, $filePath) {
+    $OPENAI_API_KEY = getenv('YOGA_APP_OPENAI_API_KEY');
+    // $userId = getenv('YOGA_APP_PLAYHT_USER_ID');
+    
+    if (!$OPENAI_API_KEY) {
+        error_log('API key is not set.');
         return false;
     }
 
     $client = new Client();
-    $url = 'https://api.play.ht/api/v2/tts/stream';
+    $url = 'https://api.openai.com/v1/audio/speech';
 
     try {
         $response = $client->post($url, [
             'headers' => [
-                'Authorization' => $apiKey,
-                'X-User-ID' => $userId,
-                'accept' => 'audio/mpeg',
+                'Authorization' => 'Bearer ' . $OPENAI_API_KEY,
+                // 'accept' => 'audio/mpeg',
                 'content-type' => 'application/json'
             ],
             'json' => [
-                'text' => $description,
-                'voice' => 's3://voice-cloning-zero-shot/d9ff78ba-d016-47f6-b0ef-dd630f59414e/female-cs/manifest.json', // Replace with desired voice ID
-                'output_format' => 'mp3',
+                'input' => $description,
+                'model' => "tts-1",
+                'voice' => 'nova',
                 'speed' => 1,
-                'sample_rate' => 44100,
-                'voice_engine' => 'PlayHT2.0-turbo'
             ],
         ]);
 

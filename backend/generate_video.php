@@ -81,7 +81,7 @@ function createFrames($poses) {
     return $framePaths;
 }
 
-function generateVideo($framePaths, $durations) {
+function generateVideo($framePaths, $durations, $poseNames) {
     if (!is_dir('output')) {
         mkdir('output', 0777, true);
     }
@@ -91,26 +91,47 @@ function generateVideo($framePaths, $durations) {
 
     // Create a list of inputs for ffmpeg
     $inputs = [];
+    $audioInputs = [];
     foreach ($framePaths as $index => $framePath) {
         $duration = $durations[$index];
         $inputs[] = "-loop 1 -t $duration -i $framePath";
+        
+        // Add corresponding audio file
+        $audioFilePath = 'audio/' . $poseNames[$index] . '.mp3';
+        if (file_exists($audioFilePath)) {
+            $audioInputs[] = "-i $audioFilePath";
+        } else {
+            error_log("Audio file not found: $audioFilePath");
+            return ['error' => 'Audio file not found for pose: ' . $poseNames[$index]];
+        }
     }
-    $inputString = implode(' ', $inputs);
+    $inputString = implode(' ', $inputs) . ' ' . implode(' ', $audioInputs);
 
     // Create a filter complex to concatenate frames
     $filterComplexParts = [];
     foreach ($framePaths as $index => $framePath) {
-        $filterComplexParts[] = "[$index:v]scale=iw*min(640/iw\\,360/ih):ih*min(640/iw\\,360/ih),pad=640:360:(640-iw*min(640/iw\\,360/ih))/2:(360-ih*min(640/iw\\,360/ih))/2,setsar=1[v$index]";
+        $filterComplexParts[] = "[$index:v]scale=640:360:force_original_aspect_ratio=decrease,pad=640:360:(ow-iw)/2:(oh-ih)/2,setsar=1[v$index]";
     }
     $filterComplexString = implode(";", $filterComplexParts) . ";";
 
-    // Add the concatenation part
+    // Audio concatenation
+    $audioFilterComplexString = "";
+    for ($i = 0; $i < count($framePaths); $i++) {
+        $audioFilterComplexString .= "[" . ($i + count($framePaths)) . ":a]";
+    }
+    $audioFilterComplexString .= "concat=n=" . count($framePaths) . ":v=0:a=1[aout]";
+
+    // Video concatenation
     $concatInputs = implode("", array_map(function($index) {
         return "[v$index]";
     }, array_keys($framePaths)));
-    $filterComplexString .= "$concatInputs concat=n=" . count($framePaths) . ":v=1:a=0 [v]";
+    $filterComplexString .= "$concatInputs concat=n=" . count($framePaths) . ":v=1:a=0[vout]; $audioFilterComplexString";
 
-    $command = "ffmpeg -y $inputString -filter_complex \"$filterComplexString\" -map \"[v]\" -movflags +faststart $videoPath 2>&1";
+    $command = "ffmpeg -y $inputString -filter_complex \"$filterComplexString\" " .
+               "-map \"[vout]\" -map \"[aout]\" " .
+               "-c:v libx264 -preset medium -crf 23 -c:a aac -b:a 128k " .
+               "-pix_fmt yuv420p -movflags +faststart $videoPath 2>&1";
+    
     $output = shell_exec($command);
 
     // Log the ffmpeg output for debugging
@@ -122,6 +143,7 @@ function generateVideo($framePaths, $durations) {
     }
     return $videoPath;
 }
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
@@ -149,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $videoPath = generateVideo($framePaths, $durations);
+    $videoPath = generateVideo($framePaths, $durations, $poseNames);
     if (isset($videoPath['error'])) {
         echo json_encode(['error' => $videoPath['error']]);
         exit;
