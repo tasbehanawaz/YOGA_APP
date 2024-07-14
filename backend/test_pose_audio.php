@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require 'generate_audio.php';
+require 'db.php'; // Include the database connection script
 
 function fetchPose($poseName) {
     $url = "https://yoga-api-nzy4.onrender.com/v1/poses?name=" . urlencode($poseName);
@@ -41,13 +42,34 @@ function fetchPose($poseName) {
     }
 }
 
-function generateAudioForPose($poseDescription, $index) {
+function fetchAudioPathFromDatabase($poseName) {
+    $pdo = getDbConnection();
+    if ($pdo === null) {
+        return null;
+    }
+
+    $stmt = $pdo->prepare("SELECT audio_path FROM yoga_pose_audio WHERE pose_name = :pose_name LIMIT 1");
+    $stmt->execute(['pose_name' => $poseName]);
+    return $stmt->fetchColumn();
+}
+
+function saveAudioPathToDatabase($poseName, $audioPath) {
+    $pdo = getDbConnection();
+    if ($pdo === null) {
+        return false;
+    }
+
+    $stmt = $pdo->prepare("INSERT INTO yoga_pose_audio (pose_name, audio_path) VALUES (:pose_name, :audio_path)");
+    return $stmt->execute(['pose_name' => $poseName, 'audio_path' => $audioPath]);
+}
+
+function generateAudioForPose($index, $poseDescription, $poseName) {
     if (!is_dir('audio')) {
         mkdir('audio', 0777, true);
     }
 
-    $audioFilePath = "audio/transition-{$index}.mp3";
-    $success = generatePlayHTAudio($poseDescription, $audioFilePath);
+    $audioFilePath = "audio/{$index}-{$poseName}.mp3";
+    $success = generateOpenAIAudio($poseDescription, $audioFilePath);
     if ($success) {
         return $audioFilePath;
     } else {
@@ -55,21 +77,6 @@ function generateAudioForPose($poseDescription, $index) {
         return false;
     }
 }
-
-// function generateAudioWithVideo($poseDescription, $videoPath, $audioPath) {
-//     if (!is_dir('audio')) {
-//         mkdir('audio', 0777, true);
-//     }
-
-//     $audioFilePath = "audio/transition-{$index}.mp3";
-//     $success = generatePlayHTAudioWithVideo($poseDescription, $videoPath, $audioPath);
-//     if ($success) {
-//         return $audioFilePath;
-//     } else {
-//         error_log("Failed to generate audio for description: " . $poseDescription);
-//         return false;
-//     }
-// }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
@@ -79,6 +86,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $poseName = $input['pose'];
+    // $audioPath = fetchAudioPathFromDatabase($poseName);
+
+    // if ($audioPath) {
+    //     $fullUrl = 'http://localhost:8001/' . $audioPath;
+    //     echo json_encode(['audioPath' => $fullUrl]);
+    //     exit;
+    // }
+
     $pose = fetchPose($poseName);
 
     if (isset($pose['error'])) {
@@ -86,16 +101,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $poseDescription = $pose['english_name'] . " - " . $pose['pose_description'];
-    $audioFilePath = generateAudioForPose($poseDescription, 0);
-
-
     
+    $poseDescription = $pose['english_name'] . " - " . $pose['pose_description'];
+    $audioFilePath = generateAudioForPose(0, $poseDescription, $poseName);
+
     if ($audioFilePath === false) {
         echo json_encode(['error' => 'Failed to generate audio']);
         exit;
     }
 
+    saveAudioPathToDatabase($poseName, $audioFilePath);
     $fullUrl = 'http://localhost:8001/' . $audioFilePath;
     echo json_encode(['audioPath' => $fullUrl]);
 }
