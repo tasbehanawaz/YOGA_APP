@@ -44,14 +44,14 @@ function saveAudioPathToDatabase($poseName, $audioPath) {
     return $result;
 }
 
-function generateAudioForPose($poseDescription, $poseName, $index) {
-    error_log("Generating audio for pose description: $poseDescription");
+function generateAudioForPose($poseDescription, $poseName) {
+    error_log("Generating audio for pose description: $poseName");
     if (!is_dir('audio')) {
         mkdir('audio', 0777, true);
         error_log('Created audio directory');
     }
 
-    $audioFilePath = "audio/{$index}-{$poseName}.mp3";
+    $audioFilePath = "audio/{$poseName}.mp3";
     $retryCount = 0;
     $maxRetries = 3;
 
@@ -84,7 +84,7 @@ function generateAndSaveAudioForAllPoses() {
         // }
         $poseName = $pose['english_name'];
         $poseDescription = $pose['english_name'] . " - " . $pose['pose_description'];
-        $audioFilePath = generateAudioForPose($poseDescription, $poseName, $index);
+        $audioFilePath = generateAudioForPose($poseDescription, $poseName);
 
 
         if ($audioFilePath !== false) {
