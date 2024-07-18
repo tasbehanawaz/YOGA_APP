@@ -190,12 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $poseNames = $input['poses'];
-    // $durations = $input['durations'];
 
-    // if (count($poseNames) !== count($durations)) {
-    //     echo json_encode(['error' => 'Poses and durations count mismatch']);
-    //     exit;
-    // }
 
     $poses = fetchPoses($poseNames);
     if (isset($poses['error'])) {

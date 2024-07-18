@@ -2,7 +2,8 @@
 require 'generate_audio.php'; // This file should contain your generatePlayHTAudio function
 require 'db.php'; // Include the database connection script
 
-function fetchAllPoses() {
+function fetchAllPoses()
+{
     $apiUrl = "https://yoga-api-nzy4.onrender.com/v1/poses";
     $curl = curl_init();
 
@@ -26,7 +27,8 @@ function fetchAllPoses() {
     }
 }
 
-function saveAudioPathToDatabase($poseName, $audioPath) {
+function saveAudioPathToDatabase($poseName, $audioPath)
+{
     error_log("Saving audio path to database for pose: $poseName");
     $pdo = getDbConnection();
     if ($pdo === null) {
@@ -44,7 +46,8 @@ function saveAudioPathToDatabase($poseName, $audioPath) {
     return $result;
 }
 
-function generateAudioForPose($poseDescription, $poseName) {
+function generateAudioForPose($poseDescription, $poseName)
+{
     error_log("Generating audio for pose description: $poseName");
     if (!is_dir('audio')) {
         mkdir('audio', 0777, true);
@@ -71,7 +74,8 @@ function generateAudioForPose($poseDescription, $poseName) {
     return false;
 }
 
-function generateAndSaveAudioForAllPoses() {
+function generateAndSaveAudioForAllPoses()
+{
     $poses = fetchAllPoses();
     if (json_last_error() !== JSON_ERROR_NONE || empty($poses)) {
         error_log('Failed to fetch all poses');
@@ -97,4 +101,3 @@ function generateAndSaveAudioForAllPoses() {
 
 // Run the function in smaller batches to avoid hitting API limits
 generateAndSaveAudioForAllPoses();
-?>
