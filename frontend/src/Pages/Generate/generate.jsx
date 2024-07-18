@@ -15,12 +15,15 @@ const VideoGenerator = () => {
       fetchPoseDetails();
       handleGenerateVideo();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPoses]);
 
   const fetchPoseDetails = async () => {
     try {
-      const response = await axios.post('http://localhost:8001/FetchYogaPoses.php', { poses: selectedPoses });
+      const response = await axios.post(
+        'http://localhost:8001/FetchYogaPoses.php',
+        { poses: selectedPoses }
+      );
       setPoseDetails(response.data);
     } catch (error) {
       console.error('Error fetching pose details:', error);
@@ -29,11 +32,11 @@ const VideoGenerator = () => {
 
   const handleGenerateVideo = () => {
     setLoading(true);
-    axios.post('http://localhost:8001/generate_video.php',
-      { 
+    axios
+      .post('http://localhost:8001/generate_video.php', {
         poses: selectedPoses,
         url_pngs: [],
-        durations: selectedPoses.map(() => 90)
+        // durations: selectedPoses.map(() => 90)
       })
       .then((response) => {
         setLoading(false);
@@ -52,15 +55,31 @@ const VideoGenerator = () => {
       });
   };
 
+  const handleDownload = (videoUrl) => {
+    const fileUrl = videoUrl;
+
+    // Create a temporary anchor element
+    const a = document.createElement('a');
+    a.href = fileUrl;
+    a.setAttribute('download', videoUrl);
+    document.body.appendChild(a);
+    a.click();
+    document.body.remove(a);
+  };
+
   const saveVideoToDatabase = async () => {
     try {
-      const response = await axios.post('http://localhost:8001/save_video.php', {
-        video_path: videoUrl,
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
+      const response = await axios.post(
+        'http://localhost:8001/save_video.php',
+        {
+          video_path: videoUrl,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
-      });
+      );
       if (response.data.success) {
         alert('Video saved successfully!');
       } else {
@@ -80,12 +99,25 @@ const VideoGenerator = () => {
       ) : (
         videoUrl && (
           <div className="video-wrapper mb-8 flex flex-col items-center">
-            <video className="video-content" src={videoUrl} controls onError={() => alert('Error loading video.')} />
-            <button 
-              onClick={saveVideoToDatabase} 
+            <video
+              className="video-content"
+              src={videoUrl}
+              controls
+              onError={() => alert('Error loading video.')}
+            />
+            <button
+              onClick={saveVideoToDatabase}
               className="mt-4 px-4 py-2 bg-blue-900 hover:bg-blue-500 text-white rounded"
             >
-              Save Video
+              Save Video To Profile
+            </button>
+            <button
+              onClick={() => {
+                handleDownload(videoUrl);
+              }}
+              className="mt-4 px-4 py-2 bg-blue-900 hover:bg-blue-500 text-white rounded"
+            >
+              Download Video
             </button>
           </div>
         )
@@ -93,9 +125,15 @@ const VideoGenerator = () => {
       <div className="pose-details w-full max-w-3xl">
         {poseDetails.map((pose, index) => (
           <div key={index} className="pose-detail mb-4">
-            <h2 className="pose-title text-xl font-semibold">{pose.english_name}</h2>
-            <p><strong>Description:</strong> {pose.pose_description}</p>
-            <p><strong>Benefits:</strong> {pose.pose_benefits}</p>
+            <h2 className="pose-title text-xl font-semibold">
+              {pose.english_name}
+            </h2>
+            <p>
+              <strong>Description:</strong> {pose.pose_description}
+            </p>
+            <p>
+              <strong>Benefits:</strong> {pose.pose_benefits}
+            </p>
           </div>
         ))}
       </div>

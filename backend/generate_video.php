@@ -8,7 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-function fetchPoses($poseNames) {
+function fetchPoses($poseNames)
+{
     $poses = [];
     foreach ($poseNames as $pose) {
         $url = "https://yoga-api-nzy4.onrender.com/v1/poses?name=" . urlencode($pose);
@@ -22,12 +23,12 @@ function fetchPoses($poseNames) {
                 sleep(1); // Wait for 1 second before retrying
             }
         }
-        
+
         if ($response === false) {
             error_log('Failed to fetch pose after retries: ' . $pose);
             return ['error' => 'Failed to fetch pose: ' . $pose];
         }
-        
+
         $poseData = json_decode($response, true);
         if (json_last_error() === JSON_ERROR_NONE && !empty($poseData)) {
             if (isset($poseData[0])) {
@@ -42,8 +43,39 @@ function fetchPoses($poseNames) {
     }
     return $poses;
 }
+/**
+ * get the duration of an audio
+ * @param mixed $filePath
+ * @return float
+ */
+function getAudioDuration($filePath)
+{
+    error_log("Processing file: $filePath");
+    $filePath = str_replace("-i ", "", $filePath);
+    error_log("Processing file after removing -i: $filePath");
+    $command = "ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " . escapeshellarg($filePath);
+    error_log("Executing command: $command"); // Debugging: Log the command being executed
+    $output = shell_exec($command);
+    if ($output === null) {
+        error_log("Failed to execute ffprobe for $filePath");
+        return 0.0; // Return 0.0 on failure to execute command
+    }
+    return floatval($output);
+}
 
-function fetchUrlWithCurl($url) {
+function calculateTotalAudioDuration($audioFilePaths)
+{
+    $totalDuration = 0.0;
+    foreach ($audioFilePaths as $filePath) {
+        $duration = getAudioDuration($filePath);
+        $totalDuration += $duration;
+        error_log("Duration of $filePath: $duration seconds");
+    }
+    return $totalDuration;
+}
+
+function fetchUrlWithCurl($url)
+{
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -57,7 +89,8 @@ function fetchUrlWithCurl($url) {
     return $response;
 }
 
-function createFrames($poses) {
+function createFrames($poses)
+{
     $framePaths = [];
     if (!is_dir('frames')) {
         mkdir('frames', 0777, true);
@@ -81,7 +114,8 @@ function createFrames($poses) {
     return $framePaths;
 }
 
-function generateVideo($framePaths, $durations, $poseNames) {
+function generateVideo($framePaths, $poseNames)
+{
     if (!is_dir('output')) {
         mkdir('output', 0777, true);
     }
@@ -93,12 +127,11 @@ function generateVideo($framePaths, $durations, $poseNames) {
     $inputs = [];
     $audioInputs = [];
     foreach ($framePaths as $index => $framePath) {
-        $duration = $durations[$index];
-        $inputs[] = "-loop 1 -t $duration -i $framePath";
-        
-        // Add corresponding audio file
+        // Determine the duration of the corresponding audio file
         $audioFilePath = 'audio/' . $poseNames[$index] . '.mp3';
         if (file_exists($audioFilePath)) {
+            $duration = getAudioDuration($audioFilePath);
+            $inputs[] = "-loop 1 -t $duration -i $framePath";
             $audioInputs[] = "-i $audioFilePath";
         } else {
             error_log("Audio file not found: $audioFilePath");
@@ -106,6 +139,10 @@ function generateVideo($framePaths, $durations, $poseNames) {
         }
     }
     $inputString = implode(' ', $inputs) . ' ' . implode(' ', $audioInputs);
+
+    // Assuming $audioInputs is an array of audio file paths
+    $totalAudioDuration = calculateTotalAudioDuration($audioInputs);
+    error_log("Total audio duration: $totalAudioDuration seconds");
 
     // Create a filter complex to concatenate frames
     $filterComplexParts = [];
@@ -122,16 +159,16 @@ function generateVideo($framePaths, $durations, $poseNames) {
     $audioFilterComplexString .= "concat=n=" . count($framePaths) . ":v=0:a=1[aout]";
 
     // Video concatenation
-    $concatInputs = implode("", array_map(function($index) {
+    $concatInputs = implode("", array_map(function ($index) {
         return "[v$index]";
     }, array_keys($framePaths)));
     $filterComplexString .= "$concatInputs concat=n=" . count($framePaths) . ":v=1:a=0[vout]; $audioFilterComplexString";
 
     $command = "ffmpeg -y $inputString -filter_complex \"$filterComplexString\" " .
-               "-map \"[vout]\" -map \"[aout]\" " .
-               "-c:v libx264 -preset medium -crf 23 -c:a aac -b:a 128k " .
-               "-pix_fmt yuv420p -movflags +faststart $videoPath 2>&1";
-    
+        "-map \"[vout]\" -map \"[aout]\" " .
+        "-c:v libx264 -preset medium -crf 23 -c:a aac -b:a 128k " .
+        "-pix_fmt yuv420p -movflags +faststart -t $totalAudioDuration $videoPath 2>&1";
+
     $output = shell_exec($command);
 
     // Log the ffmpeg output for debugging
@@ -147,17 +184,13 @@ function generateVideo($framePaths, $durations, $poseNames) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
-    if (!isset($input['poses']) || !is_array($input['poses']) || !isset($input['durations']) || !is_array($input['durations'])) {
+    if (!isset($input['poses']) || !is_array($input['poses'])) {
         echo json_encode(['error' => 'Invalid input']);
         exit;
     }
 
     $poseNames = $input['poses'];
-    $durations = $input['durations'];
-    if (count($poseNames) !== count($durations)) {
-        echo json_encode(['error' => 'Poses and durations count mismatch']);
-        exit;
-    }
+
 
     $poses = fetchPoses($poseNames);
     if (isset($poses['error'])) {
@@ -171,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $videoPath = generateVideo($framePaths, $durations, $poseNames);
+    $videoPath = generateVideo($framePaths, $poseNames);
     if (isset($videoPath['error'])) {
         echo json_encode(['error' => $videoPath['error']]);
         exit;
@@ -185,4 +218,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         unlink($framePath);
     }
 }
-?>
