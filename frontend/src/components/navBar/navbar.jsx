@@ -73,7 +73,7 @@ export function NavbarWithSearch() {
           Generate
         </NavLink>
       </Typography>
-      <Typography
+      {/* <Typography
         as="li"
         variant="small"
         color="blue-gray"
@@ -86,7 +86,7 @@ export function NavbarWithSearch() {
         >
           Categories
         </NavLink>
-      </Typography>
+      </Typography> */}
       <Typography
         as="li"
         variant="small"
@@ -287,7 +287,7 @@ export function NavbarWithSearch() {
           </div>
         </MobileNav>
       </Navbar>
-      <div className="pt-[70px]">
+      <div className="pt-[50px]">
         {' '}
         {/* Adjust this padding based on the height of your navbar */}
         {/* Your main content goes here */}
