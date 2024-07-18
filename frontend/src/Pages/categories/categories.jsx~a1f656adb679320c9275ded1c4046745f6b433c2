@@ -25,15 +25,19 @@ const Categories = () => {
   const handleSavePose = async (pose) => {
     console.log('Saving pose:', pose); // Debugging line
     try {
-      const response = await axios.post('http://localhost:8001/save_pose.php', {
-        english_name: pose.english_name,
-        pose_description: pose.pose_description,
-        url_png: pose.url_png
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
+      const response = await axios.post(
+        'http://localhost:8001/save_pose.php',
+        {
+          english_name: pose.english_name,
+          pose_description: pose.pose_description,
+          url_png: pose.url_png,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
-      });
+      );
       if (response.data.success) {
         alert('Pose saved successfully!');
       } else {
@@ -44,7 +48,6 @@ const Categories = () => {
       alert('Error saving pose.');
     }
   };
-  
 
   return (
     <div className="categories-container m-8">
@@ -64,7 +67,7 @@ const Categories = () => {
             name={pose.english_name}
             imageUrl={pose.url_png}
             poseDescription={pose.pose_benefits}
-            onSave={() => handleSavePose(pose)} 
+            onSave={() => handleSavePose(pose)}
             className="m-12"
           />
         ))}

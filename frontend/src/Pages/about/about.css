@@ -1,8 +1,10 @@
+
 .about-container h3 {
   color: #004094; /* existing style */
   margin-top: 15px; /* existing style */
   text-align: center; /* centers text horizontally */
 }
+
 
 .instructor-badge {
   width: 150px; /* Adjust the width as needed */
@@ -28,16 +30,18 @@ h2 {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  /* background-color: #fff; */
-  /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   border-radius: 8px;
 }
+
+
 
 .about-container h1 {
   color: #0056b3;
   margin-top: 20px;
   text-align: center;
-  font-weight: 900;
+   font-weight: 900;
 }
 
 .about-container h2 {
@@ -65,13 +69,18 @@ h2 {
   border-radius: 5px;
 }
 
+
+
+
 .instructor-image img {
   width: 100px;
   height: 100px;
   border-radius: 50%;
   margin-right: 15px;
   margin-bottom: 10px;
-}
+  }
+
+
 
 .instructors-container {
   display: flex;
@@ -89,4 +98,6 @@ h2 {
     align-items: center;
     text-align: center;
   }
+
+ 
 }
