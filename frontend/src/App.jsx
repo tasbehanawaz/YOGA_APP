@@ -1,15 +1,16 @@
 // src/App.jsx
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './Pages/Home/home';
+import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Import Routes and Route
+import Program from './Pages/Program/program';
 import Layout from './components/layout/layout';
 import Categories from './Pages/categories/categories';
-import Register from './Pages/login/logins'; // Correct default import
+import Login from './Pages/login/logins';
 import Result from './Pages/result/result';
 import SignIn from './components/signIn/signIn';
-import Sequence from './Pages/sequence/sequence';
+// import ButtonWithLink from './components/ButtonWithLink'; // Ensure this file exists
+import Sequence from './Pages/sequence/sequence'; // Import the Sequence component
 import Profile from './Pages/profile/profile';
-import Save from './Pages/saved/savedPoses';
+import Save from './Pages/saved/SavedPoses.jsx';
 import Generate from './Pages/Generate/generate';
 import About from './Pages/about/about.jsx';
 // import Welcome from './Pages/welcome/welcome';
@@ -18,22 +19,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route 
-        path="/"
-         element={
-         <Layout>
-          <Welcome />
-         </Layout>
-         }
-          /> */}
-        {/* Welcome page route
-        <Route path="/welcome" element={<Welcome />} /> */}
-
-      <Route
+        <Route
           path="/"
           element={
             <Layout>
-              <Home />
+              <Program />
             </Layout>
           }
         />
@@ -45,7 +35,7 @@ function App() {
               <Generate />
             </Layout>
           }
-        /> 
+        />
         <Route
           path="/categories"
           element={
@@ -58,7 +48,7 @@ function App() {
           path="/logins"
           element={
             <Layout>
-              <Register />
+              <Login />
             </Layout>
           }
         />
@@ -77,7 +67,8 @@ function App() {
               <Result />
             </Layout>
           }
-        />
+          />
+
         <Route
           path="/profile"
           element={
