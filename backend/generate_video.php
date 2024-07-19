@@ -51,14 +51,12 @@ function fetchPoses($poseNames)
 function getAudioDuration($filePath)
 {
     error_log("Processing file: $filePath");
-    $filePath = str_replace("-i ", "", $filePath);
-    error_log("Processing file after removing -i: $filePath");
     $command = "ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " . escapeshellarg($filePath);
-    error_log("Executing command: $command"); // Debugging: Log the command being executed
+    error_log("Executing command: $command");
     $output = shell_exec($command);
     if ($output === null) {
         error_log("Failed to execute ffprobe for $filePath");
-        return 0.0; // Return 0.0 on failure to execute command
+        return 0.0;
     }
     return floatval($output);
 }
@@ -73,6 +71,7 @@ function calculateTotalAudioDuration($audioFilePaths)
     }
     return $totalDuration;
 }
+
 
 function fetchUrlWithCurl($url)
 {
@@ -126,13 +125,15 @@ function generateVideo($framePaths, $poseNames)
     // Create a list of inputs for ffmpeg
     $inputs = [];
     $audioInputs = [];
+    $audioFilePaths = [];
     foreach ($framePaths as $index => $framePath) {
         // Determine the duration of the corresponding audio file
         $audioFilePath = 'audio/' . $poseNames[$index] . '.mp3';
         if (file_exists($audioFilePath)) {
             $duration = getAudioDuration($audioFilePath);
-            $inputs[] = "-loop 1 -t $duration -i $framePath";
-            $audioInputs[] = "-i $audioFilePath";
+            $inputs[] = "-loop 1 -t $duration -i " . escapeshellarg($framePath);
+            $audioInputs[] = "-i " . escapeshellarg($audioFilePath);
+            $audioFilePaths[] = $audioFilePath; // Collecting audio file paths for duration calculation
         } else {
             error_log("Audio file not found: $audioFilePath");
             return ['error' => 'Audio file not found for pose: ' . $poseNames[$index]];
@@ -140,8 +141,8 @@ function generateVideo($framePaths, $poseNames)
     }
     $inputString = implode(' ', $inputs) . ' ' . implode(' ', $audioInputs);
 
-    // Assuming $audioInputs is an array of audio file paths
-    $totalAudioDuration = calculateTotalAudioDuration($audioInputs);
+    // Calculating the total audio duration
+    $totalAudioDuration = calculateTotalAudioDuration($audioFilePaths);
     error_log("Total audio duration: $totalAudioDuration seconds");
 
     // Create a filter complex to concatenate frames
@@ -180,6 +181,7 @@ function generateVideo($framePaths, $poseNames)
     }
     return $videoPath;
 }
+
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
