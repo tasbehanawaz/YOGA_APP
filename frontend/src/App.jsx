@@ -3,6 +3,7 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home/home';
 import Layout from './components/layout/layout';
+import Categories from './Pages/categories/categories';
 import Register from './Pages/login/logins'; // Correct default import
 import Result from './Pages/result/result';
 import SignIn from './components/signIn/signIn';
@@ -42,6 +43,15 @@ function App() {
           element={
             <Layout>
               <Generate />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/categories"
+          element={
+            <Layout>
+              <Categories />
             </Layout>
           }
         />

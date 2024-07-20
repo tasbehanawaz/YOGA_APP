@@ -73,7 +73,7 @@ export function NavbarWithSearch() {
           Generate
         </NavLink>
       </Typography>
-      {/* <Typography
+      <Typography
         as="li"
         variant="small"
         color="blue-gray"
@@ -86,7 +86,7 @@ export function NavbarWithSearch() {
         >
           Categories
         </NavLink>
-      </Typography> */}
+      </Typography>
       <Typography
         as="li"
         variant="small"
