@@ -1,0 +1,6 @@
+.categories-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* adjust as needed */
+  justify-content: center;
+}
