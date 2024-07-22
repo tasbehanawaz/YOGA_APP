@@ -7,6 +7,7 @@ import {
   Typography,
 } from '@material-tailwind/react';
 import './signIn.css'; // Ensure you have the same CSS styles as your signup form
+// import { useAuth } from '../contexts/AuthContext';
 
 function SignIn() {
     const [username, setUsername] = useState('');
@@ -17,22 +18,34 @@ function SignIn() {
 
     const handleSignIn = async (event) => {
         event.preventDefault();
-        const response = await fetch('http://localhost:8001/signin.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ username, password })
-        });
-        const data = await response.json();
-        if (data.success) {
-            setSuccess("Sign-in successful. Redirecting..."); // Set success message
-            localStorage.setItem('user', JSON.stringify(data.user)); // Store user data in local storage
-            setTimeout(() => {
-                navigate('/');  // Delay and then redirect to the home page
-            }, 500); // Delay in milliseconds
-        } else {
-            setError(data.error);
+        try {
+            const response = await fetch('http://localhost:8001/signin.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ username, password }),
+                credentials: 'include' // This line is crucial for handling cookies
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                setSuccess("Sign-in successful. Redirecting...");
+                
+                // Update app state to reflect logged-in user
+                setUsername(data.username); 
+                
+                setTimeout(() => {
+                    navigate('/');
+                }, 500);
+            } else {
+                setError(data.error);
+            }
+        } catch (error) {
+            console.error('Sign-in error:', error);
+            setError('An error occurred during sign-in. Please try again.');
         }
     };
+
 
     return (
         <div className="form_container">
