@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import {
   Navbar,
   MobileNav,
@@ -13,10 +14,13 @@ import {
 import './navbar.css'; // Import the CSS file
 
 export function NavbarWithSearch() {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [openNav, setOpenNav] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+
+  console.log('User:', user);
 
   useEffect(() => {
     const handleResize = () => {
@@ -126,7 +130,7 @@ export function NavbarWithSearch() {
           className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
           activeClassName="highlight"
         >
-          Profile
+          {user ? user.username : 'Profile'}
         </NavLink>
       </Typography>
     </ul>

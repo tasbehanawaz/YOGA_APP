@@ -11,10 +11,12 @@ import Profile from './Pages/profile/profile';
 import Save from './Pages/saved/savedPoses';
 import Generate from './Pages/Generate/generate';
 import About from './Pages/about/about.jsx';
+import {AuthProvider} from './contexts/AuthContext';
 // import Welcome from './Pages/welcome/welcome';
 
 function App() {
   return (
+    <AuthProvider>
     <BrowserRouter>
       <Routes>
         {/* <Route 
@@ -105,6 +107,7 @@ function App() {
         />
       </Routes>
     </BrowserRouter>
+    </AuthProvider>
   );
 }
 
