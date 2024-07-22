@@ -19,9 +19,9 @@ if (isset($_COOKIE['user_id']) && isset($_COOKIE['session_token'])) {
         $stmt->execute([$user_id]);
 
         // Remove cookies by setting them to expire in the past
-        setcookie('user_id', '', time() - 3600, '/', '', true, true);
-        setcookie('username', '', time() - 3600, '/', '', true, true);
-        setcookie('session_token', '', time() - 3600, '/', '', true, true);
+        setcookie('user_id', '', time() - 3600, '/', '', false, false);
+        setcookie('username', '', time() - 3600, '/', '', false, false);
+        setcookie('session_token', '', time() - 3600, '/', '', false, false);
 
         echo json_encode(['success' => 'Logged out successfully']);
     } else {
