@@ -1,88 +1,68 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './profile.css';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Profile = () => {
-  const navigate = useNavigate(); // Create navigate function
+  const navigate = useNavigate();
+  const [userDetails, setUserDetails] = useState({});
+  const [savedPoses, setSavedPoses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [userResponse, posesResponse] = await Promise.all([
+          axios.get('http://localhost:8001/register.php'),
+          axios.get('http://localhost:8001/get_saved_poses.php')
+        ]);
+
+        setUserDetails(userResponse.data);
+        setSavedPoses(posesResponse.data.slice(0, 3));
+        setLoading(false);
+      } catch (error) {
+        setError('Error fetching data. Please try again later.');
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      navigate('/login');
+    }
+  };
+
+  const handleViewAllPoses = () => {
+    navigate('/saved-poses');
+  };
+
+  if (loading) return <div className="loading-spinner"><div className="spinner"></div></div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
     <div className="profile-container">
-      <div style={{ textAlign: 'center' }}>
-        <strong>Welcome Back!</strong>
-      </div>
-
-
-      
-      <div style={{ textAlign: 'center' }}>
-        Check out your upcoming appointments.
-      </div>
-
-      
-      {/* User Details Section */}
       <div className="user-details">
         <h2>User Details</h2>
-        <p>Here are the details of your account.</p>
-        <ul>
-          <li>Name: Jane Doe</li>
-          <li>Email: janedoe@example.com</li>
-          <li>Membership Status: Active</li>
-        </ul>
+        <p>Name: {userDetails.name}</p>
+        <p>Email: {userDetails.email}</p>
+        <p>Membership Status: {userDetails.membershipStatus}</p>
+        <button className="button" onClick={handleLogout}>Logout</button>
       </div>
-
-
-
-{/* Saved Poses Section */}
-<div className="saved-poses">
-  <h2>Saved Poses</h2>
-  <p>Here are your saved yoga poses.</p>
-  <ul>
-    {/* You can map through savedPoses state or props here to display each saved pose */}
-    {/* This is just an example. Replace with actual data fetching logic */}
-    <li>Mountain Pose</li>
-    <li>Downward Dog</li>
-    <li>Warrior II</li>
-    {/* More saved poses... */}
-  </ul>
-</div>
-
-
-      {/* Upcoming Appointments Section */}
-      <div className="upcoming-appointments">
-        <h3>Upcoming Appointments</h3>
-        <ul>
-          <li>General Consultation - Tuesday</li>
-          <li>Follow-up Session - Friday</li>
-          <li>More appointments...</li>
-        </ul>
+      <div className="saved-poses">
+        <h2>Saved Poses</h2>
+        {savedPoses.map((pose, index) => (
+          <div key={index} className="pose-item">
+            <p>{pose.name}</p>
+          </div>
+        ))}
+        <button className="button" onClick={handleViewAllPoses}>View All</button>
       </div>
-
-      {/* Service History Section */}
-      <div className="service-history">
-        <h2>Service History</h2>
-        <ul>
-          <li>Initial Consultation - Completed</li>
-          <li>Monthly Check-up - Completed</li>
-          <li>More history...</li>
-        </ul>
-      </div>
-
-      {/* Contact Section */}
-      <div className="contact-section">
-        <div style={{ textAlign: 'center' }}>
-        <h3>Having problems ?</h3>
-        </div>
-        <p>If you have any questions or need to reschedule, don't hesitate to reach out.</p>
-      </div>
-
-<div style={{ textAlign: 'center' }}>
-        <p>Email: YogaApp@outlook.com</p>
-      </div>
-      {/* Logout Button */}
     </div>
   );
-
-
 };
 
 export default Profile;
