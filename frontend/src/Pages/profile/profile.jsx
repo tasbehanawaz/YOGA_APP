@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import './profile.css';
 import { useNavigate } from 'react-router-dom';
@@ -32,7 +33,7 @@ const Profile = () => {
 
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to logout?')) {
-      navigate('/login');
+      navigate('/logins');
     }
   };
 
