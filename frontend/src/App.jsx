@@ -14,6 +14,8 @@ import Generate from './Pages/Generate/generate';
 import About from './Pages/about/about.jsx';
 // import Welcome from './Pages/welcome/welcome';
 
+import YogaPoseDetails from './Pages/yogaPosesDetails/detailsPage.jsx'; // Add this import
+
 function App() {
   return (
     <BrowserRouter>
@@ -28,7 +30,6 @@ function App() {
           /> */}
         {/* Welcome page route
         <Route path="/welcome" element={<Welcome />} /> */}
-
         <Route
           path="/"
           element={
@@ -37,7 +38,6 @@ function App() {
             </Layout>
           }
         />
-
         <Route
           path="/Generate"
           element={
@@ -46,7 +46,6 @@ function App() {
             </Layout>
           }
         />
-
         <Route
           path="/categories"
           element={
@@ -55,7 +54,6 @@ function App() {
             </Layout>
           }
         />
-
         <Route
           path="/logins"
           element={
@@ -104,12 +102,19 @@ function App() {
             </Layout>
           }
         />
-
         <Route
           path="/about"
           element={
             <Layout>
               <About />
+            </Layout>
+          }
+        />
+        <Route
+          path="/pose/:name"
+          element={
+            <Layout>
+              <YogaPoseDetails />
             </Layout>
           }
         />
