@@ -1,14 +1,24 @@
 import { useState, useEffect } from 'react'; //storing the state of the component, use effect what happens when I create categoreis intinially
 import axios from 'axios'; //fetching data from the backend
 import { CardDefault } from '../../components/card/card';
+import { useNavigate } from 'react-router-dom';
 import './categories.css';
+import { Spinner } from '@material-tailwind/react';
+
 const Categories = () => {
   const [poses, setPoses] = useState(null);
+  const [loading, setLoading] = useState(true); // Add loading state
+  const navigate = useNavigate();
 
   // Call fetchAllPoses when the component mounts or is created initally
   useEffect(() => {
     fetchAllPoses();
   }, []);
+
+  //for the readmore button
+  const HandleReadMore = (poseName) => {
+    navigate(`/pose/${poseName}`);
+  };
 
   const fetchAllPoses = async () => {
     try {
@@ -19,6 +29,8 @@ const Categories = () => {
       setPoses(response.data);
     } catch (error) {
       console.error('Error fetching the pose:', error);
+    } finally {
+      setLoading(false); // Set loading to false after data is fetched
     }
   };
 
@@ -52,15 +64,20 @@ const Categories = () => {
   return (
     <div className="categories-container m-8">
       <div className="flex flex-row w-full justify-center">
-        {poses && poses.length > 0 ? (
+        {loading ? (
+          <div className="inset-0 flex items-center justify-center min-h-screen">
+            <Spinner className="h-12 w-12" />
+          </div>
+        ) : poses && poses.length > 0 ? (
           <h1 className="text-2xl font-bold mb-4">
             Found {poses.length} results
           </h1>
         ) : (
-          <h1 className="text-2xl font-bold mb-4">Loading...</h1>
+          <h1 className="text-2xl font-bold mb-4">No results found</h1>
         )}
       </div>
-      {poses &&
+      {!loading &&
+        poses &&
         poses.map((pose, index) => (
           <CardDefault
             key={index}
@@ -68,6 +85,7 @@ const Categories = () => {
             imageUrl={pose.url_png}
             poseDescription={pose.pose_benefits}
             onSave={() => handleSavePose(pose)}
+            buttonOnClick={() => HandleReadMore(pose.english_name)} //read more button
             className="m-12"
           />
         ))}

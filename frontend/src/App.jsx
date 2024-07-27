@@ -13,6 +13,8 @@ import Generate from './Pages/Generate/generate';
 import About from './Pages/about/about';
 import { AuthProvider } from './contexts/AuthContext';
 
+import YogaPoseDetails from './Pages/yogaPosesDetails/detailsPage.jsx'; // Add this import
+
 function App() {
   return (
     <AuthProvider>
@@ -95,6 +97,14 @@ function App() {
             element={
               <Layout>
                 <About />
+              </Layout>
+            }
+          />
+          <Route
+            path="/pose/:name"
+            element={
+              <Layout>
+                <YogaPoseDetails />
               </Layout>
             }
           />
