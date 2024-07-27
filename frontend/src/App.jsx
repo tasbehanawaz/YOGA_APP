@@ -1,4 +1,3 @@
-// src/App.jsx
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home/home';
@@ -11,115 +10,107 @@ import Sequence from './Pages/sequence/sequence';
 import Profile from './Pages/profile/profile';
 import Save from './Pages/saved/savedPoses';
 import Generate from './Pages/Generate/generate';
-import About from './Pages/about/about.jsx';
-// import Welcome from './Pages/welcome/welcome';
+import About from './Pages/about/about';
+import { AuthProvider } from './contexts/AuthContext';
 
 import YogaPoseDetails from './Pages/yogaPosesDetails/detailsPage.jsx'; // Add this import
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* <Route 
-        path="/"
-         element={
-         <Layout>
-          <Welcome />
-         </Layout>
-         }
-          /> */}
-        {/* Welcome page route
-        <Route path="/welcome" element={<Welcome />} /> */}
-        <Route
-          path="/"
-          element={
-            <Layout>
-              <Home />
-            </Layout>
-          }
-        />
-        <Route
-          path="/Generate"
-          element={
-            <Layout>
-              <Generate />
-            </Layout>
-          }
-        />
-        <Route
-          path="/categories"
-          element={
-            <Layout>
-              <Categories />
-            </Layout>
-          }
-        />
-        <Route
-          path="/logins"
-          element={
-            <Layout>
-              <Register />
-            </Layout>
-          }
-        />
-        <Route
-          path="/signin"
-          element={
-            <Layout>
-              <SignIn />
-            </Layout>
-          }
-        />
-        <Route
-          path="/search"
-          element={
-            <Layout>
-              <Result />
-            </Layout>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <Layout>
-              <Profile />
-            </Layout>
-          }
-        />
-        <Route
-          path="/sequence"
-          element={
-            <Layout>
-              <Sequence />
-            </Layout>
-          }
-        />
-        <Route
-          path="/save"
-          element={
-            <Layout>
-              <Save />
-            </Layout>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <Layout>
-              <About />
-            </Layout>
-          }
-        />
-        <Route
-          path="/pose/:name"
-          element={
-            <Layout>
-              <YogaPoseDetails />
-            </Layout>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Layout>
+                <Home />
+              </Layout>
+            }
+          />
+          <Route
+            path="/Generate"
+            element={
+              <Layout>
+                <Generate />
+              </Layout>
+            }
+          />
+          <Route
+            path="/categories"
+            element={
+              <Layout>
+                <Categories />
+              </Layout>
+            }
+          />
+          <Route
+            path="/logins"
+            element={
+              <Layout>
+                <Register />
+              </Layout>
+            }
+          />
+          <Route
+            path="/signin"
+            element={
+              <Layout>
+                <SignIn />
+              </Layout>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <Layout>
+                <Result />
+              </Layout>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <Layout>
+                <Profile />
+              </Layout>
+            }
+          />
+          <Route
+            path="/sequence"
+            element={
+              <Layout>
+                <Sequence />
+              </Layout>
+            }
+          />
+          <Route
+            path="/save"
+            element={
+              <Layout>
+                <Save />
+              </Layout>
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              <Layout>
+                <About />
+              </Layout>
+            }
+          />
+          <Route
+            path="/pose/:name"
+            element={
+              <Layout>
+                <YogaPoseDetails />
+              </Layout>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
