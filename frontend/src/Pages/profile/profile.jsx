@@ -44,7 +44,15 @@ const Profile = () => {
     } catch (error) {
       console.error('Logout failed:', error);
       // Handle logout error (e.g., show an error message to the user)
-    }
+
+    const confirmed = window.confirm('Are you sure you want to log out?');
+    if (confirmed) {
+      try {
+        await logout();
+        navigate('/SignIn');
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
   };
 
   const handleViewAllPoses = () => {
@@ -58,10 +66,8 @@ const Profile = () => {
     <div className="profile-container">
       <div className="user-details">
         <h2>User Details</h2>
-        <p>Name: {userDetails.username}</p>
-        <p>Email: {userDetails.email}</p>
-        <p>Membership Status: {userDetails.membershipStatus}</p>
-        <button className="button" onClick={handleLogout} >Logout</button>
+        <p>Username: {user.username}</p>
+        <button className="button" onClick={handleLogout}>Logout</button>
       </div>
       <div className="saved-poses">
         <h2>Saved Poses</h2>

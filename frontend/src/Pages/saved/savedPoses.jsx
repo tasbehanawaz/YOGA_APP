@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { CardDefault } from '../../components/card/card';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const SavedPoses = () => {
     const [savedPoses, setSavedPoses] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchSavedPoses = async () => {
@@ -19,6 +21,11 @@ const SavedPoses = () => {
         fetchSavedPoses();
     }, []);
 
+    // Function to handle the "Read More" button click
+    const HandleReadMore = (poseName) => {
+        navigate(`/pose/${poseName}`);
+    };
+
     return (
         <div className="flex flex-wrap justify-center gap-6 py-8">
             {savedPoses.map(pose => (
@@ -30,6 +37,7 @@ const SavedPoses = () => {
                     onClick={() => console.log(`Clicked on ${pose.name}`)}
                     onSave={() => console.log(`Saved ${pose.name}`)}
                     isSelected={false}
+                    buttonOnClick={() => HandleReadMore(pose.name)} // Add Read More button functionality
                 />
             ))}
         </div>
