@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import './profile.css';
 import { useNavigate } from 'react-router-dom';
@@ -20,62 +19,70 @@ const Profile = () => {
       return;
     }
 
-    const fetchData = async () => {
-      try {
-        const [userResponse, posesResponse] = await Promise.all([
-          axios.get(`http://localhost:8001/get_user.php?user_id=${user.id}`),
-          axios.get(`http://localhost:8001/get_saved_poses.php?user_id=${user.id}`)
-        ]);
+  useEffect(() => {
+    if (!user) {
+      navigate('/SignIn');
+      return;
+    }
 
-        setUserDetails(userResponse.data);
-        setSavedPoses(posesResponse.data.slice(0, 3));
-        setLoading(false);
-      } catch (error) {
-        setError('Error fetching data. Please try again later.');
-        setLoading(false);
-      }
-    };
+    const fetchData = async () => {
+      try {
+        const [userResponse, posesResponse] = await Promise.all([
+          axios.get(`http://localhost:8001/get_user.php?user_id=${user.id}`),
+          axios.get(`http://localhost:8001/get_saved_poses.php?user_id=${user.id}`)
+        ]);
 
-    fetchData();
-  }, [user, navigate]);
+        setUserDetails(userResponse.data);
+        setSavedPoses(posesResponse.data.slice(0, 3));
+        setLoading(false);
+      } catch (error) {
+        setError('Error fetching data. Please try again later.');
+        setLoading(false);
+      }
+    };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/SignIn');
-    } catch (error) {
-      console.error('Logout failed:', error);
-      // Handle logout error (e.g., show an error message to the user)
-    }
-  };
+    fetchData();
+  }, [user, navigate]);
 
-  const handleViewAllPoses = () => {
-    navigate('/saved-poses');
-  };
+ const handleLogout = async () => {
+    const confirmed = window.confirm('Are you sure you want to log out?');
+    if (confirmed) {
+      try {
+        await logout();
+        navigate('/SignIn');
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
+    }
+  };
+  const handleViewAllPoses = () => {
+    navigate('/saved-poses');
+  };
 
-  if (loading) return <div className="loading-spinner"><div className="spinner"></div></div>;
-  if (error) return <div className="error">{error}</div>;
+  if (loading) return <div className="loading-spinner"><div className="spinner"></div></div>;
+  if (error) return <div className="error">{error}</div>;
 
-  return (
-    <div className="profile-container">
-      <div className="user-details">
-        <h2>User Details</h2>
-        <p>Name: {userDetails.username}</p>
-        <p>Email: {userDetails.email}</p>
-        <p>Membership Status: {userDetails.membershipStatus}</p>
-        <button className="button" onClick={handleLogout} >Logout</button>
-      </div>
-      <div className="saved-poses">
-        <h2>Saved Poses</h2>
-        {savedPoses.map((pose, index) => (
-          <div key={index} className="pose-item">
-            <p>{pose.name}</p>
-          </div>
-        ))}
-        <button className="button" onClick={handleViewAllPoses}>View All</button>
-      </div>
-    </div>
-  );
+ 
+return (
+    <div className="profile-container">
+      <div className="user-details">
+        <h2>User Details</h2>
+      
+        <p>Username: {user.username}</p>
+        
+        <button className="button" onClick={handleLogout}>Logout</button>
+      </div>
+      <div className="saved-poses">
+        <h2>Saved Poses</h2>
+        {savedPoses.map((pose, index) => (
+          <div key={index} className="pose-item">
+            <p>{pose.name}</p>
+          </div>
+        ))}
+        <button className="button" onClick={handleViewAllPoses}>View All</button>
+      </div>
+    </div>
+  );
 };
 
 export default Profile;
