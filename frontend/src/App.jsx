@@ -53,7 +53,7 @@ function App() {
             }
           />
           <Route
-            path="/signin"
+            path="/SignIn"
             element={
               <Layout>
                 <SignIn />
