@@ -6,18 +6,11 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const [userDetails, setUserDetails] = useState({});
-  const [savedPoses, setSavedPoses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (!user) {
-      navigate('/SignIn');
-      return;
-    }
+  const { user, logout } = useAuth();
+  const [userDetails, setUserDetails] = useState({});
+  const [savedPoses, setSavedPoses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!user) {
@@ -44,7 +37,7 @@ const Profile = () => {
     fetchData();
   }, [user, navigate]);
 
- const handleLogout = async () => {
+  const handleLogout = async () => {
     const confirmed = window.confirm('Are you sure you want to log out?');
     if (confirmed) {
       try {
@@ -55,6 +48,7 @@ const Profile = () => {
       }
     }
   };
+
   const handleViewAllPoses = () => {
     navigate('/saved-poses');
   };
@@ -62,14 +56,11 @@ const Profile = () => {
   if (loading) return <div className="loading-spinner"><div className="spinner"></div></div>;
   if (error) return <div className="error">{error}</div>;
 
- 
-return (
+  return (
     <div className="profile-container">
       <div className="user-details">
         <h2>User Details</h2>
-      
         <p>Username: {user.username}</p>
-        
         <button className="button" onClick={handleLogout}>Logout</button>
       </div>
       <div className="saved-poses">
