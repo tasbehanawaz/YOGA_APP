@@ -38,7 +38,7 @@ useEffect(() => {
     };
 
     fetchData();
-  }, []);
+  }, [user, navigate]);
 
   const handleLogout = async () => {
     const confirmed = window.confirm('Are you sure you want to log out?');
