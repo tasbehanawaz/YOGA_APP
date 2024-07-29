@@ -14,6 +14,11 @@ export function NavbarWithSearch() {
   const [openNav, setOpenNav] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [openNav, setOpenNav] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
 <<<<<<< HEAD
   useEffect(() => {
