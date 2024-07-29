@@ -77,6 +77,7 @@ const Sequence = () => {
       alert('Error saving pose.');
     }
   };
+  
 
   return (
     <div className="sequence-container m-8">
