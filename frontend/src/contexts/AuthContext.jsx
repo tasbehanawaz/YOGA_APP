@@ -15,7 +15,7 @@ const checkLoginStatus = () => {
     
 
     if (cookies.user_id && cookies.username && cookies.session_token) {
-        return { id: cookies.user_id, username: cookies.username };
+        return { id: cookies.user_id, username: cookies.username, session_token: cookies.session_token};
     }
 
     return null;
