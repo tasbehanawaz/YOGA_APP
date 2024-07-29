@@ -13,6 +13,7 @@ export function CardDefault({
   imageUrl,
   poseDescription,
   onClick,
+  buttonOnClick,
   onSave,
   isSelected,
 }) {
@@ -40,7 +41,10 @@ export function CardDefault({
         <Typography>{poseDescription}</Typography>
       </CardBody>
       <CardFooter className="pt-0 flex items-center">
-        <Button className="transition-colors duration-500 hover:bg-blue-500 mr-4">
+        <Button
+          className="transition-colors duration-500 hover:bg-blue-500 mr-4"
+          onClick={buttonOnClick}
+        >
           Read More
         </Button>
         <Button
@@ -59,6 +63,7 @@ CardDefault.propTypes = {
   imageUrl: PropTypes.string.isRequired,
   poseDescription: PropTypes.string.isRequired,
   onClick: PropTypes.func,
+  buttonOnClick: PropTypes.func,
   onSave: PropTypes.func,
   isSelected: PropTypes.bool,
 };
