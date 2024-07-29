@@ -60,8 +60,6 @@ const Profile = () => {
     navigate(`/pose/${poseName}`);
   };
 
- 
-
   if (loading) {
     return <div className="loading-spinner"><div className="spinner"></div></div>;
   }
@@ -80,7 +78,6 @@ const Profile = () => {
       <div className="saved-poses">
         <h2>Saved Poses</h2>
         {savedPoses.map((pose, index) => (
-          <div key={index} className="pose-item" onClick={() => handleReadMore(pose.name)}>
           <div key={index} className="pose-item" onClick={() => handleReadMore(pose.name)}>
             <p>{pose.name}</p>
             <img src={pose.image_url || 'https://via.placeholder.com/150'} alt={pose.name} />
