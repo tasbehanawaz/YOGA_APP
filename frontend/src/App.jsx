@@ -93,14 +93,14 @@ function App() {
               </Layout>
             }
           />
-          <Route
-            path="/save"
+          {/* <Route
+            path="/saved-poses"
             element={
               <Layout>
                 <SavedPoses />
               </Layout>
             }
-          />
+          /> */}
           <Route
             path="/about"
             element={
