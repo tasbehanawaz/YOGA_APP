@@ -8,7 +8,7 @@ import Result from './Pages/result/result';
 import SignIn from './components/signIn/signIn';
 import Sequence from './Pages/sequence/sequence';
 import Profile from './Pages/profile/profile';
-import Save from './Pages/saved/savedPoses';
+import SavedPoses from './Pages/saved/savedPoses'; // Correct import name
 import Generate from './Pages/Generate/generate';
 import About from './Pages/about/about';
 import { AuthProvider } from './contexts/AuthContext';
@@ -85,10 +85,10 @@ function App() {
             }
           />
           <Route
-            path="/save"
+            path="/saved-poses"
             element={
               <Layout>
-                <Save />
+                <SavedPoses />
               </Layout>
             }
           />
