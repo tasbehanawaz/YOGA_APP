@@ -5,12 +5,19 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Profile = () => {
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [userDetails, setUserDetails] = useState({});
-  const [savedPoses, setSavedPoses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [userDetails, setUserDetails] = useState({});
+  const [savedPoses, setSavedPoses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/SignIn');
+      return;
+    }
 
   useEffect(() => {
     if (!user) {
