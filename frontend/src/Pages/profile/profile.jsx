@@ -5,8 +5,9 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Profile = () => {
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  // eslint-disable-next-line no-unused-vars
   const [userDetails, setUserDetails] = useState({});
   const [savedPoses, setSavedPoses] = useState([]);
   const [loading, setLoading] = useState(true);
