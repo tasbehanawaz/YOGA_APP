@@ -5,8 +5,9 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Profile = () => {
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  // eslint-disable-next-line no-unused-vars
   const [userDetails, setUserDetails] = useState({});
   const [savedPoses, setSavedPoses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,13 +39,6 @@ const Profile = () => {
   }, [user, navigate]);
 
   const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/SignIn');
-    } catch (error) {
-      console.error('Logout failed:', error);
-      // Handle logout error (e.g., show an error message to the user)
-
     const confirmed = window.confirm('Are you sure you want to log out?');
     if (confirmed) {
       try {
@@ -53,6 +47,7 @@ const Profile = () => {
       } catch (error) {
         console.error('Logout failed:', error);
       }
+    }
   };
 
   const handleViewAllPoses = () => {
