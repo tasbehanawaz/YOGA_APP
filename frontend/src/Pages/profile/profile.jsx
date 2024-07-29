@@ -34,7 +34,7 @@ const fetchData = async () => {
 };
 
     fetchData();
-  }, []);
+  }, [user, navigate]);
 
   const handleLogout = async () => {
     try {
