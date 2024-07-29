@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import './profile.css';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +7,6 @@ import { useAuth } from '../../contexts/AuthContext';
 const Profile = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  // eslint-disable-next-line no-unused-vars
   const [userDetails, setUserDetails] = useState({});
   const [savedPoses, setSavedPoses] = useState([]);
   const [loading, setLoading] = useState(true);
