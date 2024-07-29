@@ -4,6 +4,7 @@ import { CardDefault } from '../../components/card/card';
 import { useNavigate } from 'react-router-dom';
 import './categories.css';
 import { Spinner, Button } from '@material-tailwind/react';
+import { Spinner, Button } from '@material-tailwind/react';
 
 const Categories = () => {
   const [poses, setPoses] = useState([]); // Initialize as an empty array
@@ -40,6 +41,22 @@ const Categories = () => {
 
   const HandleReadMore = (poseName) => {
     navigate(`/pose/${poseName}`);
+  };
+
+  const fetchAllPoses = async () => {
+    setLoading(true);
+    try {
+      let url = 'http://localhost:8001/fetchAllYogaPoses.php';
+      if (filter !== 'all') {
+        url += `?level=${filter}`;
+      }
+      const response = await axios.get(url);
+      setPoses(response.data);
+    } catch (error) {
+      console.error('Error fetching the poses:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSavePose = async (pose) => {
