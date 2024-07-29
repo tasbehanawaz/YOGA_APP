@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Profile = () => {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState({});
