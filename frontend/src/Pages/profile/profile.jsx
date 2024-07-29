@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import './profile.css';
 import { useNavigate } from 'react-router-dom';
@@ -54,6 +55,10 @@ const Profile = () => {
     navigate('/saved-poses');
   };
 
+  const handleReadMore = (poseName) => {
+    navigate(`/pose/${poseName}`);
+  };
+
   if (loading) return <div className="loading-spinner"><div className="spinner"></div></div>;
   if (error) return <div className="error">{error}</div>;
 
@@ -67,8 +72,9 @@ const Profile = () => {
       <div className="saved-poses">
         <h2>Saved Poses</h2>
         {savedPoses.map((pose, index) => (
-          <div key={index} className="pose-item">
+          <div key={index} className="pose-item" onClick={() => handleReadMore(pose.name)}>
             <p>{pose.name}</p>
+            <img src={pose.image_url || 'https://via.placeholder.com/150'} alt={pose.name} />
           </div>
         ))}
         <button className="button" onClick={handleViewAllPoses}>View All</button>
