@@ -41,6 +41,7 @@ const SavedPoses = () => {
                 />
             ))}
         </div>
+        
     );
 };
 
