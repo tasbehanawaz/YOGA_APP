@@ -37,6 +37,7 @@ const Categories = () => {
 
   useEffect(() => {
     fetchAllPoses();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]); // Re-fetch poses when filter changes
 
   const HandleReadMore = (poseName) => {
