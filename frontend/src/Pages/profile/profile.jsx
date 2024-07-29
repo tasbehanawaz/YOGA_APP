@@ -1,22 +1,22 @@
-
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './profile.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Profile = () => {
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [user, logout] = useAuth();
   const [userDetails, setUserDetails] = useState({});
   const [savedPoses, setSavedPoses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-useEffect(() => {
-  if (!user) {navigate('/SignIn');
-    return;
-  }
+  useEffect(() => {
+    if (!user) {
+      navigate('/SignIn');
+      return;
+    }
 
     const fetchData = async () => {
       setLoading(true); // Set loading before starting to fetch
@@ -51,15 +51,9 @@ useEffect(() => {
       }
     }
   };
-
-  // const handleLogout = () => {
-  //   if (window.confirm('Are you sure you want to logout?')) {
-  //     navigate('/logins');
-  //   }
-  // };
-
-const handleViewAllPoses = () => {
-  navigate('/saved-poses');};
+  const handleViewAllPoses = () => {
+    navigate('/saved-poses');
+  };
 
   const handleReadMore = (poseName) => {
     navigate(`/pose/${poseName}`);

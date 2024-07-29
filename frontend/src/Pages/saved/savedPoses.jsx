@@ -33,6 +33,7 @@ const SavedPoses = () => {
                 />
             ))}
         </div>
+        
     );
 };
 
