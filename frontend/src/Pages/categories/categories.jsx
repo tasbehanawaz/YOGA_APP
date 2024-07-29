@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
 import { useNavigate } from 'react-router-dom';
@@ -12,8 +12,7 @@ const Categories = () => {
   const [error, setError] = useState(null); // Add an error state
   const navigate = useNavigate();
 
-  // Fetch poses with useCallback to prevent re-creation on each render
-  const fetchAllPoses = useCallback(async () => {
+  const fetchAllPoses = async () => {
     setLoading(true);
     setError(null); // Reset error state
     try {
@@ -29,16 +28,15 @@ const Categories = () => {
     } finally {
       setLoading(false);
     }
-  }, [filter]); // Re-run when filter changes
+  };
 
   useEffect(() => {
     fetchAllPoses();
-  }, [fetchAllPoses]);
+  }, [filter]); // Re-fetch poses when filter changes
 
   const HandleReadMore = (poseName) => {
     navigate(`/pose/${poseName}`);
   };
-
 
   const handleSavePose = async (pose) => {
     console.log('Saving pose:', pose);
