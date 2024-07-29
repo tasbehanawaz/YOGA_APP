@@ -24,7 +24,7 @@ if (isset($_COOKIE['user_id']) && isset($_COOKIE['session_token'])) {
         // Fetch the user from the database
         $stmt = $pdo->prepare("SELECT id, username, membership_status FROM users WHERE id = ? AND session_token = ?");
         $stmt->execute([$user_id, $session_token]);
-        $user = $stmt->fetch();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
             echo json_encode([
