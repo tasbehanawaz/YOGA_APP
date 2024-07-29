@@ -1,45 +1,83 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import PropTypes from 'prop-types'; // Add this line to import PropTypes
+import PropTypes from 'prop-types';
+import axios from 'axios';
 
 const AuthContext = createContext();
 
 const checkLoginStatus = () => {
-    const cookieArray = document.cookie.split(/;\s*/);
-    console.log('CookieArray:', cookieArray);
-    const cookies = cookieArray.reduce((acc, cookie) => {
-        const [key, value] = cookie.split('=');
-        acc[key] = value;
-        return acc;
-    }, {});
+  const cookieArray = document.cookie.split(/;\s*/);
+  const cookies = cookieArray.reduce((acc, cookie) => {
+    const [key, value] = cookie.split('=');
+    acc[key] = value;
+    return acc;
+  }, {});
 
-    
+  if (cookies.user_id && cookies.username && cookies.session_token) {
+    return { id: cookies.user_id, username: cookies.username, session_token: cookies.session_token };
+  }
 
-    if (cookies.user_id && cookies.username && cookies.session_token) {
-        return { id: cookies.user_id, username: cookies.username, session_token: cookies.session_token};
-    }
-
-    return null;
+  return null;
 };
 
+const logoutUser = async () => {
+  try {
+    const response = await fetch('/signout.php', {
+      method: 'POST',
+      credentials: 'include',
+    });
+    const data = await response.json();
+    if (data.success) {
+      return true;
+    } else {
+      throw new Error(data.error || 'Logout failed');
+    }
+  } catch (error) {
+    console.error('Logout error:', error);
+    return false;
+  }
+};
 
 export const AuthProvider = ({ children }) => {
-  // Add prop type validation for 'children'
-  AuthProvider.propTypes = {
-    children: PropTypes.node.isRequired,
-  };
-  const [user, setUser] = useState(checkLoginStatus());
+  const [user, setUser] = useState(checkLoginStatus());
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Check login status on mount and periodically if needed
-    const user = checkLoginStatus();
-    if (user) setUser(user);
-  }, []);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get('http://localhost:8001/get_user.php', { withCredentials: true });
+        if (response.data.id) {
+          setUser(response.data);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  return (
-    <AuthContext.Provider value={{ user, checkLoginStatus }}>
-      {children}
-    </AuthContext.Provider>
-  );
+    fetchUser();
+  }, []);
+
+  const logout = async () => {
+    const success = await logoutUser();
+    if (success) {
+      setUser(null);
+    }
+    return success;
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, checkLoginStatus, logout }}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
+};
+
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export const useAuth = () => useContext(AuthContext);
