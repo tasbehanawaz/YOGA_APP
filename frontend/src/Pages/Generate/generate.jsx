@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
+import {useAuth} from '../../contexts/AuthContext';
 // import './generate.css';
 
 const VideoGenerator = () => {
+  const {user} = useAuth();
   const [videoUrl, setVideoUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const { state } = useLocation();
@@ -35,6 +37,8 @@ const VideoGenerator = () => {
     axios
       .post('http://localhost:8001/generate_video.php', {
         poses: selectedPoses,
+        user_id: user.id,
+        session_token: user.session_token,
         url_pngs: [],
         // durations: selectedPoses.map(() => 90)
       })

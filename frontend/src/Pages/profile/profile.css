@@ -39,7 +39,26 @@ h2 {
 }
 
 .pose-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.pose-item p {
+  margin: 0;
+  flex: 1;
+}
+
+.pose-item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  margin-left: 10px;
 }
 
 .loading-spinner {

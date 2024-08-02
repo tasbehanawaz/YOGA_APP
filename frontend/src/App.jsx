@@ -8,7 +8,7 @@ import Result from './Pages/result/result';
 import SignIn from './components/signIn/signIn';
 import Sequence from './Pages/sequence/sequence';
 import Profile from './Pages/profile/profile';
-import Save from './Pages/saved/savedPoses';
+import SavedPoses from './Pages/saved/savedPoses'; // Correct import name
 import Generate from './Pages/Generate/generate';
 import About from './Pages/about/about';
 import { AuthProvider } from './contexts/AuthContext';
@@ -53,7 +53,7 @@ function App() {
             }
           />
           <Route
-            path="/signin"
+            path="/SignIn"
             element={
               <Layout>
                 <SignIn />
@@ -88,7 +88,15 @@ function App() {
             path="/save"
             element={
               <Layout>
-                <Save />
+                <SavedPoses />
+              </Layout>
+            }
+          />
+          <Route
+            path="/saved-poses"
+            element={
+              <Layout>
+                <SavedPoses />
               </Layout>
             }
           />
