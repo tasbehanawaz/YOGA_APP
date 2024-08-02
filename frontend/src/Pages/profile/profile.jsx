@@ -19,6 +19,8 @@ const Profile = () => {
     }
 
     const fetchData = async () => {
+      setLoading(true); // Set loading before starting to fetch
+      setError(null); // Reset error before fetching new data
       try {
         const [userResponse, posesResponse] = await Promise.all([
           axios.get(`http://localhost:8001/get_user.php?user_id=${user.id}`),
@@ -27,10 +29,11 @@ const Profile = () => {
 
         setUserDetails(userResponse.data);
         setSavedPoses(posesResponse.data.slice(0, 3));
-        setLoading(false);
       } catch (error) {
+        console.error('Error fetching data:', error); // Log the actual error
         setError('Error fetching data. Please try again later.');
-        setLoading(false);
+      } finally {
+        setLoading(false); // Set loading to false after fetching
       }
     };
 
@@ -57,14 +60,19 @@ const Profile = () => {
     navigate(`/pose/${poseName}`);
   };
 
-  if (loading) return <div className="loading-spinner"><div className="spinner"></div></div>;
-  if (error) return <div className="error">{error}</div>;
+  if (loading) {
+    return <div className="loading-spinner"><div className="spinner"></div></div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   return (
     <div className="profile-container">
       <div className="user-details">
         <h2>User Details</h2>
-        <p>Username: {user.username}</p>
+        <p>Username: {userDetails.username}</p> {/* Ensure userDetails is used */}
         <button className="button" onClick={handleLogout}>Logout</button>
       </div>
       <div className="saved-poses">
