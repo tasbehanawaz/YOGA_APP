@@ -1,43 +1,29 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react'; //storing the state of the component, use effect what happens when I create categoreis intinially
+import axios from 'axios'; //fetching data from the backend
 import { CardDefault } from '../../components/card/card';
-import { useNavigate } from 'react-router-dom';
 import './categories.css';
-import { Spinner, Button } from '@material-tailwind/react';
-
 const Categories = () => {
   const [poses, setPoses] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all'); // Add a state for filter
-  const navigate = useNavigate();
 
+  // Call fetchAllPoses when the component mounts or is created initally
   useEffect(() => {
     fetchAllPoses();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]); // Re-fetch poses when filter changes
-
-  const HandleReadMore = (poseName) => {
-    navigate(`/pose/${poseName}`);
-  };
+  }, []);
 
   const fetchAllPoses = async () => {
-    setLoading(true);
     try {
-      let url = 'http://localhost:8001/fetchAllYogaPoses.php';
-      if (filter !== 'all') {
-        url += `?level=${filter}`;
-      }
-      const response = await axios.get(url);
+      const response = await axios.get(
+        `http://localhost:8001/FetchAllYogaPoses.php`
+      );
+      console.log('response.data', response.data);
       setPoses(response.data);
     } catch (error) {
-      console.error('Error fetching the poses:', error);
-    } finally {
-      setLoading(false);
+      console.error('Error fetching the pose:', error);
     }
   };
 
   const handleSavePose = async (pose) => {
-    console.log('Saving pose:', pose);
+    console.log('Saving pose:', pose); // Debugging line
     try {
       const response = await axios.post(
         'http://localhost:8001/save_pose.php',
@@ -49,7 +35,7 @@ const Categories = () => {
         {
           headers: {
             'Content-Type': 'application/json',
-          }
+          },
         }
       );
       if (response.data.success) {
@@ -65,36 +51,23 @@ const Categories = () => {
 
   return (
     <div className="categories-container m-8">
-      <div className="flex flex-row w-full justify-center mb-4">
-        <Button onClick={() => setFilter('all')} className="mr-2">All</Button>
-        <Button onClick={() => setFilter('beginner')} className="mr-2">Beginner</Button>
-        <Button onClick={() => setFilter('intermediate')} className="mr-2">Intermediate</Button>
-        <Button onClick={() => setFilter('advanced')} className="mr-2">Advanced</Button>
-      </div>
       <div className="flex flex-row w-full justify-center">
-        {loading ? (
-          <div className="inset-0 flex items-center justify-center min-h-screen">
-            <Spinner className="h-12 w-12" />
-          </div>
-        ) : poses && poses.length > 0 ? (
+        {poses && poses.length > 0 ? (
           <h1 className="text-2xl font-bold mb-4">
             Found {poses.length} results
           </h1>
         ) : (
-          <h1 className="text-2xl font-bold mb-4">No results found</h1>
+          <h1 className="text-2xl font-bold mb-4">Loading...</h1>
         )}
       </div>
-      {!loading &&
-        poses &&
+      {poses &&
         poses.map((pose, index) => (
           <CardDefault
             key={index}
             name={pose.english_name}
             imageUrl={pose.url_png}
             poseDescription={pose.pose_benefits}
-            difficultyLevel={pose.difficulty_level}
             onSave={() => handleSavePose(pose)}
-            buttonOnClick={() => HandleReadMore(pose.english_name)}
             className="m-12"
           />
         ))}
@@ -103,110 +76,3 @@ const Categories = () => {
 };
 
 export default Categories;
-
-
-
-
-
-
-
-
-
-
-
-// import { useState, useEffect } from 'react'; //storing the state of the component, use effect what happens when I create categoreis intinially
-// import axios from 'axios'; //fetching data from the backend
-// import { CardDefault } from '../../components/card/card';
-// import { useNavigate } from 'react-router-dom';
-// import './categories.css';
-// import { Spinner } from '@material-tailwind/react';
-
-// const Categories = () => {
-//   const [poses, setPoses] = useState(null);
-//   const [loading, setLoading] = useState(true); // Add loading state
-//   const navigate = useNavigate();
-
-//   // Call fetchAllPoses when the component mounts or is created initally
-//   useEffect(() => {
-//     fetchAllPoses();
-//   }, []);
-
-//   //for the readmore button
-//   const HandleReadMore = (poseName) => {
-//     navigate(`/pose/${poseName}`);
-//   };
-
-//   const fetchAllPoses = async () => {
-//     try {
-//       const response = await axios.get(
-//         `http://localhost:8001/FetchAllYogaPoses.php`
-//       );
-//       console.log('response.data', response.data);
-//       setPoses(response.data);
-//     } catch (error) {
-//       console.error('Error fetching the pose:', error);
-//     } finally {
-//       setLoading(false); // Set loading to false after data is fetched
-//     }
-//   };
-
-//   const handleSavePose = async (pose) => {
-//     console.log('Saving pose:', pose); // Debugging line
-//     try {
-//       const response = await axios.post(
-//         'http://localhost:8001/save_pose.php',
-//         {
-//           english_name: pose.english_name,
-//           pose_description: pose.pose_description,
-//           url_png: pose.url_png,
-//         },
-//         {
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-//         }
-//       );
-//       if (response.data.success) {
-//         alert('Pose saved successfully!');
-//       } else {
-//         alert(response.data.message);
-//       }
-//     } catch (error) {
-//       console.error('Error saving the pose:', error);
-//       alert('Error saving pose.');
-//     }
-//   };
-
-//   return (
-//     <div className="categories-container m-8">
-//       <div className="flex flex-row w-full justify-center">
-//         {loading ? (
-//           <div className="inset-0 flex items-center justify-center min-h-screen">
-//             <Spinner className="h-12 w-12" />
-//           </div>
-//         ) : poses && poses.length > 0 ? (
-//           <h1 className="text-2xl font-bold mb-4">
-//             Found {poses.length} results
-//           </h1>
-//         ) : (
-//           <h1 className="text-2xl font-bold mb-4">No results found</h1>
-//         )}
-//       </div>
-//       {!loading &&
-//         poses &&
-//         poses.map((pose, index) => (
-//           <CardDefault
-//             key={index}
-//             name={pose.english_name}
-//             imageUrl={pose.url_png}
-//             poseDescription={pose.pose_benefits}
-//             onSave={() => handleSavePose(pose)}
-//             buttonOnClick={() => HandleReadMore(pose.english_name)} //read more button
-//             className="m-12"
-//           />
-//         ))}
-//     </div>
-//   );
-// };
-
-// export default Categories;

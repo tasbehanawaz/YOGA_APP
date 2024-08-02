@@ -113,88 +113,57 @@ function createFrames($poses)
     return $framePaths;
 }
 
-// function subtitles
-function createSrtFile($poseName, $floatDuration) {
-    // Round the duration to the nearest integer
-    $duration = (int)round($floatDuration);
-    
-    // Format the duration string
-    $durationFormatted = gmdate("H:i:s", $duration);
-    
-    $srtContent = "1\n00:00:00,000 --> {$durationFormatted},000\n$poseName\n";
-    $srtPath = "subtitles/{$poseName}.srt";
-    file_put_contents($srtPath, $srtContent);
-    return $srtPath;
-}
-
-// function generatevideo with subtitles code
-function generateVideo($framePaths, $poseNames) {
+function generateVideo($framePaths, $poseNames)
+{
     if (!is_dir('output')) {
         mkdir('output', 0777, true);
-    }
-    if (!is_dir('subtitles')) {
-        mkdir('subtitles', 0777, true);
     }
 
     $uniqueId = uniqid();
     $videoPath = 'output/yoga_sequence_' . $uniqueId . '.mp4';
 
+    // Create a list of inputs for ffmpeg
     $inputs = [];
     $audioInputs = [];
     $audioFilePaths = [];
-    $filterComplexParts = [];
-    $subtitleInputs = [];
-
     foreach ($framePaths as $index => $framePath) {
-        if (!file_exists($framePath)) {
-            error_log("Frame file not found: $framePath");
-            return ['error' => 'Frame file not found: ' . $framePath];
-        }
-
+        // Determine the duration of the corresponding audio file
         $audioFilePath = 'audio/' . $poseNames[$index] . '.mp3';
         if (file_exists($audioFilePath)) {
             $duration = getAudioDuration($audioFilePath);
             $inputs[] = "-loop 1 -t $duration -i " . escapeshellarg($framePath);
             $audioInputs[] = "-i " . escapeshellarg($audioFilePath);
-            $audioFilePaths[] = $audioFilePath;
-
-            // Calculate the duration of the audio file
-            $duration = getAudioDuration($audioFilePath);
-            $floatDuration = floatval($duration);
-            
-            // Create SRT file for this pose
-            $srtPath = createSrtFile($poseNames[$index], $floatDuration);
-            $subtitleInputs[] = "-i " . escapeshellarg($srtPath);
-
-            // Add filter for scaling, padding, and adding subtitles to video
-            $filterComplexParts[] = "[$index:v]scale=640:360:force_original_aspect_ratio=decrease,pad=640:360:(ow-iw)/2:(oh-ih)/2,setsar=1,subtitles=" . escapeshellarg($srtPath) . ":force_style='FontName=Arial,FontSize=24'[v$index]";
+            $audioFilePaths[] = $audioFilePath; // Collecting audio file paths for duration calculation
         } else {
             error_log("Audio file not found: $audioFilePath");
             return ['error' => 'Audio file not found for pose: ' . $poseNames[$index]];
         }
     }
-    $inputString = implode(' ', $inputs) . ' ' . implode(' ', $audioInputs) . ' ' . implode(' ', $subtitleInputs);
+    $inputString = implode(' ', $inputs) . ' ' . implode(' ', $audioInputs);
 
+    // Calculating the total audio duration
     $totalAudioDuration = calculateTotalAudioDuration($audioFilePaths);
     error_log("Total audio duration: $totalAudioDuration seconds");
 
-    //  Create a filter complex to concatenate frames
+    // Create a filter complex to concatenate frames
     $filterComplexParts = [];
     foreach ($framePaths as $index => $framePath) {
         $filterComplexParts[] = "[$index:v]scale=640:360:force_original_aspect_ratio=decrease,pad=640:360:(ow-iw)/2:(oh-ih)/2,setsar=1[v$index]";
     }
     $filterComplexString = implode(";", $filterComplexParts) . ";";
 
+    // Audio concatenation
     $audioFilterComplexString = "";
     for ($i = 0; $i < count($framePaths); $i++) {
         $audioFilterComplexString .= "[" . ($i + count($framePaths)) . ":a]";
     }
     $audioFilterComplexString .= "concat=n=" . count($framePaths) . ":v=0:a=1[aout]";
 
+    // Video concatenation
     $concatInputs = implode("", array_map(function ($index) {
         return "[v$index]";
     }, array_keys($framePaths)));
-    $filterComplexString = implode(";", $filterComplexParts) . ";$concatInputs concat=n=" . count($framePaths) . ":v=1:a=0[vout]; $audioFilterComplexString";
+    $filterComplexString .= "$concatInputs concat=n=" . count($framePaths) . ":v=1:a=0[vout]; $audioFilterComplexString";
 
     $command = "ffmpeg -y $inputString -filter_complex \"$filterComplexString\" " .
         "-map \"[vout]\" -map \"[aout]\" " .
@@ -203,6 +172,7 @@ function generateVideo($framePaths, $poseNames) {
 
     $output = shell_exec($command);
 
+    // Log the ffmpeg output for debugging
     error_log($output);
 
     if (!file_exists($videoPath)) {
@@ -211,80 +181,6 @@ function generateVideo($framePaths, $poseNames) {
     }
     return $videoPath;
 }
-
-
-
-
-
-// My code without pose name captions
-// function generateVideo($framePaths, $poseNames)
-// {
-//     if (!is_dir('output')) {
-//         mkdir('output', 0777, true);
-//     }
-
-//     $uniqueId = uniqid();
-//     $videoPath = 'output/yoga_sequence_' . $uniqueId . '.mp4';
-
-//     // Create a list of inputs for ffmpeg
-//     $inputs = [];
-//     $audioInputs = [];
-//     $audioFilePaths = [];
-//     foreach ($framePaths as $index => $framePath) {
-//         // Determine the duration of the corresponding audio file
-//         $audioFilePath = 'audio/' . $poseNames[$index] . '.mp3';
-//         if (file_exists($audioFilePath)) {
-//             $duration = getAudioDuration($audioFilePath);
-//             $inputs[] = "-loop 1 -t $duration -i " . escapeshellarg($framePath);
-//             $audioInputs[] = "-i " . escapeshellarg($audioFilePath);
-//             $audioFilePaths[] = $audioFilePath; // Collecting audio file paths for duration calculation
-//         } else {
-//             error_log("Audio file not found: $audioFilePath");
-//             return ['error' => 'Audio file not found for pose: ' . $poseNames[$index]];
-//         }
-//     }
-//     $inputString = implode(' ', $inputs) . ' ' . implode(' ', $audioInputs);
-
-//     // Calculating the total audio duration
-//     $totalAudioDuration = calculateTotalAudioDuration($audioFilePaths);
-//     error_log("Total audio duration: $totalAudioDuration seconds");
-
-//     // Create a filter complex to concatenate frames
-//     $filterComplexParts = [];
-//     foreach ($framePaths as $index => $framePath) {
-//         $filterComplexParts[] = "[$index:v]scale=640:360:force_original_aspect_ratio=decrease,pad=640:360:(ow-iw)/2:(oh-ih)/2,setsar=1[v$index]";
-//     }
-//     $filterComplexString = implode(";", $filterComplexParts) . ";";
-
-//     // Audio concatenation
-//     $audioFilterComplexString = "";
-//     for ($i = 0; $i < count($framePaths); $i++) {
-//         $audioFilterComplexString .= "[" . ($i + count($framePaths)) . ":a]";
-//     }
-//     $audioFilterComplexString .= "concat=n=" . count($framePaths) . ":v=0:a=1[aout]";
-
-//     // Video concatenation
-//     $concatInputs = implode("", array_map(function ($index) {
-//         return "[v$index]";
-//     }, array_keys($framePaths)));
-//     $filterComplexString .= "$concatInputs concat=n=" . count($framePaths) . ":v=1:a=0[vout]; $audioFilterComplexString";
-
-//     $command = "ffmpeg -y $inputString -filter_complex \"$filterComplexString\" " .
-//         "-map \"[vout]\" -map \"[aout]\" " .
-//         "-c:v libx264 -preset medium -crf 23 -c:a aac -b:a 128k " .
-//         "-pix_fmt yuv420p -movflags +faststart -t $totalAudioDuration $videoPath 2>&1";
-
-//     $output = shell_exec($command);
-
-//     // Log the ffmpeg output for debugging
-//     error_log($output);
-
-//     if (!file_exists($videoPath)) {
-//         error_log('Failed to generate video at: ' . $videoPath);
-//         return ['error' => 'Failed to generate video'];
-//     }
-//     return $videoPath;
-// }
 
 
 

@@ -16,6 +16,10 @@
   align-items: center; /* Vertically centers the child elements if the container has a specified height */
 }
 
+h2 {
+  text-align: center;
+}
+
 .instructor-image-container + p {
   margin: 50px; /* Adjust the value as needed */
 }
