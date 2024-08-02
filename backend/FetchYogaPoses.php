@@ -1,30 +1,26 @@
 <?php
-// This script fetches yoga pose details based on an array of pose names.
+// This script fetches yoga pose details based on the provided pose name.
 
 require 'db.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input = json_decode(file_get_contents('php://input'), true);
-
-    if (!isset($input['poses']) || !is_array($input['poses'])) {
-        echo json_encode(['error' => 'Invalid input']);
+// Handle GET requests instead of POST
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (!isset($_GET['poseName'])) {
+        echo json_encode(['error' => 'Pose name not provided']);
         exit;
     }
 
-    $poseNames = $input['poses'];
-    $poseDetails = [];
+    $poseName = $_GET['poseName'];
+    $poseData = fetchYogaPoseByName($poseName);
 
-    foreach ($poseNames as $poseName) {
-        $poseData = fetchYogaPoseByName($poseName);
-        if (!empty($poseData)) {
-            $poseDetails[] = $poseData;
-        }
+    if (!empty($poseData)) {
+        echo json_encode($poseData);
+    } else {
+        echo json_encode(['error' => 'Pose not found']);
     }
-
-    echo json_encode($poseDetails);
 } else {
     echo json_encode(['error' => 'Invalid request method']);
 }
