@@ -53,7 +53,7 @@ const Profile = () => {
   };
 
   const handleViewAllPoses = () => {
-    navigate('/saved-poses');
+    navigate('/save');
   };
 
   const handleReadMore = (poseName) => {
