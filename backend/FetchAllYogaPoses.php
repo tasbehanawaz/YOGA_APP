@@ -1,5 +1,4 @@
 <?php
-// this script is an API endpoint that fetches data from another API and returns it as JSON. It's designed to be called with a 'GET' HTTP request.
 require 'db.php';
 
 header("Access-Control-Allow-Origin: *");
