@@ -12,6 +12,7 @@ export function CardDefault({
   name,
   imageUrl,
   poseDescription,
+  difficultyLevel,  // Add the new prop here
   onClick,
   buttonOnClick,
   onSave,
@@ -39,6 +40,11 @@ export function CardDefault({
           {name}
         </Typography>
         <Typography>{poseDescription}</Typography>
+        {difficultyLevel && (  // Conditionally render the difficulty level
+          <Typography variant="subtitle1" color="blue-gray" className="mt-2">
+            Difficulty: {difficultyLevel}
+          </Typography>
+        )}
       </CardBody>
       <CardFooter className="pt-0 flex items-center">
         <Button
@@ -62,6 +68,7 @@ CardDefault.propTypes = {
   name: PropTypes.string.isRequired,
   imageUrl: PropTypes.string.isRequired,
   poseDescription: PropTypes.string.isRequired,
+  difficultyLevel: PropTypes.string,  // Add the new prop type
   onClick: PropTypes.func,
   buttonOnClick: PropTypes.func,
   onSave: PropTypes.func,
@@ -69,7 +76,5 @@ CardDefault.propTypes = {
 };
 
 CardDefault.defaultProps = {
-  // onClick: () => {},
-  // onSave: () => {},
   isSelected: false,
 };
