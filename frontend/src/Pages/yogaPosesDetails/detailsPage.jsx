@@ -8,19 +8,23 @@ const YogaPoseDetails = () => {
   const { name } = useParams();
   const [poseDetails, setPoseDetails] = useState({
     name: '',
-    SanskritName: '',
+    sanskritName: '', // Ensure consistency in naming
     imageUrl: '',
     poseDescription: '',
     poseBenefits: '',
+    translationName: '', // Add missing field
   });
 
   useEffect(() => {
     const fetchPoseDetails = async () => {
       try {
+        console.log(`Fetching details for pose: ${name}`); // Log pose name
         const response = await axios.get(
           'http://localhost:8001/FetchYogaPoses.php',
           { params: { poseName: name } }
         );
+
+        console.log('API Response:', response.data); // Log response data
 
         const data = response.data;
         setPoseDetails({
@@ -46,7 +50,6 @@ const YogaPoseDetails = () => {
       id="container"
       className="flex flex-col justify-center items-center p-6 bg-gray-100 min-h-screen"
     >
-      {/* If loading show spinner else show the UI */}
       {loading ? (
         <div className="inset-0 flex items-center justify-center min-h-screen">
           <Spinner className="h-12 w-12" />
