@@ -86,7 +86,7 @@ function App() {
           />
   
           <Route
-            path="/saved-poses"
+            path="/save"
             element={
               <Layout>
                 <SavedPoses />
