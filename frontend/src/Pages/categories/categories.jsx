@@ -1,32 +1,23 @@
-
-
-
-
-
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
 import { useNavigate } from 'react-router-dom';
 import './categories.css';
 import { Spinner, Button } from '@material-tailwind/react';
-import { Spinner, Button } from '@material-tailwind/react';
 
 const Categories = () => {
   const [poses, setPoses] = useState([]); // Initialize as an empty array
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState('mixed');
   const [error, setError] = useState(null); // Add an error state
   const navigate = useNavigate();
 
   const fetchAllPoses = useCallback(async () => {
     setLoading(true);
-    setError(null); // Reset error state
+    setError(null);
     try {
-      let url = 'http://localhost:8001/fetchAllYogaPoses.php';
-      if (filter !== 'all') {
-        url += `?level=${filter}`;
-      }
-      const response = await axios.get(url);
+      const url = 'http://localhost:8001/fetchAllYogaPoses.php';
+      const response = await axios.post(url, { difficulty_level: filter });
       if (response.data.status === 'success') {
         setPoses(response.data.data);
       } else {
@@ -38,43 +29,13 @@ const Categories = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchAllPoses();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]); // Re-fetch poses when filter changes
-=======
-  const [poses, setPoses] = useState([]); // Initialize as an empty array
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
-  const [error, setError] = useState(null); // Add an error state
-  const navigate = useNavigate();
-
-  // Fetch poses with useCallback to prevent re-creation on each render
-  const fetchAllPoses = useCallback(async () => {
-    setLoading(true);
-    setError(null); // Reset error state
-    try {
-      let url = 'http://localhost:8001/fetchAllYogaPoses.php';
-      if (filter !== 'all') {
-        url += `?level=${filter}`;
-      }
-      const response = await axios.get(url);
-      setPoses(response.data);
-    } catch (error) {
-      console.error('Error fetching the poses:', error);
-      setError('Error fetching poses. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  }, [filter]); // Re-run when filter changes
+  }, [filter]);
 
   useEffect(() => {
     fetchAllPoses();
   }, [fetchAllPoses]);
 
-  const HandleReadMore = (poseName) => {
+  const handleReadMore = (poseName) => {
     navigate(`/pose/${poseName}`);
   };
 
@@ -108,7 +69,7 @@ const Categories = () => {
   return (
     <div className="categories-container m-8">
       <div className="flex flex-row w-full justify-center mb-4">
-        <Button onClick={() => setFilter('all')} className="mr-2">All</Button>
+        <Button onClick={() => setFilter('mixed')} className="mr-2">Mixed</Button>
         <Button onClick={() => setFilter('beginner')} className="mr-2">Beginner</Button>
         <Button onClick={() => setFilter('intermediate')} className="mr-2">Intermediate</Button>
         <Button onClick={() => setFilter('advanced')} className="mr-2">Advanced</Button>
