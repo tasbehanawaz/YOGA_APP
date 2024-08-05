@@ -1,3 +1,8 @@
+
+
+
+
+
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
@@ -13,7 +18,7 @@ const Categories = () => {
   const [error, setError] = useState(null); // Add an error state
   const navigate = useNavigate();
 
-  const fetchAllPoses = async () => {
+  const fetchAllPoses = useCallback(async () => {
     setLoading(true);
     setError(null); // Reset error state
     try {
@@ -27,7 +32,7 @@ const Categories = () => {
       } else {
         throw new Error(response.data.message || 'Error fetching poses');
       }
-    }  catch (error) {
+    } catch (error) {
       console.error('Error fetching the poses:', error);
       setError(error.message || 'Error fetching poses. Please try again.');
     } finally {
@@ -132,7 +137,7 @@ const Categories = () => {
             poseDescription={pose.pose_benefits}
             difficultyLevel={pose.difficulty_level}
             onSave={() => handleSavePose(pose)}
-            buttonOnClick={() => HandleReadMore(pose.english_name)}
+            buttonOnClick={() => handleReadMore(pose.english_name)}
             className="m-12"
           />
         ))}
@@ -140,13 +145,7 @@ const Categories = () => {
   );
 };
 
-
 export default Categories;
-
-
-
-
-
 
 
 
