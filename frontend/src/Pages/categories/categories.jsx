@@ -21,10 +21,14 @@ const Categories = () => {
         url += `?level=${filter}`;
       }
       const response = await axios.get(url);
-      setPoses(response.data);
-    } catch (error) {
+      if (response.data.status === 'success') {
+        setPoses(response.data.data);
+      } else {
+        throw new Error(response.data.message || 'Error fetching poses');
+      }
+    }  catch (error) {
       console.error('Error fetching the poses:', error);
-      setError('Error fetching poses. Please try again.');
+      setError(error.message || 'Error fetching poses. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -104,6 +108,7 @@ const Categories = () => {
     </div>
   );
 };
+
 
 export default Categories;
 
