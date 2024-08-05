@@ -6,18 +6,24 @@ error_reporting(E_ALL);
 require 'db.php';
 
 header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        if (isset($_GET['level']) && $_GET['level'] !== 'all') {
-            $level = $_GET['level'];
-            $poses = fetchYogaPosesByLevel($level);
-            echo json_encode(['status' => 'success', 'data' => $poses]);
-        } else {
-            $poses = fetchAndClassifyAllYogaPoses();
-            echo json_encode(['status' => 'success', 'data' => $poses]);
-        }
+        $poses = fetchAndClassifyAllYogaPoses();
+        echo json_encode(['status' => 'success', 'data' => $poses]);
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $filterOptions = isset($data) ? $data : [];
+
+        $poses = fetchAndClassifyAllYogaPoses($filterOptions);
+        echo json_encode(['status' => 'success', 'data' => $poses]);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
     }
@@ -26,12 +32,37 @@ try {
     echo json_encode(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()]);
 }
 
+function fetchAndClassifyAllYogaPoses($filterOptions = []) {
+    $poses = fetchAllYogaPoses();
+    $classifiedPoses = classifyPoses($poses);
+    if (!empty($filterOptions)) {
+        $classifiedPoses = applyFilters($classifiedPoses, $filterOptions);
+    }
+    printDifficultyDistribution($classifiedPoses);
+    return $classifiedPoses;
+}
+
+function applyFilters($poses, $filters) {
+    $filteredPoses = $poses;
+
+    // Apply difficulty level filter only if not 'mixed'
+    if (isset($filters['difficulty_level']) && $filters['difficulty_level'] !== 'mixed') {
+        $filteredPoses = array_filter($filteredPoses, function($pose) use ($filters) {
+            return strtolower($pose['difficulty_level']) === strtolower($filters['difficulty_level']);
+        });
+    }
+
+    // If difficulty level is 'mixed', apply no filters and return all poses
+    // This section is handled implicitly as we do nothing when difficulty level is 'mixed'
+
+    return array_values($filteredPoses);
+}
+
 function classifyPoses($poses) {
     $advancedCriteria = ['balance', 'strength', 'flexibility', 'advanced', 'challenging', 'complex', 'inversion', 'headstand', 'handstand', 'arm balance', 'backbend'];
     $intermediateCriteria = ['moderate', 'intermediate', 'flowing', 'dynamic', 'twist', 'lunge', 'core strength'];
     $beginnerCriteria = ['beginner', 'easy', 'gentle', 'relaxing', 'basic'];
 
-    // Specific pose adjustments
     $specificPoseAdjustments = [
         'Shoulder Stand' => 3,
         'Splits' => 3,
@@ -41,22 +72,18 @@ function classifyPoses($poses) {
         'Bow' => 2,
         'Wheel' => 2.5,
         'Crow' => 2.5,
-        
-
     ];
 
     foreach ($poses as &$pose) {
         $description = strtolower($pose['pose_benefits'] . ' ' . ($pose['pose_description'] ?? '') . ' ' . $pose['english_name']);
         $words = explode(' ', $description);
-        
+
         $points = 0;
-        
-        // Check for exact matches
+
         if (str_contains($description, 'beginner')) $points -= 2;
         if (str_contains($description, 'intermediate')) $points += 1;
         if (str_contains($description, 'advanced')) $points += 2;
-        
-        // Check for criteria matches
+
         foreach ($advancedCriteria as $criterion) {
             if (str_contains($description, $criterion)) $points += 1.5;
         }
@@ -66,21 +93,18 @@ function classifyPoses($poses) {
         foreach ($beginnerCriteria as $criterion) {
             if (str_contains($description, $criterion)) $points -= 1;
         }
-        
-        // Additional checks
+
         if (str_contains($description, 'arm balance') || str_contains($description, 'inversion')) $points += 2;
         if (str_contains($description, 'core strength')) $points += 1;
         if (str_contains($description, 'relaxation')) $points -= 1;
-        
-        // Apply specific pose adjustments
+
         foreach ($specificPoseAdjustments as $poseName => $adjustment) {
             if (stripos($pose['english_name'], $poseName) !== false) {
                 $points += $adjustment;
                 break;
             }
         }
-        
-        // Classify based on points
+
         if ($points >= 2.5) {
             $pose['difficulty_level'] = 'Advanced';
         } elseif ($points >= 0.5) {
@@ -88,41 +112,23 @@ function classifyPoses($poses) {
         } else {
             $pose['difficulty_level'] = 'Beginner';
         }
-        
-        // Add the points to the pose data for debugging
+
         $pose['difficulty_points'] = $points;
     }
     return $poses;
 }
 
-// Helper functions
 function printDifficultyDistribution($poses) {
     $distribution = array_count_values(array_column($poses, 'difficulty_level'));
     error_log("Difficulty Distribution: " . json_encode($distribution));
-    
-    // Print out poses with their difficulty levels and points
     foreach ($poses as $pose) {
         error_log("{$pose['english_name']}: Level: {$pose['difficulty_level']}, Points: {$pose['difficulty_points']}");
     }
 }
 
-function fetchAndClassifyAllYogaPoses() {
-    $poses = fetchAllYogaPoses();
-    $classifiedPoses = classifyPoses($poses);
-    printDifficultyDistribution($classifiedPoses);
-    return $classifiedPoses;
-}
-
 function fetchAllYogaPoses() {
     $apiUrl = "https://yoga-api-nzy4.onrender.com/v1/poses";
     return makeApiRequest($apiUrl);
-}
-
-function fetchYogaPosesByLevel($level) {
-    $allPoses = fetchAndClassifyAllYogaPoses();
-    return array_values(array_filter($allPoses, function($pose) use ($level) {
-        return strtolower($pose['difficulty_level']) === strtolower($level);
-    }));
 }
 
 function makeApiRequest($apiUrl) {
