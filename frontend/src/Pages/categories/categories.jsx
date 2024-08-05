@@ -1,8 +1,4 @@
 
-
-
-
-
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
@@ -11,15 +7,15 @@ import './categories.css';
 import { Spinner, Button } from '@material-tailwind/react';
 
 const Categories = () => {
-  const [poses, setPoses] = useState([]); // Initialize as an empty array
+  const [poses, setPoses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
-  const [error, setError] = useState(null); // Add an error state
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const fetchAllPoses = useCallback(async () => {
     setLoading(true);
-    setError(null); // Reset error state
+    setError(null);
     try {
       let url = 'http://localhost:8001/fetchAllYogaPoses.php';
       if (filter !== 'all') {
@@ -37,7 +33,7 @@ const Categories = () => {
     } finally {
       setLoading(false);
     }
-  }, [filter]); // Re-run when filter changes
+  }, [filter]);
 
   useEffect(() => {
     fetchAllPoses();
