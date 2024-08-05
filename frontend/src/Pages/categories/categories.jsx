@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { useState, useEffect } from 'react';
-=======
 import { useState, useEffect, useCallback } from 'react';
->>>>>>> dd7e088 (Fixed code errors)
 import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
 import { useNavigate } from 'react-router-dom';
@@ -10,17 +6,6 @@ import './categories.css';
 import { Spinner, Button } from '@material-tailwind/react';
 
 const Categories = () => {
-<<<<<<< HEAD
-  const [poses, setPoses] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all'); // Add a state for filter
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchAllPoses();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]); // Re-fetch poses when filter changes
-=======
   const [poses, setPoses] = useState([]); // Initialize as an empty array
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
@@ -49,31 +34,11 @@ const Categories = () => {
   useEffect(() => {
     fetchAllPoses();
   }, [fetchAllPoses]);
->>>>>>> dd7e088 (Fixed code errors)
 
   const HandleReadMore = (poseName) => {
     navigate(`/pose/${poseName}`);
   };
 
-<<<<<<< HEAD
-  const fetchAllPoses = async () => {
-    setLoading(true);
-    try {
-      let url = 'http://localhost:8001/fetchAllYogaPoses.php';
-      if (filter !== 'all') {
-        url += `?level=${filter}`;
-      }
-      const response = await axios.get(url);
-      setPoses(response.data);
-    } catch (error) {
-      console.error('Error fetching the poses:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-=======
->>>>>>> dd7e088 (Fixed code errors)
   const handleSavePose = async (pose) => {
     console.log('Saving pose:', pose);
     try {
