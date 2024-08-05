@@ -21,17 +21,20 @@ const Sequence = () => {
 
   const fetchAllPoses = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8001/FetchAllYogaPoses.php`
-      );
+      const response = await axios.get(`http://localhost:8001/FetchAllYogaPoses.php`);
       console.log('response.data', response.data);
-      setPoses(response.data);
+      if (response.data.status === 'success') {
+        setPoses(response.data.data);
+      } else {
+        console.error('Error fetching poses:', response.data.message);
+      }
     } catch (error) {
       console.error('Error fetching the pose:', error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handlePoseSelect = (pose) => {
     setSelectedPoses((prev) => {

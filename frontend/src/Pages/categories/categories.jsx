@@ -12,8 +12,9 @@ const Categories = () => {
   const [error, setError] = useState(null); // Add an error state
   const navigate = useNavigate();
 
-  // Fetch poses with useCallback to prevent re-creation on each render
-  const fetchAllPoses = useCallback(async () => {
+
+  const fetchAllPoses = async () => {
+
     setLoading(true);
     setError(null); // Reset error state
     try {
@@ -22,10 +23,16 @@ const Categories = () => {
         url += `?level=${filter}`;
       }
       const response = await axios.get(url);
-      setPoses(response.data);
-    } catch (error) {
+      if (response.data.status === 'success') {
+        setPoses(response.data.data);
+      } else {
+        throw new Error(response.data.message || 'Error fetching poses');
+      }
+    }  catch (error) {
       console.error('Error fetching the poses:', error);
-      setError('Error fetching poses. Please try again.');
+
+      setError(error.message || 'Error fetching poses. Please try again.');
+
     } finally {
       setLoading(false);
     }
@@ -34,6 +41,14 @@ const Categories = () => {
   useEffect(() => {
     fetchAllPoses();
   }, [fetchAllPoses]);
+
+  const HandleReadMore = (poseName) => {
+    navigate(`/pose/${poseName}`);
+  };
+
+  useEffect(() => {
+    fetchAllPoses();
+  }, [filter]); // Re-fetch poses when filter changes
 
   const HandleReadMore = (poseName) => {
     navigate(`/pose/${poseName}`);
@@ -105,6 +120,7 @@ const Categories = () => {
     </div>
   );
 };
+
 
 export default Categories;
 

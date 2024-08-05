@@ -72,9 +72,11 @@ const Profile = () => {
     <div className="profile-container">
       <div className="user-details">
         <h2>User Details</h2>
+
         <p>User ID: {user.id}</p>
         <p>Username: {user.username}</p>
         <p>Session Token: {user.session_token}</p>
+
         <button className="button" onClick={handleLogout}>Logout</button>
       </div>
       <div className="saved-poses">

@@ -38,96 +38,38 @@ export function NavbarWithSearch() {
 
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="flex items-center gap-x-2 p-1 font-medium"
-      >
-        <NavLink
-          to="/"
-          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-          activeClassName="highlight"
-        >
+      <Typography as="li" variant="small" color="blue-gray" className="flex items-center gap-x-2 p-1 font-medium">
+        <NavLink to="/" className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4" activeClassName="highlight">
           Home
         </NavLink>
       </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="flex items-center gap-x-2 p-1 font-medium"
-      >
-        <NavLink
-          to="/sequence"
-          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-          activeClassName="highlight"
-        >
+      <Typography as="li" variant="small" color="blue-gray" className="flex items-center gap-x-2 p-1 font-medium">
+        <NavLink to="/sequence" className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4" activeClassName="highlight">
           Generate
         </NavLink>
       </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="flex items-center gap-x-2 p-1 font-medium"
-      >
-        <NavLink
-          to="/categories"
-          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-          activeClassName="highlight"
-        >
+      <Typography as="li" variant="small" color="blue-gray" className="flex items-center gap-x-2 p-1 font-medium">
+        <NavLink to="/categories" className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4" activeClassName="highlight">
           Categories
         </NavLink>
       </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="flex items-center gap-x-2 p-1 font-medium"
-      >
-        <NavLink
-          to="/save"
-          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-          activeClassName="highlight"
-        >
+      <Typography as="li" variant="small" color="blue-gray" className="flex items-center gap-x-2 p-1 font-medium">
+        <NavLink to="/save" className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4" activeClassName="highlight">
           Saved
         </NavLink>
       </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="flex items-center gap-x-2 p-1 font-medium"
-      >
-        <NavLink
-          to="/logins"
-          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-          activeClassName="highlight"
-        >
+      <Typography as="li" variant="small" color="blue-gray" className="flex items-center gap-x-2 p-1 font-medium">
+        <NavLink to="/logins" className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4" activeClassName="highlight">
           Sign Up
         </NavLink>
       </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="flex items-center gap-x-2 p-1 font-medium"
-      >
+      <Typography as="li" variant="small" color="blue-gray" className="flex items-center gap-x-2 p-1 font-medium">
         {user ? (
-          <NavLink
-            to="/profile"
-            className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-            activeClassName="highlight"
-          >
+          <NavLink to="/profile" className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4" activeClassName="highlight">
             {user.username}
           </NavLink>
         ) : (
-          <NavLink
-            to="/signin"
-            className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-            activeClassName="highlight"
-          >
+          <NavLink to="/SignIn" className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4" activeClassName="highlight">
             Sign In
           </NavLink>
         )}
