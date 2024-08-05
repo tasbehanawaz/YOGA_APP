@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +12,9 @@ const Categories = () => {
   const [error, setError] = useState(null); // Add an error state
   const navigate = useNavigate();
 
+
   const fetchAllPoses = async () => {
+
     setLoading(true);
     setError(null); // Reset error state
     try {
@@ -28,10 +30,20 @@ const Categories = () => {
       }
     }  catch (error) {
       console.error('Error fetching the poses:', error);
+
       setError(error.message || 'Error fetching poses. Please try again.');
+
     } finally {
       setLoading(false);
     }
+  }, [filter]); // Re-run when filter changes
+
+  useEffect(() => {
+    fetchAllPoses();
+  }, [fetchAllPoses]);
+
+  const HandleReadMore = (poseName) => {
+    navigate(`/pose/${poseName}`);
   };
 
   useEffect(() => {

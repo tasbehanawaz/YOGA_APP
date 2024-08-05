@@ -68,19 +68,22 @@ const Profile = () => {
     return <div className="error">{error}</div>;
   }
 
-  return (
+ return (
     <div className="profile-container">
       <div className="user-details">
         <h2>User Details</h2>
-        <p>Username: {userDetails.username}</p> {/* Ensure userDetails is used */}
+
+        <p>User ID: {user.id}</p>
+        <p>Username: {user.username}</p>
+        <p>Session Token: {user.session_token}</p>
+
         <button className="button" onClick={handleLogout}>Logout</button>
       </div>
       <div className="saved-poses">
         <h2>Saved Poses</h2>
         {savedPoses.map((pose, index) => (
-          <div key={index} className="pose-item" onClick={() => handleReadMore(pose.name)}>
+          <div key={index} className="pose-item">
             <p>{pose.name}</p>
-            <img src={pose.image_url || 'https://via.placeholder.com/150'} alt={pose.name} />
           </div>
         ))}
         <button className="button" onClick={handleViewAllPoses}>View All</button>

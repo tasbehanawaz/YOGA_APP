@@ -90,6 +90,7 @@ function App() {
             element={
               <Layout>
                 <SavedPoses />
+
               </Layout>
             }
           />
@@ -98,6 +99,7 @@ function App() {
             element={
               <Layout>
                 <SavedPoses />
+
               </Layout>
             }
           />
