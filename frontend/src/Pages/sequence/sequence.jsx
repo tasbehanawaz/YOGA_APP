@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
@@ -14,7 +15,7 @@ const Sequence = () => {
     height: '',
     weight: '',
     gender: '',
-    difficulty_level: 'mixed',
+    difficulty_level: 'all',
   });
   const [appliedFilters, setAppliedFilters] = useState({});
   const navigate = useNavigate();
@@ -41,14 +42,14 @@ const Sequence = () => {
 
   const fetchFilteredPoses = async (filters) => {
     setLoading(true);
-    console.log('Applying filters:', filters); // Debugging line
+    console.log('Applying filters:', filters);
     try {
       const response = await axios.post('http://localhost:8001/FetchAllYogaPoses.php', filters, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      console.log('Filtered response:', response.data); // Debugging line
+      console.log('Filtered response:', response.data);
       if (response.data.status === 'success') {
         setPoses(response.data.data);
       } else {
@@ -141,7 +142,7 @@ const Sequence = () => {
             <Option value="non-binary">Non-binary</Option>
           </Select>
           <Select name="difficulty_level" label="Difficulty Level" onChange={(value) => handleSelectChange('difficulty_level', value)}>
-            <Option value="mixed">Mixed</Option>
+            <Option value="all">All</Option>
             <Option value="beginner">Beginner</Option>
             <Option value="intermediate">Intermediate</Option>
             <Option value="advanced">Advanced</Option>
@@ -176,6 +177,7 @@ const Sequence = () => {
               name={pose.english_name}
               imageUrl={pose.url_png}
               poseDescription={pose.pose_benefits}
+              difficultyLevel={pose.difficulty_level}
               onSave={() => handleSavePose(pose)}
               onClick={() => handlePoseSelect(pose.english_name)}
             />

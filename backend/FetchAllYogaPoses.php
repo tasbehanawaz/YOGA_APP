@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $level = isset($_GET['level']) ? $_GET['level'] : 'all';
-        $poses = fetchAndClassifyAllYogaPoses($level);
+        $poses = fetchAndClassifyAllYogaPoses(['difficulty_level' => $level]);
         echo json_encode(['status' => 'success', 'data' => $poses]);
     } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = json_decode(file_get_contents('php://input'), true);
@@ -33,18 +33,26 @@ try {
     echo json_encode(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()]);
 }
 
-function fetchAndClassifyAllYogaPoses($level = 'all') {
+function fetchAndClassifyAllYogaPoses($filterOptions = []) {
     $poses = fetchAllYogaPoses();
     $classifiedPoses = classifyPoses($poses);
+    if (!empty($filterOptions)) {
+        $classifiedPoses = applyFilters($classifiedPoses, $filterOptions);
+    }
+    printDifficultyDistribution($classifiedPoses);
+    return $classifiedPoses;
+}
 
-    if ($level !== 'all') {
-        $classifiedPoses = array_filter($classifiedPoses, function($pose) use ($level) {
-            return strtolower($pose['difficulty_level']) === strtolower($level);
+function applyFilters($poses, $filters) {
+    $filteredPoses = $poses;
+
+    if (isset($filters['difficulty_level']) && $filters['difficulty_level'] !== 'all') {
+        $filteredPoses = array_filter($filteredPoses, function($pose) use ($filters) {
+            return strtolower($pose['difficulty_level']) === strtolower($filters['difficulty_level']);
         });
     }
 
-    printDifficultyDistribution($classifiedPoses);
-    return array_values($classifiedPoses);
+    return array_values($filteredPoses);
 }
 
 function classifyPoses($poses) {
@@ -65,8 +73,6 @@ function classifyPoses($poses) {
 
     foreach ($poses as &$pose) {
         $description = strtolower($pose['pose_benefits'] . ' ' . ($pose['pose_description'] ?? '') . ' ' . $pose['english_name']);
-        $words = explode(' ', $description);
-
         $points = 0;
 
         if (str_contains($description, 'beginner')) $points -= 2;

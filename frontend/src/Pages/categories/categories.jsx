@@ -113,10 +113,6 @@ const Categories = () => {
 export default Categories;
 
 
-
-
-
-
 // import { useState, useEffect } from 'react'; //storing the state of the component, use effect what happens when I create categoreis intinially
 // import axios from 'axios'; //fetching data from the backend
 // import { CardDefault } from '../../components/card/card';
