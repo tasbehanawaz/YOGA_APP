@@ -126,12 +126,12 @@ const Sequence = () => {
   };
 
   return (
-    <div className="sequence-container m-8">
-      <h1 className="text-2xl font-bold mb-4 text-center">Select Yoga Poses</h1>
+    <div className="sequence-container">
+      <h1 className="title">Select Yoga Poses</h1>
 
-      <div className="filter-options mb-4">
-        <h2 className="text-xl font-semibold mb-2">Filter Options</h2>
-        <div className="flex flex-col gap-2">
+      <div className="filter-options">
+        <h2 className="filter-title">Filter Options</h2>
+        <div className="filter-inputs">
           <Input name="age" type="number" label="Age" onChange={handleFilterChange} value={filters.age} />
           <Input name="height" type="number" label="Height (feet)" onChange={handleFilterChange} value={filters.height} step="0.1" />
           <Input name="weight" type="number" label="Weight (kg)" onChange={handleFilterChange} value={filters.weight} />
@@ -146,15 +146,15 @@ const Sequence = () => {
             <Option value="intermediate">Intermediate</Option>
             <Option value="advanced">Advanced</Option>
           </Select>
-          <Button className="bg-blue-900 text-white py-2 px-4 rounded" onClick={handleApplyFilters}>
+          <Button className="apply-filters-btn" onClick={handleApplyFilters}>
             Apply Filters
           </Button>
         </div>
       </div>
 
       {Object.keys(appliedFilters).length > 0 && (
-        <div className="applied-filters mb-4">
-          <h2 className="text-xl font-semibold mb-2">Applied Filters</h2>
+        <div className="applied-filters">
+          <h2 className="applied-filters-title">Applied Filters</h2>
           {appliedFilters.age && <p>Age: {appliedFilters.age}</p>}
           {appliedFilters.height && <p>Height: {appliedFilters.height}</p>}
           {appliedFilters.weight && <p>Weight: {appliedFilters.weight}</p>}
@@ -164,7 +164,7 @@ const Sequence = () => {
       )}
 
       {loading ? (
-        <div className="flex justify-center items-center">
+        <div className="spinner-container">
           <Spinner />
         </div>
       ) : (
@@ -172,20 +172,19 @@ const Sequence = () => {
           {poses.map((pose, index) => (
             <CardDefault
               key={index}
+              className={`card-container ${selectedPoses.includes(pose.english_name) ? 'selected' : ''}`}
               name={pose.english_name}
               imageUrl={pose.url_png}
               poseDescription={pose.pose_benefits}
               onSave={() => handleSavePose(pose)}
               onClick={() => handlePoseSelect(pose.english_name)}
-              buttonOnClick={() => handleReadMore(pose.english_name)}
-              isSelected={selectedPoses.includes(pose.english_name)}
             />
           ))}
         </div>
       )}
 
       <div className="sticky-button-container">
-        <Button className="bg-blue-900 text-white py-2 px-4 rounded" onClick={handleGenerateVideo}>
+        <Button className="generate-video-btn" onClick={handleGenerateVideo}>
           Generate Video
         </Button>
       </div>
