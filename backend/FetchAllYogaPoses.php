@@ -16,7 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        $poses = fetchAndClassifyAllYogaPoses();
+        $level = isset($_GET['level']) ? $_GET['level'] : 'all';
+        $poses = fetchAndClassifyAllYogaPoses($level);
         echo json_encode(['status' => 'success', 'data' => $poses]);
     } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = json_decode(file_get_contents('php://input'), true);
@@ -32,30 +33,18 @@ try {
     echo json_encode(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()]);
 }
 
-function fetchAndClassifyAllYogaPoses($filterOptions = []) {
+function fetchAndClassifyAllYogaPoses($level = 'all') {
     $poses = fetchAllYogaPoses();
     $classifiedPoses = classifyPoses($poses);
-    if (!empty($filterOptions)) {
-        $classifiedPoses = applyFilters($classifiedPoses, $filterOptions);
-    }
-    printDifficultyDistribution($classifiedPoses);
-    return $classifiedPoses;
-}
 
-function applyFilters($poses, $filters) {
-    $filteredPoses = $poses;
-
-    // Apply difficulty level filter only if not 'mixed'
-    if (isset($filters['difficulty_level']) && $filters['difficulty_level'] !== 'mixed') {
-        $filteredPoses = array_filter($filteredPoses, function($pose) use ($filters) {
-            return strtolower($pose['difficulty_level']) === strtolower($filters['difficulty_level']);
+    if ($level !== 'all') {
+        $classifiedPoses = array_filter($classifiedPoses, function($pose) use ($level) {
+            return strtolower($pose['difficulty_level']) === strtolower($level);
         });
     }
 
-    // If difficulty level is 'mixed', apply no filters and return all poses
-    // This section is handled implicitly as we do nothing when difficulty level is 'mixed'
-
-    return array_values($filteredPoses);
+    printDifficultyDistribution($classifiedPoses);
+    return array_values($classifiedPoses);
 }
 
 function classifyPoses($poses) {
