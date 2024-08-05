@@ -1,7 +1,6 @@
 <?php
 
-require_once 'db.php'; // Ensure this is using require_once
-require_once 'fetchAllYogaPoses.php'; // Ensure this is using require_once
+require_once 'db.php';
 
 // Cross-Origin Resource Sharing (CORS) headers
 header("Access-Control-Allow-Origin: *");
@@ -73,180 +72,176 @@ function definePoseSequence() {
         ['name' => 'Butterfly', 'duration' => 5, 'position' => '4'],
         ['name' => 'Camel', 'duration' => 5, 'position' => '5'],
         ['name' => 'Cat', 'duration' => 5, 'position' => '6'],
-        ['name' => 'Chair', 'duration' => 5, 'position' => '7'],
-        ['name' => 'Child pose', 'duration' => 5, 'position' => '8'],
-        ['name' => 'Corpse', 'duration' => 5, 'position' => '9'],
-        ['name' => 'Cow', 'duration' => 5, 'position' => '10'],
-        ['name' => 'Crescent Lunge', 'duration' => 5, 'position' => '11'],
-        ['name' => 'Crescent Moon', 'duration' => 5, 'position' => '12'],
-        ['name' => 'Crow', 'duration' => 5, 'position' => '13'],
-        ['name' => 'Dolphin', 'duration' => 5, 'position' => '14'],
-        ['name' => 'Downward-Facing Dog', 'duration' => 5, 'position' => '15'],
-        ['name' => 'Eagle', 'duration' => 5, 'position' => '15'],
-        ['name' => 'Extended Hand to Toe', 'duration' => 5, 'position' => '16'],
-        ['name' => 'Extended Side Angle', 'duration' => 5, 'position' => '17'],
-        ['name' => 'Forearm Stand', 'duration' => 5, 'position' => '18'],
-        ['name' => 'Forward Bend with Shoulder Opener', 'duration' => 5, 'position' => '19'],
-        ['name' => 'Garland Pose', 'duration' => 5, 'position' => '20'],
-        ['name' => 'Half Boat', 'duration' => 5, 'position' => '21'],
-        ['name' => 'Half Lord of the Fishes', 'duration' => 5, 'position' => '22'],
-        ['name' => 'Half-Moon', 'duration' => 5, 'position' => '23'],
-        ['name' => 'Handstand', 'duration' => 5, 'position' => '24'],
-        ['name' => 'King Pigeon', 'duration' => 5, 'position' => '25'],
-        ['name' => 'Lotus', 'duration' => 5, 'position' => '26'],
-        ['name' => 'Low Lunge', 'duration' => 5, 'position' => '27'],
-        ['name' => 'Pigeon', 'duration' => 5, 'position' => '28'],
-        ['name' => 'Plank', 'duration' => 5, 'position' => '29'],
-        ['name' => 'Plow', 'duration' => 5, 'position' => '30'],
-        ['name' => 'Pyramid', 'duration' => 5, 'position' => '31'],
-        ['name' => 'Reverse Warrior', 'duration' => 5, 'position' => '32'],
-        ['name' => 'Seated Forward Bend', 'duration' => 5, 'position' => '33'],
-        ['name' => 'Shoulder Stand', 'duration' => 5, 'position' => '34'],
-        ['name' => 'Side Plank', 'duration' => 5, 'position' => '35'],
-        ['name' => 'Side Splits', 'duration' => 5, 'position' => '36'],
-        ['name' => 'Sphinx', 'duration' => 5, 'position' => '37'],
-        ['name' => 'Splits', 'duration' => 5, 'position' => '38'],
-        ['name' => 'Standing Forward Bend', 'duration' => 5, 'position' => '39'],
-        ['name' => 'Tree', 'duration' => 5, 'position' => '40'],
-        ['name' => 'Triangle', 'duration' => 5, 'position' => '41'],
-        ['name' => 'Upward-Facing Dog', 'duration' => 5, 'position' => '42'],
-        ['name' => 'Warrior One', 'duration' => 5, 'position' => '43'],
-        ['name' => 'Warrior Three', 'duration' => 5, 'position' => '44'],
-        ['name' => 'Warrior Two', 'duration' => 5, 'position' => '45'],
-        ['name' => 'Wheel', 'duration' => 5, 'position' => '46'],
-        ['name' => 'Wild Thing', 'duration' => 5, 'position' => '47'],
+        ['name' => 'Corpse', 'duration' => 5, 'position' => '7'],
     ];
 }
 
-function shufflePoses($poses)
+function createFrames($poses)
 {
-    shuffle($poses);
-    foreach ($poses as &$pose) {
-        // Shuffle timings for each pose between 5 and 10 seconds
-        $pose['duration'] = rand(5, 10);
+    $framePaths = [];
+    if (!is_dir('frames')) {
+        mkdir('frames', 0777, true);
     }
-    return $poses;
+    foreach ($poses as $index => $pose) {
+        // Create pose frame
+        $imagePath = sprintf('frames/pose%03d.png', $index);
+        $imageContent = file_get_contents($pose['url_png']);
+        if ($imageContent === false) {
+            error_log('Failed to fetch image for pose: ' . $pose['name']);
+            return ['error' => 'Failed to fetch image for pose: ' . $pose['name']];
+        }
+        file_put_contents($imagePath, $imageContent);
+        if (!file_exists($imagePath)) {
+            error_log('Failed to save pose image: ' . $imagePath);
+            return ['error' => 'Failed to save pose image'];
+        }
+        $framePaths[] = $imagePath;
+        error_log('Saved frame: ' . $imagePath);
+    }
+    return $framePaths;
 }
 
-function createPoseSequences($poses, $numSequences = 15, $sequenceLength = 3)
+function generateVideo($poseSequence)
 {
-    $sequences = [];
-    for ($i = 0; $i < $numSequences; $i++) {
-        $shuffled = shufflePoses($poses);
-        $sequences[] = array_slice($shuffled, 0, $sequenceLength);
+    if (!is_dir('output')) {
+        mkdir('output', 0777, true);
     }
-    return $sequences;
+
+    // Generate a unique ID for the video
+    $uniqueId = uniqid();
+    $videoPath = 'output/yoga_sequence_' . $uniqueId . '.mp4';
+
+    // Initialize arrays to store inputs, audio inputs, and filter complex parts
+    $inputs = [];
+    $audioInputs = [];
+    $audioFilePaths = [];
+    $filterComplexParts = [];
+
+    // Process each pose in the sequence
+    foreach ($poseSequence as $index => $pose) {
+        $poseName = $pose['name'];
+        $duration = $pose['duration'];
+
+        // Path for the pose image frame
+        $framePath = 'frames/pose' . str_pad($index, 3, '0', STR_PAD_LEFT) . '.png';
+
+        // Path for the audio file
+        $audioFilePath = 'audio/' . $poseName . '.mp3';
+        if (file_exists($audioFilePath)) {
+            // Set inputs for FFmpeg: loop the image for the duration of the audio
+            $inputs[] = "-loop 1 -t $duration -i " . escapeshellarg($framePath);
+            $audioInputs[] = "-i " . escapeshellarg($audioFilePath);
+            $audioFilePaths[] = $audioFilePath;
+
+            // FFmpeg filter to scale images and pad them
+            $filterComplexParts[] = "[$index:v]scale=640:360:force_original_aspect_ratio=decrease,pad=640:360:(ow-iw)/2:(oh-ih)/2,setsar=1[v$index]";
+        } else {
+            error_log("Audio file not found: $audioFilePath");
+            return ['error' => 'Audio file not found for pose: ' . $poseName];
+        }
+    }
+
+    // Combine input strings for FFmpeg
+    $inputString = implode(' ', $inputs) . ' ' . implode(' ', $audioInputs);
+
+    // Create a filter complex to concatenate frames
+    $filterComplexString = implode(";", $filterComplexParts) . ";";
+    $audioFilterComplexString = "";
+
+    // Add audio streams to the filter complex for concatenation
+    for ($i = 0; $i < count($poseSequence); $i++) {
+        $audioFilterComplexString .= "[" . ($i + count($poseSequence)) . ":a]";
+    }
+    $audioFilterComplexString .= "concat=n=" . count($poseSequence) . ":v=0:a=1[aout]";
+
+    // Concatenate video streams
+    $concatInputs = implode("", array_map(function ($index) {
+        return "[v$index]";
+    }, array_keys($poseSequence)));
+    $filterComplexString .= "$concatInputs concat=n=" . count($poseSequence) . ":v=1:a=0[vout]; $audioFilterComplexString";
+
+    // Construct the FFmpeg command
+    $command = "ffmpeg -y $inputString -filter_complex \"$filterComplexString\" " .
+        "-map \"[vout]\" -map \"[aout]\" " .
+        "-c:v libx264 -preset medium -crf 23 -c:a aac -b:a 128k " .
+        "-pix_fmt yuv420p -movflags +faststart $videoPath 2>&1";
+
+    // Execute the FFmpeg command
+    $output = shell_exec($command);
+    error_log($output);
+
+    // Check if the video was generated successfully
+    if (!file_exists($videoPath)) {
+        error_log('Failed to generate video at: ' . $videoPath);
+        return ['error' => 'Failed to generate video'];
+    }
+    return $videoPath;
 }
 
-function savePoseSequencesToDatabase($sequences)
+function savePoseSequenceToDatabase($poseSequence)
 {
+    // Connect to the database using the PDO connection
     $pdo = getDbConnection();
     if ($pdo === null) {
         return ['error' => 'Failed to connect to the database'];
     }
 
     try {
-        $stmt = $pdo->prepare('INSERT INTO pose_sequences (sequence_name, pose_data) VALUES (:sequence_name, :pose_data)');
-        foreach ($sequences as $index => $sequence) {
-            $sequenceName = "Sequence " . ($index + 1);
-            $poseData = json_encode($sequence);
+        $stmt = $pdo->prepare('INSERT INTO pose_sequence (name, duration, position) VALUES (:name, :duration, :position)');
+
+        foreach ($poseSequence as $pose) {
             $stmt->execute([
-                'sequence_name' => $sequenceName,
-                'pose_data' => $poseData
+                'name' => $pose['name'],
+                'duration' => $pose['duration'],
+                'position' => $pose['position']
             ]);
         }
     } catch (PDOException $e) {
         error_log('PDOException: ' . $e->getMessage());
-        return ['error' => 'Failed to save pose sequences to the database'];
+        return ['error' => 'Failed to save pose sequence to the database'];
     }
 
     return true;
 }
 
-function getPoseSequencesFromDatabase()
-{
-    $pdo = getDbConnection();
-    if ($pdo === null) {
-        return ['error' => 'Failed to connect to the database'];
-    }
-
-    try {
-        $stmt = $pdo->query('SELECT sequence_name, pose_data FROM pose_sequences');
-        $sequences = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Decode JSON data
-        foreach ($sequences as &$sequence) {
-            $sequence['pose_data'] = json_decode($sequence['pose_data'], true);
-        }
-
-        return $sequences;
-    } catch (PDOException $e) {
-        error_log('PDOException: ' . $e->getMessage());
-        return ['error' => 'Failed to retrieve pose sequences from the database'];
-    }
-}
-
-function getOrCreateSequence($selectedPoses) {
-    $pdo = getDbConnection();
-    $sequenceName = implode("-", array_column($selectedPoses, 'name')); // Create a unique name based on pose names
-
-    try {
-        $stmt = $pdo->prepare("SELECT * FROM pose_sequences WHERE sequence_name = ?");
-        $stmt->execute([$sequenceName]);
-        $sequence = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($sequence) {
-            return json_decode($sequence['pose_data'], true); // Return existing sequence
-        } else {
-            // If sequence does not exist, create it
-            $newSequence = createPoseSequences([$selectedPoses], 1, count($selectedPoses))[0];
-            savePoseSequencesToDatabase([$newSequence]);
-            return $newSequence;
-        }
-    } catch (PDOException $e) {
-        error_log('PDOException: ' . $e->getMessage());
-        return ['error' => 'Database operation failed'];
-    }
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $inputData = json_decode(file_get_contents('php://input'), true);
-    $selectedPoses = $inputData['selectedPoses'] ?? [];
+    // Use predefined sequence directly
+    $poseSequence = definePoseSequence();
+    $poseNames = array_column($poseSequence, 'name');
+    $poses = fetchPoses($poseNames);
 
-    // Check if there are specific poses selected, otherwise use the default sequence
-    if (empty($selectedPoses)) {
-        $poseSequence = definePoseSequence(); // Your predefined sequence
-    } else {
-        $poseSequence = getOrCreateSequence($selectedPoses); // Dynamic creation or fetching
-    }
-
-    if (isset($poseSequence['error'])) {
-        echo json_encode(['error' => $poseSequence['error']]);
+    if (isset($poses['error'])) {
+        echo json_encode(['error' => $poses['error']]);
         exit;
     }
 
-    // Create multiple sequences with shuffling if the sequence is predefined
-    if (!empty($selectedPoses)) {
-        $sequences = createPoseSequences([$poseSequence]);
-    } else {
-        $sequences = createPoseSequences($poseSequence);
-    }
-
-    // Save sequences to the database
-    $saveResult = savePoseSequencesToDatabase($sequences);
+    // Save to the database
+    $saveResult = savePoseSequenceToDatabase($poseSequence);
     if ($saveResult !== true) {
         echo json_encode(['error' => $saveResult['error']]);
         exit;
     }
 
-    // Optionally, retrieve and display saved sequences
-    $retrievedSequences = getPoseSequencesFromDatabase();
-    if (isset($retrievedSequences['error'])) {
-        echo json_encode(['error' => $retrievedSequences['error']]);
+    // Create frames based on the fetched poses
+    $framePaths = createFrames($poses);
+    if (isset($framePaths['error'])) {
+        echo json_encode(['error' => $framePaths['error']]);
         exit;
     }
 
-    echo json_encode(['success' => true, 'saved_sequences' => $retrievedSequences]);
-}
+    // Generate video with the created frames
+    $videoPath = generateVideo($poseSequence);
+    if (isset($videoPath['error'])) {
+        echo json_encode(['error' => $videoPath['error']]);
+        exit;
+    }
 
-?>
+    // Return the full URL
+    $fullUrl = 'http://localhost:8001/' . $videoPath;
+    echo json_encode(['videoPath' => $fullUrl]);
+
+    // Clean up frame files
+    foreach ($framePaths as $framePath) {
+        unlink($framePath);
+    }
+}
