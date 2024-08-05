@@ -98,7 +98,7 @@ const Profile = () => {
     return <div className="error">{error}</div>;
   }
 
-  return (
+ return (
     <div className="profile-container">
       <div className="user-details">
         <h2>User Details</h2>
@@ -108,6 +108,10 @@ const Profile = () => {
         <button className="button" onClick={handleLogout}>
           Logout
         </button>
+        <p>User ID: {user.id}</p>
+        <p>Username: {user.username}</p>
+        <p>Session Token: {user.session_token}</p>
+        <button className="button" onClick={handleLogout}>Logout</button>
       </div>
       <div className="saved-poses">
         <h2>Saved Poses</h2>
