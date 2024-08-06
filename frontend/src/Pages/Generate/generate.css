@@ -25,54 +25,8 @@
   border-radius: 10px;
 }
 
-.pose-details {
-  width: 100%;
-  max-width: 800px;
-  margin: 20px auto;
-}
 
-.pose-detail {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
-  position: relative;
-}
-
-.pose-title {
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.pose-title::after {
-  content: '▼';
-  font-size: 14px;
-  margin-left: 10px;
-  transition: transform 0.3s ease;
-}
-
-.pose-detail.expanded .pose-title::after {
-  transform: rotate(180deg);
-}
-
-.pose-extra-details {
-  margin-top: 10px;
-  padding-left: 10px;
-  border-left: 2px solid #ddd;
-}
-
-.instruction-text {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-button:hover {
+/* button:hover {
   background-color: #45a049;
 }
 
@@ -81,9 +35,9 @@ button:disabled {
   cursor: not-allowed;
 }
 
-button {
+/* button {
   background-color: #4CAF50; /* Green */
-  border: none;
+  /* border: none;
   color: white;
   padding: 15px 32px;
   text-align: center;
@@ -92,22 +46,5 @@ button {
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
+  transition: background-color 0.3s ease; */
 
-.sidebar {
-  width: 100%;
-  max-width: 400px;
-  margin: 20px auto;
-}
-
-.previous-video {
-  margin-bottom: 20px;
-}
-
-.previous-video-content {
-  width: 100%;
-  height: auto;
-  border: 2px solid #ddd;
-  border-radius: 10px;
-}

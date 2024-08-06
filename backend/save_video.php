@@ -1,12 +1,14 @@
 <?php
 require 'db.php';
 
+// Add CORS headers
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 $db = getDbConnection();
 
+// Handle preflight request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -14,9 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $data = json_decode(file_get_contents("php://input"), true);
 
+// Debugging line to check received data
+file_put_contents('php://stderr', print_r($data, TRUE));
+
 if (isset($data['video_path'])) {
     $videoPath = $data['video_path'];
 
+    // Prevent duplicates by checking if the video already exists
     $stmt = $db->prepare("SELECT COUNT(*) FROM videos WHERE video_path = ?");
     $stmt->execute([$videoPath]);
     if ($stmt->fetchColumn() > 0) {
