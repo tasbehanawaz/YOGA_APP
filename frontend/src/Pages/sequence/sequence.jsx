@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
@@ -82,12 +81,12 @@ const Sequence = () => {
     setAppliedFilters(filters);
   };
 
-  const handlePoseSelect = (pose) => {
+  const handlePoseSelect = (poseName) => {
     setSelectedPoses((prev) => {
-      if (prev.includes(pose)) {
-        return prev.filter((p) => p !== pose);
+      if (prev.includes(poseName)) {
+        return prev.filter((p) => p !== poseName);
       } else {
-        return [...prev, pose];
+        return [...prev, poseName];
       }
     });
   };
@@ -164,34 +163,38 @@ const Sequence = () => {
         </div>
       )}
 
-      {loading ? (
-        <div className="spinner-container">
-          <Spinner />
-        </div>
-      ) : (
-        <div className="poses-grid">
-          {poses.map((pose, index) => (
-            <CardDefault
-              key={index}
-              className={`card-container ${selectedPoses.includes(pose.english_name) ? 'selected' : ''}`}
-              name={pose.english_name}
-              imageUrl={pose.url_png}
-              poseDescription={pose.pose_benefits}
+       {loading ? (
+        <div className="flex justify-center items-center">
+          <Spinner />
+        </div>
+      ) : (
+        <div className="poses-grid">
+          {poses.map((pose, index) => (
+            <CardDefault
+              key={index}
+              name={pose.english_name}
+              imageUrl={pose.url_png}
+              poseDescription={pose.pose_benefits}
               difficultyLevel={pose.difficulty_level}
-              onSave={() => handleSavePose(pose)}
-              onClick={() => handlePoseSelect(pose.english_name)}
-            />
-          ))}
-        </div>
-      )}
 
-      <div className="sticky-button-container">
-        <Button className="generate-video-btn" onClick={handleGenerateVideo}>
-          Generate Video
-        </Button>
-      </div>
-    </div>
-  );
+           
+              onSave={() => handleSavePose(pose)}
+              onClick={() => handlePoseSelect(pose.english_name)}
+              // eslint-disable-next-line no-undef
+              buttonOnClick={() => handleReadMore(pose.english_name)}
+              isSelected={selectedPoses.includes(pose.english_name)}
+            />
+          ))}
+        </div>
+      )}
+
+      <div className="sticky-button-container">
+        <Button className="bg-blue-900 text-white py-2 px-4 rounded" onClick={handleGenerateVideo}>
+          Generate Video
+        </Button>
+      </div>
+    </div>
+  );
 };
 
-export default Sequence;
+export default Sequence; 
