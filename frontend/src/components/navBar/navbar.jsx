@@ -4,7 +4,7 @@ import axios from 'axios';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Navbar, MobileNav, Typography, Button, IconButton, Input } from '@material-tailwind/react';
-import './navbar.css'; // Import the CSS file
+import './navbar.css';
 
 export function NavbarWithSearch() {
   const { user } = useAuth();
@@ -178,6 +178,3 @@ export function NavbarWithSearch() {
     </>
   );
 }
-
-
-

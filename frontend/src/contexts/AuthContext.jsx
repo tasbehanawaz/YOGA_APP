@@ -1,6 +1,4 @@
-
-
-import { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
@@ -23,15 +21,11 @@ const checkLoginStatus = () => {
 
 const logoutUser = async () => {
   try {
-    const response = await fetch('/signout.php', {
-      method: 'POST',
-      credentials: 'include',
-    });
-    const data = await response.json();
-    if (data.success) {
+    const response = await axios.post('http://localhost:8001/logout.php', {}, { withCredentials: true });
+    if (response.data.success) {
       return true;
     } else {
-      throw new Error(data.error || 'Logout failed');
+      throw new Error(response.data.error || 'Logout failed');
     }
   } catch (error) {
     console.error('Logout error:', error);
@@ -63,6 +57,11 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
+  const login = async (credentials) => {
+    const response = await axios.post('http://localhost:8001/signin.php', credentials, { withCredentials: true });
+    setUser(response.data.user);
+  };
+
   const logout = async () => {
     const success = await logoutUser();
     if (success) {
@@ -72,18 +71,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, checkLoginStatus, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {!loading && children}
     </AuthContext.Provider>
   );
 };
 
-
-
-
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
