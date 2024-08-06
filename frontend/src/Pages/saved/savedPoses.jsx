@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { CardDefault } from '../../components/card/card';
 import axios from 'axios';
@@ -44,17 +43,44 @@ const SavedPoses = () => {
 
     if (savedPoses.length === 0) {
         return (
-            <div>
-                <div>No saved poses available.</div>
-                <button onClick={handleResetPoses} className="mt-4 bg-red-500 text-white py-2 px-4 rounded">Reset Saved Poses</button>
+            <div className="saved-poses-container">
+                <div className="no-poses-message">No saved poses available.</div>
+                <button onClick={handleResetPoses} className="reset-button">Reset Saved Poses</button>
+                <style jsx>{`
+                    .saved-poses-container {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        padding: 2rem;
+                        background-color: #f5f5f5;
+                        min-height: 100vh;
+                    }
+                    .reset-button {
+                        margin-bottom: 1rem;
+                        background-color: #e53e3e;
+                        color: white;
+                        padding: 0.5rem 1rem;
+                        border-radius: 0.25rem;
+                        cursor: pointer;
+                        transition: background-color 0.3s ease;
+                    }
+                    .reset-button:hover {
+                        background-color: #c53030;
+                    }
+                    .no-poses-message {
+                        font-size: 1.25rem;
+                        color: #333;
+                        margin-bottom: 1rem;
+                    }
+                `}</style>
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col items-center py-8">
-            <button onClick={handleResetPoses} className="mb-4 bg-red-500 text-white py-2 px-4 rounded">Reset Saved Poses</button>
-            <div className="flex flex-wrap justify-center gap-6">
+        <div className="saved-poses-container">
+            <button onClick={handleResetPoses} className="reset-button">Reset Saved Poses</button>
+            <div className="poses-grid">
                 {savedPoses.map(pose => (
                     <CardDefault
                         key={pose.id}
@@ -68,6 +94,39 @@ const SavedPoses = () => {
                     />
                 ))}
             </div>
+            <style jsx>{`
+                .saved-poses-container {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    padding: 2rem;
+                    background-color: #f5f5f5;
+                    min-height: 100vh;
+                }
+                .reset-button {
+                    margin-bottom: 1rem;
+                    background-color: #e53e3e;
+                    color: white;
+                    padding: 0.5rem 1rem;
+                    border-radius: 0.25rem;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                }
+                .reset-button:hover {
+                    background-color: #c53030;
+                }
+                .poses-grid {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    gap: 1.5rem;
+                }
+                .no-poses-message {
+                    font-size: 1.25rem;
+                    color: #333;
+                    margin-bottom: 1rem;
+                }
+            `}</style>
         </div>
     );
 };
