@@ -1,31 +1,22 @@
 <?php
-
-// Allow any website to access this API
 header("Access-Control-Allow-Origin: *");
-// Allow the following methods to access this API
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-// Allow the following headers to access this API
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-// This script fetches yoga pose details based on an array of pose names.
 require 'db.php';
 
-// Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    // Respond with 200 OK and exit
     http_response_code(200);
     exit;
 }
 
-// Handle GET requests
-if ($_SERVER['REQUEST_METHOD'] === 'GET' &&  isset($_GET['poseName'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['poseName'])) {
     $poseName = $_GET['poseName'];
     $poseData = fetchYogaPoseByName($poseName);
     echo json_encode($poseData);
     exit;
 }
 
-// Handle POST requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
 
@@ -49,15 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode(['error' => 'Invalid request method']);
 }
 
-
-
-
 function fetchYogaPoseByName($poseName)
 {
     $apiUrl = "https://yoga-api-nzy4.onrender.com/v1/poses?name=" . urlencode($poseName);
 
     $curl = curl_init();
-
     curl_setopt_array($curl, [
         CURLOPT_URL => $apiUrl,
         CURLOPT_RETURNTRANSFER => true,
@@ -91,7 +78,6 @@ function saveYogaPoseToDb($poseData)
         return;
     }
 
-    // Check if the pose already exists
     $checkSql = "SELECT COUNT(*) FROM yoga_poses WHERE name = :name";
     $checkStmt = $db->prepare($checkSql);
     $checkStmt->execute([':name' => $poseData['english_name']]);
@@ -107,3 +93,4 @@ function saveYogaPoseToDb($poseData)
         ]);
     }
 }
+?>
