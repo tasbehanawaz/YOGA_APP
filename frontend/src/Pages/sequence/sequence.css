@@ -39,6 +39,7 @@
   display: flex;
   gap: 0.5rem; /* Reduced gap between buttons */
   margin-top: 0.5rem; /* Added margin to separate buttons from inputs */
+  position: center;
 }
 
 .apply-filters-btn, .reset-filters-btn {
