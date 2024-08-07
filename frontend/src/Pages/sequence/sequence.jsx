@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
@@ -125,6 +126,33 @@ const Sequence = () => {
     }
   };
 
+  const handleGenerateRandomVideo = () => {
+    const randomPoses = [];
+    const posesCopy = [...poses];
+
+    while (randomPoses.length < 5 && posesCopy.length > 0) {
+      const randomIndex = Math.floor(Math.random() * posesCopy.length);
+      randomPoses.push(posesCopy[randomIndex].english_name);
+      posesCopy.splice(randomIndex, 1);
+    }
+
+    navigate('/generate', { state: { selectedPoses: randomPoses, filters } });
+  };
+
+  const handleGenerateFilteredRandomVideo = () => {
+    const filteredPoses = poses.filter(pose => pose.difficulty_level === filters.difficulty_level);
+    const randomPoses = [];
+    const posesCopy = [...filteredPoses];
+
+    while (randomPoses.length < 5 && posesCopy.length > 0) {
+      const randomIndex = Math.floor(Math.random() * posesCopy.length);
+      randomPoses.push(posesCopy[randomIndex].english_name);
+      posesCopy.splice(randomIndex, 1);
+    }
+
+    navigate('/generate', { state: { selectedPoses: randomPoses, filters } });
+  };
+
   return (
     <div className="sequence-container">
       <h1 className="title">Select Yoga Poses</h1>
@@ -160,41 +188,43 @@ const Sequence = () => {
           {appliedFilters.weight && <p>Weight: {appliedFilters.weight}</p>}
           {appliedFilters.gender && <p>Gender: {appliedFilters.gender}</p>}
           {appliedFilters.difficulty_level && <p>Difficulty Level: {appliedFilters.difficulty_level}</p>}
+          <Button className="random-video-btn" onClick={handleGenerateFilteredRandomVideo}>
+            Generate Random Video
+          </Button>
         </div>
       )}
 
-       {loading ? (
-        <div className="flex justify-center items-center">
-          <Spinner />
-        </div>
-      ) : (
-        <div className="poses-grid">
-          {poses.map((pose, index) => (
-            <CardDefault
-              key={index}
-              name={pose.english_name}
-              imageUrl={pose.url_png}
-              poseDescription={pose.pose_benefits}
+      {loading ? (
+        <div className="flex justify-center items-center">
+          <Spinner />
+        </div>
+      ) : (
+        <div className="poses-grid">
+          {poses.map((pose, index) => (
+            <CardDefault
+              key={index}
+              name={pose.english_name}
+              imageUrl={pose.url_png}
+              poseDescription={pose.pose_benefits}
               difficultyLevel={pose.difficulty_level}
+              onSave={() => handleSavePose(pose)}
+              onClick={() => handlePoseSelect(pose.english_name)}
+              isSelected={selectedPoses.includes(pose.english_name)}
+            />
+          ))}
+        </div>
+      )}
 
-           
-              onSave={() => handleSavePose(pose)}
-              onClick={() => handlePoseSelect(pose.english_name)}
-              // eslint-disable-next-line no-undef
-              buttonOnClick={() => handleReadMore(pose.english_name)}
-              isSelected={selectedPoses.includes(pose.english_name)}
-            />
-          ))}
-        </div>
-      )}
-
-      <div className="sticky-button-container">
-        <Button className="bg-blue-900 text-white py-2 px-4 rounded" onClick={handleGenerateVideo}>
-          Generate Video
-        </Button>
-      </div>
-    </div>
-  );
+      <div className="sticky-button-container">
+        <Button className="bg-blue-900 text-white py-2 px-4 rounded" onClick={handleGenerateVideo}>
+          Generate Video
+        </Button>
+        <Button className="bg-green-900 text-white py-2 px-4 rounded" onClick={handleGenerateRandomVideo}>
+          Generate Random Video
+        </Button>
+      </div>
+    </div>
+  );
 };
 
-export default Sequence; 
+export default Sequence;

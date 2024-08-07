@@ -64,6 +64,7 @@ const VideoGenerator = () => {
         'http://localhost:8001/fetch_previous_videos.php',
         { user_id: user.id }
       );
+      console.log('Fetched previous videos:', response.data);
       setPreviousVideos(response.data);
     } catch (error) {
       console.error('Error fetching previous videos:', error);
@@ -84,6 +85,7 @@ const VideoGenerator = () => {
       const response = await axios.post(
         'http://localhost:8001/save_video.php',
         {
+          user_id: user.id,
           video_path: videoUrl,
         },
         {
