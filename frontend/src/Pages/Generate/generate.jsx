@@ -80,8 +80,6 @@ const VideoGenerator = () => {
     document.body.removeChild(a);
   };
 
-  
-
   const saveVideoToDatabase = async () => {
     try {
       const response = await axios.post(

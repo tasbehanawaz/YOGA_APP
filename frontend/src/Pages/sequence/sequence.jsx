@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
@@ -79,18 +80,6 @@ const Sequence = () => {
   const handleApplyFilters = () => {
     fetchFilteredPoses(filters);
     setAppliedFilters(filters);
-  };
-
-  const handleResetFilters = () => {
-    setFilters({
-      age: '',
-      height: '',
-      weight: '',
-      gender: '',
-      difficulty_level: 'all',
-    });
-    fetchAllPoses();
-    setAppliedFilters({});
   };
 
   const handlePoseSelect = (poseName) => {
@@ -185,14 +174,9 @@ const Sequence = () => {
             <Option value="intermediate">Intermediate</Option>
             <Option value="advanced">Advanced</Option>
           </Select>
-          <div className="filter-buttons">
-            <Button className="apply-filters-btn" onClick={handleApplyFilters}>
-              Apply Filters
-            </Button>
-            <Button className="reset-filters-btn" onClick={handleResetFilters}>
-              Reset Filters
-            </Button>
-          </div>
+          <Button className="apply-filters-btn" onClick={handleApplyFilters}>
+            Apply Filters
+          </Button>
         </div>
       </div>
 

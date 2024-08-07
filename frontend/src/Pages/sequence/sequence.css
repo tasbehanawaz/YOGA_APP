@@ -17,7 +17,7 @@
 
 .filter-options {
   background-color: #ffffff;
-  padding: 1rem; /* Reduced padding */
+  padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
@@ -26,32 +26,26 @@
 .filter-title {
   font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: 0.5rem; /* Reduced margin */
+  margin-bottom: 1rem;
 }
 
 .filter-inputs {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem; /* Reduced gap */
+  gap: 1rem;
 }
 
-.filter-buttons {
-  display: flex;
-  gap: 0.5rem; /* Reduced gap between buttons */
-  margin-top: 0.5rem; /* Added margin to separate buttons from inputs */
-}
-
-.apply-filters-btn, .reset-filters-btn {
+.apply-filters-btn {
   background-color: #1e40af; /* Tailwind's blue-900 */
   color: white;
-  padding: 0.5rem 1rem; /* Reduced padding */
+  padding: 0.75rem 1.5rem;
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.apply-filters-btn:hover, .reset-filters-btn:hover {
+.apply-filters-btn:hover {
   background-color: #1a3a8b; /* Slightly darker blue for hover effect */
 }
 
