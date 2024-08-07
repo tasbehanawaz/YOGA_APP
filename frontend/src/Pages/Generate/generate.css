@@ -4,6 +4,9 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
+  background-color: #f0f4f8;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .generate-action {
@@ -13,9 +16,13 @@
 .video-wrapper {
   width: 100%;
   max-width: 800px;
-  margin: 0 auto;
+  margin: 20px auto;
   display: flex;
   justify-content: center;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .video-content {
@@ -23,20 +30,32 @@
   height: auto;
   border: 2px solid #ddd;
   border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .pose-details {
   width: 100%;
   max-width: 800px;
   margin: 20px auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
 }
 
 .pose-detail {
   border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
+  border-radius: 10px;
+  padding: 15px;
   margin-bottom: 10px;
-  position: relative;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pose-detail:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .pose-title {
@@ -46,6 +65,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  color: #333;
 }
 
 .pose-title::after {
@@ -63,6 +83,7 @@
   margin-top: 10px;
   padding-left: 10px;
   border-left: 2px solid #ddd;
+  color: #555;
 }
 
 .instruction-text {
@@ -72,8 +93,24 @@
   text-align: center;
 }
 
+button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
 button:hover {
   background-color: #45a049;
+  transform: translateY(-2px);
 }
 
 button:disabled {
@@ -81,28 +118,28 @@ button:disabled {
   cursor: not-allowed;
 }
 
-button {
-  background-color: #4CAF50; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
 .sidebar {
   width: 100%;
   max-width: 400px;
   margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .previous-video {
   margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.previous-video:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .previous-video-content {
@@ -110,4 +147,27 @@ button {
   height: auto;
   border: 2px solid #ddd;
   border-radius: 10px;
+}
+
+.video-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.previous-video .button {
+  width: 48%;
+  padding: 10px 0;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.previous-video .button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
 }

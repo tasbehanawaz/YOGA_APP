@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import './profile.css';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +9,7 @@ const Profile = () => {
   const { user, logout } = useAuth();
   const [userDetails, setUserDetails] = useState({});
   const [savedPoses, setSavedPoses] = useState([]);
+  const [previousVideos, setPreviousVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -30,11 +30,25 @@ const Profile = () => {
 
         setUserDetails(userResponse.data);
         setSavedPoses(posesResponse.data.slice(0, 3));
+        fetchPreviousVideos();
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Error fetching data. Please try again later.');
       } finally {
         setLoading(false);
+      }
+    };
+
+    const fetchPreviousVideos = async () => {
+      try {
+        const response = await axios.post(
+          'http://localhost:8001/fetch_previous_videos.php',
+          { user_id: user.id }
+        );
+        console.log('Fetched previous videos:', response.data);
+        setPreviousVideos(response.data);
+      } catch (error) {
+        console.error('Error fetching previous videos:', error);
       }
     };
 
@@ -59,6 +73,15 @@ const Profile = () => {
 
   const handleReadMore = (poseName) => {
     navigate(`/pose/${poseName}`);
+  };
+
+  const handleDownload = (videoUrl) => {
+    const a = document.createElement('a');
+    a.href = videoUrl;
+    a.setAttribute('download', videoUrl.split('/').pop());
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   if (loading) {
@@ -91,6 +114,29 @@ const Profile = () => {
           </div>
         ))}
         <button className="button" onClick={handleViewAllPoses}>View All</button>
+      </div>
+      <div className="previous-videos">
+        <h2 className="text-2xl font-bold mb-4">Previously Generated Videos</h2>
+        {previousVideos.length > 0 ? (
+          previousVideos.map((video, index) => (
+            <div key={index} className="previous-video mb-4">
+              <video
+                className="previous-video-content"
+                src={video.videoPath}
+                controls
+                onError={() => alert('Error loading video.')}
+              />
+              <button
+                onClick={() => handleDownload(video.videoPath)}
+                className="mt-2 px-4 py-2 bg-blue-900 hover:bg-blue-500 text-white rounded"
+              >
+                Download
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>No previously generated videos found.</p>
+        )}
       </div>
     </div>
   );
