@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
@@ -17,11 +16,8 @@ const Categories = () => {
     setLoading(true);
     setError(null);
     try {
-      let url = 'http://localhost:8001/fetchAllYogaPoses.php';
-      if (filter !== 'all') {
-        url += `?level=${filter}`;
-      }
-      const response = await axios.get(url);
+      const url = 'http://localhost:8001/fetchAllYogaPoses.php';
+      const response = await axios.post(url, { difficulty_level: filter });
       if (response.data.status === 'success') {
         setPoses(response.data.data);
       } else {
@@ -56,7 +52,7 @@ const Categories = () => {
         {
           headers: {
             'Content-Type': 'application/json',
-          }
+          },
         }
       );
       if (response.data.success) {
@@ -73,10 +69,18 @@ const Categories = () => {
   return (
     <div className="categories-container m-8">
       <div className="flex flex-row w-full justify-center mb-4">
-        <Button onClick={() => setFilter('all')} className="mr-2">All</Button>
-        <Button onClick={() => setFilter('beginner')} className="mr-2">Beginner</Button>
-        <Button onClick={() => setFilter('intermediate')} className="mr-2">Intermediate</Button>
-        <Button onClick={() => setFilter('advanced')} className="mr-2">Advanced</Button>
+        <Button onClick={() => setFilter('mixed')} className="mr-2">
+          Mixed
+        </Button>
+        <Button onClick={() => setFilter('beginner')} className="mr-2">
+          Beginner
+        </Button>
+        <Button onClick={() => setFilter('intermediate')} className="mr-2">
+          Intermediate
+        </Button>
+        <Button onClick={() => setFilter('advanced')} className="mr-2">
+          Advanced
+        </Button>
       </div>
       <div className="flex flex-row w-full justify-center">
         {loading ? (
@@ -111,7 +115,6 @@ const Categories = () => {
 };
 
 export default Categories;
-
 
 // import { useState, useEffect } from 'react'; //storing the state of the component, use effect what happens when I create categoreis intinially
 // import axios from 'axios'; //fetching data from the backend

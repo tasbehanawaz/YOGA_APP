@@ -84,13 +84,12 @@ function App() {
               </Layout>
             }
           />
-  
+
           <Route
             path="/save"
             element={
               <Layout>
                 <SavedPoses />
-
               </Layout>
             }
           />
@@ -99,7 +98,6 @@ function App() {
             element={
               <Layout>
                 <SavedPoses />
-
               </Layout>
             }
           />

@@ -33,7 +33,8 @@ try {
     echo json_encode(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()]);
 }
 
-function fetchAndClassifyAllYogaPoses($filterOptions = []) {
+function fetchAndClassifyAllYogaPoses($filterOptions = [])
+{
     $poses = fetchAllYogaPoses();
     $classifiedPoses = classifyPoses($poses);
     if (!empty($filterOptions)) {
@@ -43,11 +44,12 @@ function fetchAndClassifyAllYogaPoses($filterOptions = []) {
     return $classifiedPoses;
 }
 
-function applyFilters($poses, $filters) {
+function applyFilters($poses, $filters)
+{
     $filteredPoses = $poses;
 
     if (isset($filters['difficulty_level']) && $filters['difficulty_level'] !== 'all') {
-        $filteredPoses = array_filter($filteredPoses, function($pose) use ($filters) {
+        $filteredPoses = array_filter($filteredPoses, function ($pose) use ($filters) {
             return strtolower($pose['difficulty_level']) === strtolower($filters['difficulty_level']);
         });
     }
@@ -55,7 +57,8 @@ function applyFilters($poses, $filters) {
     return array_values($filteredPoses);
 }
 
-function classifyPoses($poses) {
+function classifyPoses($poses)
+{
     $advancedCriteria = ['balance', 'strength', 'flexibility', 'advanced', 'challenging', 'complex', 'inversion', 'headstand', 'handstand', 'arm balance', 'backbend'];
     $intermediateCriteria = ['moderate', 'intermediate', 'flowing', 'dynamic', 'twist', 'lunge', 'core strength'];
     $beginnerCriteria = ['beginner', 'easy', 'gentle', 'relaxing', 'basic'];
@@ -113,7 +116,8 @@ function classifyPoses($poses) {
     return $poses;
 }
 
-function printDifficultyDistribution($poses) {
+function printDifficultyDistribution($poses)
+{
     $distribution = array_count_values(array_column($poses, 'difficulty_level'));
     error_log("Difficulty Distribution: " . json_encode($distribution));
     foreach ($poses as $pose) {
@@ -121,12 +125,14 @@ function printDifficultyDistribution($poses) {
     }
 }
 
-function fetchAllYogaPoses() {
+function fetchAllYogaPoses()
+{
     $apiUrl = "https://yoga-api-nzy4.onrender.com/v1/poses";
     return makeApiRequest($apiUrl);
 }
 
-function makeApiRequest($apiUrl) {
+function makeApiRequest($apiUrl)
+{
     $curl = curl_init();
     curl_setopt_array($curl, [
         CURLOPT_URL => $apiUrl,
@@ -151,4 +157,3 @@ function makeApiRequest($apiUrl) {
 
     return $data ?? [];
 }
-?>
