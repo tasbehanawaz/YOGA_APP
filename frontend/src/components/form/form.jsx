@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom'; // Import Link from react-router-dom
 import {
   Card,
@@ -22,7 +22,7 @@ export function SimpleRegistrationForm() {
     event.preventDefault();
     setError(''); // Clear previous errors
     setSuccess('');
-    
+
     // Sending data to the PHP backend
     const response = await fetch('http://localhost:8001/register.php', {
       method: 'POST',
@@ -30,23 +30,23 @@ export function SimpleRegistrationForm() {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({
-        'username': username,
-        'email': email,
-        'password': password,
-      })
+        username: username,
+        email: email,
+        password: password,
+      }),
     });
     const responseData = await response.json();
     if (responseData.error) {
       setError(responseData.error);
     } else {
-      setSuccess("User registered successfully. Redirecting...");
+      setSuccess('User registered successfully. Redirecting...');
       // Reset fields
       setUsername('');
       setEmail('');
       setPassword('');
       // Wait 3 seconds before redirecting to the home page
       setTimeout(() => {
-        navigate('/');  // Adjust the path as needed for your app
+        navigate('/'); // Adjust the path as needed for your app
       }, 3000); // Delay in milliseconds (3000ms = 3 seconds)
     }
   };
@@ -54,44 +54,63 @@ export function SimpleRegistrationForm() {
   return (
     <div className="form_container">
       <Card color="transparent" shadow={false}>
-        <Typography variant="h4" color="blue-gray">Sign Up</Typography>
+        <Typography variant="h4" color="blue-gray">
+          Sign Up
+        </Typography>
         <Typography color="gray" className="mt-1 font-normal">
           Nice to meet you! Enter your details to register.
         </Typography>
         {error && <div className="text-red-500">{error}</div>}
         {success && <div className="text-green-500">{success}</div>}
-        <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
+        <form
+          onSubmit={handleSubmit}
+          className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96"
+        >
           <div className="mb-1 flex flex-col gap-6">
-            <Typography variant="h6" color="blue-gray" className="-mb-3">Your Name</Typography>
+            <Typography variant="h6" color="blue-gray" className="-mb-3">
+              Your Name
+            </Typography>
             <Input
               size="lg"
               placeholder="Your Name"
+              id="name"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="!border-t-blue-gray-200 focus:!border-t-gray-900"
             />
-            <Typography variant="h6" color="blue-gray" className="-mb-3">Your Email</Typography>
+            <Typography variant="h6" color="blue-gray" className="-mb-3">
+              Your Email
+            </Typography>
             <Input
               size="lg"
               placeholder="name@mail.com"
+              id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="!border-t-blue-gray-200 focus:!border-t-gray-900"
             />
-            <Typography variant="h6" color="blue-gray" className="-mb-3">Password</Typography>
+            <Typography variant="h6" color="blue-gray" className="-mb-3">
+              Password
+            </Typography>
             <Input
               type="password"
               size="lg"
               placeholder="********"
+              id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="!border-t-blue-gray-200 focus:!border-t-gray-900"
             />
           </div>
           <Checkbox label="I agree to the Terms and Conditions" />
-          <Button type="submit" className="mt-6" fullWidth>Sign Up</Button>
+          <Button type="submit" className="mt-6" fullWidth>
+            Sign Up
+          </Button>
           <Typography color="gray" className="mt-4 text-center font-normal">
-            Already have an account? <Link to="/signin" className="font-medium text-gray-900">Sign In</Link>
+            Already have an account?{' '}
+            <Link to="/signin" className="font-medium text-gray-900">
+              Sign In
+            </Link>
           </Typography>
         </form>
       </Card>

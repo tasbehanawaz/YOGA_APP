@@ -1,8 +1,7 @@
-
-
 import { createContext, useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { Spinner } from '@material-tailwind/react';
 
 const AuthContext = createContext();
 
@@ -15,7 +14,11 @@ const checkLoginStatus = () => {
   }, {});
 
   if (cookies.user_id && cookies.username && cookies.session_token) {
-    return { id: cookies.user_id, username: cookies.username, session_token: cookies.session_token };
+    return {
+      id: cookies.user_id,
+      username: cookies.username,
+      session_token: cookies.session_token,
+    };
   }
 
   return null;
@@ -44,9 +47,12 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     const fetchUser = async () => {
       try {
-        const response = await axios.get('http://localhost:8001/get_user.php', { withCredentials: true });
+        const response = await axios.get('http://localhost:8001/get_user.php', {
+          withCredentials: true,
+        });
         if (response.data.id) {
           setUser(response.data);
         } else {
@@ -73,13 +79,16 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ user, checkLoginStatus, logout }}>
-      {!loading && children}
+      {loading ? (
+        <div className="inset-0 flex items-center justify-center min-h-screen">
+          <Spinner className="h-12 w-12" />
+        </div>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 };
-
-
-
 
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
