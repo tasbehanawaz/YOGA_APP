@@ -84,25 +84,23 @@ function App() {
               </Layout>
             }
           />
-  
+
           <Route
             path="/save"
             element={
               <Layout>
                 <SavedPoses />
-
               </Layout>
             }
           />
-          {/* <Route
-            path="/saved-poses"
+          <Route
+            path="/save"
             element={
               <Layout>
                 <SavedPoses />
-
               </Layout>
             }
-          /> */}
+          />
           <Route
             path="/about"
             element={
