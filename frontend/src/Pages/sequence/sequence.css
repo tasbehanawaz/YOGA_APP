@@ -1,13 +1,87 @@
 /* src/Pages/sequence/sequence.css */
 .sequence-container {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 2rem;
-  position:relative;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.filter-options {
+  background-color: #ffffff;
+  padding: 1rem; /* Reduced padding */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.filter-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem; /* Reduced margin */
+}
+
+.filter-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* Reduced gap */
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 0.5rem; /* Reduced gap between buttons */
+  margin-top: 0.5rem; /* Added margin to separate buttons from inputs */
+  position: center;
+}
+
+.apply-filters-btn, .reset-filters-btn {
+  background-color: #1e40af; /* Tailwind's blue-900 */
+  color: white;
+  padding: 0.5rem 1rem; /* Reduced padding */
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.apply-filters-btn:hover, .reset-filters-btn:hover {
+  background-color: #1a3a8b; /* Slightly darker blue for hover effect */
+}
+
+.applied-filters {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.applied-filters-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
 }
 
 .poses-grid {
   display: grid;
-  gap: 4rem;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Ensure 3 cards per row on larger screens */
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+  margin-top: 2rem;
 }
 
 .sticky-button-container {
@@ -16,16 +90,37 @@
   display: flex;
   justify-content: center;
   z-index: 10;
-  background: lightgray;
-  border: 2px solid lightgray;
+  background: white;
+  border: 2px solid #e2e8f0; /* Tailwind's gray-300 */
   padding: 1rem 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.generate-video-btn {
+  background-color: #1e40af; /* Tailwind's blue-900 */
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.generate-video-btn:hover {
+  background-color: #1a3a8b; /* Slightly darker blue for hover effect */
 }
 
 .card-container {
   border: 2px solid transparent;
-  transition: border-color 0.3s;
+  transition: border-color 0.3s, background-color 0.3s;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: white;
 }
 
 .card-container.selected {
-  background-color: rgba(52, 211, 153, 0.3); /* TailwindCSS green-400 with reduced opacity */
- }
+  background-color: rgba(52, 211, 153, 0.3); /* Tailwind's green-400 with reduced opacity */
+  border-color: #34d399; /* Tailwind's green-400 */
+}

@@ -9,6 +9,7 @@ const Profile = () => {
   const { user, logout } = useAuth();
   const [userDetails, setUserDetails] = useState({});
   const [savedPoses, setSavedPoses] = useState([]);
+  const [previousVideos, setPreviousVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -19,21 +20,37 @@ const Profile = () => {
     }
 
     const fetchData = async () => {
-      setLoading(true); // Set loading before starting to fetch
-      setError(null); // Reset error before fetching new data
+      setLoading(true);
+      setError(null);
       try {
         const [userResponse, posesResponse] = await Promise.all([
           axios.get(`http://localhost:8001/get_user.php?user_id=${user.id}`),
-          axios.get(`http://localhost:8001/get_saved_poses.php?user_id=${user.id}`)
+          axios.get(
+            `http://localhost:8001/get_saved_poses.php?user_id=${user.id}`
+          ),
         ]);
 
         setUserDetails(userResponse.data);
         setSavedPoses(posesResponse.data.slice(0, 3));
+        fetchPreviousVideos();
       } catch (error) {
-        console.error('Error fetching data:', error); // Log the actual error
+        console.error('Error fetching data:', error);
         setError('Error fetching data. Please try again later.');
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
+      }
+    };
+
+    const fetchPreviousVideos = async () => {
+      try {
+        const response = await axios.post(
+          'http://localhost:8001/fetch_previous_videos.php',
+          { user_id: user.id }
+        );
+        console.log('Fetched previous videos:', response.data);
+        setPreviousVideos(response.data);
+      } catch (error) {
+        console.error('Error fetching previous videos:', error);
       }
     };
 
@@ -60,31 +77,80 @@ const Profile = () => {
     navigate(`/pose/${poseName}`);
   };
 
+  const handleDownload = (videoUrl) => {
+    const a = document.createElement('a');
+    a.href = videoUrl;
+    a.setAttribute('download', videoUrl.split('/').pop());
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   if (loading) {
-    return <div className="loading-spinner"><div className="spinner"></div></div>;
+    return (
+      <div className="loading-spinner">
+        <div className="spinner"></div>
+      </div>
+    );
   }
 
   if (error) {
     return <div className="error">{error}</div>;
   }
 
- return (
+  return (
     <div className="profile-container">
       <div className="user-details">
         <h2>User Details</h2>
         <p>User ID: {user.id}</p>
         <p>Username: {user.username}</p>
         <p>Session Token: {user.session_token}</p>
-        <button className="button" onClick={handleLogout}>Logout</button>
+        <button className="button" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
       <div className="saved-poses">
         <h2>Saved Poses</h2>
         {savedPoses.map((pose, index) => (
-          <div key={index} className="pose-item">
+          <div
+            key={index}
+            className="pose-item"
+            onClick={() => handleReadMore(pose.name)}
+          >
+            <img
+              src={pose.image_url || 'https://via.placeholder.com/150'}
+              alt={pose.name}
+              className="pose-image"
+            />
             <p>{pose.name}</p>
           </div>
         ))}
-        <button className="button" onClick={handleViewAllPoses}>View All</button>
+        <button className="button" onClick={handleViewAllPoses}>
+          View All
+        </button>
+      </div>
+      <div className="previous-videos">
+        <h2 className="text-2xl font-bold mb-4">Previously Generated Videos</h2>
+        {previousVideos.length > 0 ? (
+          previousVideos.map((video, index) => (
+            <div key={index} className="previous-video mb-4">
+              <video
+                className="previous-video-content"
+                src={video.videoPath}
+                controls
+                onError={() => alert('Error loading video.')}
+              />
+              <button
+                onClick={() => handleDownload(video.videoPath)}
+                className="mt-2 px-4 py-2 bg-blue-900 hover:bg-blue-500 text-white rounded"
+              >
+                Download
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>No previously generated videos found.</p>
+        )}
       </div>
     </div>
   );

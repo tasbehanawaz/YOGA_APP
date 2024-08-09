@@ -3,7 +3,13 @@ import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
 import { useNavigate } from 'react-router-dom';
 import './sequence.css';
-import { Spinner, Button, Input, Select, Option } from '@material-tailwind/react';
+import {
+  Spinner,
+  Button,
+  Input,
+  Select,
+  Option,
+} from '@material-tailwind/react';
 
 const Sequence = () => {
   const [poses, setPoses] = useState([]);
@@ -14,7 +20,7 @@ const Sequence = () => {
     height: '',
     weight: '',
     gender: '',
-    difficulty_level: 'mixed',
+    difficulty_level: 'all',
   });
   const [appliedFilters, setAppliedFilters] = useState({});
   const navigate = useNavigate();
@@ -26,7 +32,9 @@ const Sequence = () => {
   const fetchAllPoses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:8001/FetchAllYogaPoses.php');
+      const response = await axios.get(
+        'http://localhost:8001/FetchAllYogaPoses.php'
+      );
       if (response.data.status === 'success') {
         setPoses(response.data.data);
       } else {
@@ -41,14 +49,18 @@ const Sequence = () => {
 
   const fetchFilteredPoses = async (filters) => {
     setLoading(true);
-    console.log('Applying filters:', filters); // Debugging line
+    console.log('Applying filters:', filters);
     try {
-      const response = await axios.post('http://localhost:8001/FetchAllYogaPoses.php', filters, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      console.log('Filtered response:', response.data); // Debugging line
+      const response = await axios.post(
+        'http://localhost:8001/FetchAllYogaPoses.php',
+        filters,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      console.log('Filtered response:', response.data);
       if (response.data.status === 'success') {
         setPoses(response.data.data);
       } else {
@@ -81,12 +93,24 @@ const Sequence = () => {
     setAppliedFilters(filters);
   };
 
-  const handlePoseSelect = (pose) => {
+  const handleResetFilters = () => {
+    setFilters({
+      age: '',
+      height: '',
+      weight: '',
+      gender: '',
+      difficulty_level: 'all',
+    });
+    fetchAllPoses();
+    setAppliedFilters({});
+  };
+
+  const handlePoseSelect = (poseName) => {
     setSelectedPoses((prev) => {
-      if (prev.includes(pose)) {
-        return prev.filter((p) => p !== pose);
+      if (prev.includes(poseName)) {
+        return prev.filter((p) => p !== poseName);
       } else {
-        return [...prev, pose];
+        return [...prev, poseName];
       }
     });
   };
@@ -125,41 +149,110 @@ const Sequence = () => {
     }
   };
 
-  return (
-    <div className="sequence-container m-8">
-      <h1 className="text-2xl font-bold mb-4 text-center">Select Yoga Poses</h1>
+  const handleGenerateRandomVideo = () => {
+    const randomPoses = [];
+    const posesCopy = [...poses];
 
-      <div className="filter-options mb-4">
-        <h2 className="text-xl font-semibold mb-2">Filter Options</h2>
-        <div className="flex flex-col gap-2">
-          <Input name="age" type="number" label="Age" onChange={handleFilterChange} value={filters.age} />
-          <Input name="height" type="number" label="Height (feet)" onChange={handleFilterChange} value={filters.height} step="0.1" />
-          <Input name="weight" type="number" label="Weight (kg)" onChange={handleFilterChange} value={filters.weight} />
-          <Select name="gender" label="Gender" onChange={(value) => handleSelectChange('gender', value)}>
+    while (randomPoses.length < 5 && posesCopy.length > 0) {
+      const randomIndex = Math.floor(Math.random() * posesCopy.length);
+      randomPoses.push(posesCopy[randomIndex].english_name);
+      posesCopy.splice(randomIndex, 1);
+    }
+
+    navigate('/generate', { state: { selectedPoses: randomPoses, filters } });
+  };
+
+  const handleGenerateFilteredRandomVideo = () => {
+    const filteredPoses = poses.filter(
+      (pose) => pose.difficulty_level === filters.difficulty_level
+    );
+    const randomPoses = [];
+    const posesCopy = [...filteredPoses];
+
+    while (randomPoses.length < 5 && posesCopy.length > 0) {
+      const randomIndex = Math.floor(Math.random() * posesCopy.length);
+      randomPoses.push(posesCopy[randomIndex].english_name);
+      posesCopy.splice(randomIndex, 1);
+    }
+
+    navigate('/generate', { state: { selectedPoses: randomPoses, filters } });
+  };
+
+  return (
+    <div className="sequence-container">
+      <h1 className="title">Select Yoga Poses</h1>
+
+      <div className="filter-options">
+        <h2 className="filter-title">Filter Options</h2>
+        <div className="filter-inputs">
+          <Input
+            name="age"
+            type="number"
+            label="Age"
+            onChange={handleFilterChange}
+            value={filters.age}
+          />
+          <Input
+            name="height"
+            type="number"
+            label="Height (feet)"
+            onChange={handleFilterChange}
+            value={filters.height}
+            step="0.1"
+          />
+          <Input
+            name="weight"
+            type="number"
+            label="Weight (kg)"
+            onChange={handleFilterChange}
+            value={filters.weight}
+          />
+          <Select
+            name="gender"
+            label="Gender"
+            onChange={(value) => handleSelectChange('gender', value)}
+          >
             <Option value="women">Women</Option>
             <Option value="man">Man</Option>
             <Option value="non-binary">Non-binary</Option>
           </Select>
-          <Select name="difficulty_level" label="Difficulty Level" onChange={(value) => handleSelectChange('difficulty_level', value)}>
-            <Option value="mixed">Mixed</Option>
+          <Select
+            name="difficulty_level"
+            label="Difficulty Level"
+            onChange={(value) => handleSelectChange('difficulty_level', value)}
+          >
+            <Option value="all">All</Option>
             <Option value="beginner">Beginner</Option>
             <Option value="intermediate">Intermediate</Option>
             <Option value="advanced">Advanced</Option>
           </Select>
-          <Button className="bg-blue-900 text-white py-2 px-4 rounded" onClick={handleApplyFilters}>
-            Apply Filters
-          </Button>
+          <div className="filter-buttons">
+            <Button className="apply-filters-btn" onClick={handleApplyFilters}>
+              Apply Filters
+            </Button>
+            <Button className="reset-filters-btn" onClick={handleResetFilters}>
+              Reset Filters
+            </Button>
+          </div>
         </div>
       </div>
 
       {Object.keys(appliedFilters).length > 0 && (
-        <div className="applied-filters mb-4">
-          <h2 className="text-xl font-semibold mb-2">Applied Filters</h2>
+        <div className="applied-filters">
+          <h2 className="applied-filters-title">Applied Filters</h2>
           {appliedFilters.age && <p>Age: {appliedFilters.age}</p>}
           {appliedFilters.height && <p>Height: {appliedFilters.height}</p>}
           {appliedFilters.weight && <p>Weight: {appliedFilters.weight}</p>}
           {appliedFilters.gender && <p>Gender: {appliedFilters.gender}</p>}
-          {appliedFilters.difficulty_level && <p>Difficulty Level: {appliedFilters.difficulty_level}</p>}
+          {appliedFilters.difficulty_level && (
+            <p>Difficulty Level: {appliedFilters.difficulty_level}</p>
+          )}
+          <Button
+            className="random-video-btn"
+            onClick={handleGenerateFilteredRandomVideo}
+          >
+            Generate Random Video
+          </Button>
         </div>
       )}
 
@@ -175,10 +268,9 @@ const Sequence = () => {
               name={pose.english_name}
               imageUrl={pose.url_png}
               poseDescription={pose.pose_benefits}
+              difficultyLevel={pose.difficulty_level}
               onSave={() => handleSavePose(pose)}
               onClick={() => handlePoseSelect(pose.english_name)}
-              // eslint-disable-next-line no-undef
-              buttonOnClick={() => handleReadMore(pose.english_name)}
               isSelected={selectedPoses.includes(pose.english_name)}
             />
           ))}
@@ -186,8 +278,17 @@ const Sequence = () => {
       )}
 
       <div className="sticky-button-container">
-        <Button className="bg-blue-900 text-white py-2 px-4 rounded" onClick={handleGenerateVideo}>
+        <Button
+          className="bg-blue-900 text-white py-2 px-4 rounded"
+          onClick={handleGenerateVideo}
+        >
           Generate Video
+        </Button>
+        <Button
+          className="bg-green-900 text-white py-2 px-4 rounded"
+          onClick={handleGenerateRandomVideo}
+        >
+          Generate Random Video
         </Button>
       </div>
     </div>

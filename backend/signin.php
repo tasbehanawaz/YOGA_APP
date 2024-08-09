@@ -35,7 +35,6 @@ if ($user && password_verify($password, $user['password'])) {
     // Generate a unique session token
     $session_token = bin2hex(random_bytes(32));
 
-
     // Set session cookie options
     ini_set('session.cookie_samesite', 'None');
     ini_set('session.cookie_secure', 'true');
