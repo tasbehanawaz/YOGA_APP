@@ -1,3 +1,6 @@
 **/.DS_Store
 **/.vscode
 backend/output/*
+cypress/screenshots/
+cypress/videos/
+frontend/cypress/screenshots/login.feature/Successful Login -- User logs in with valid credentials (example #1) (failed).png
