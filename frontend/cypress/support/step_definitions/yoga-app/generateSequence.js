@@ -1,12 +1,4 @@
-import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
-Given('the user is on the landing page', () => {
-  cy.visit('/');
-  cy.contains('Home');
-});
-
-When('the user clicks on {string} button', (text) => {
-  cy.get('button').contains(text).click();
-});
+import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 When('the user clicks on {string} text', (text) => {
   cy.get('h5').contains(text).click();

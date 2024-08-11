@@ -65,7 +65,8 @@ function fetchUrlWithCurl($url)
 }
 
 // Define a sequence of poses, including the time and position for each pose
-function definePoseSequence() {
+function definePoseSequence()
+{
     return [
         ['name' => 'Boat', 'duration' => 5, 'position' => '1'],
         ['name' => 'Bow', 'duration' => 5, 'position' => '2'],
@@ -173,7 +174,7 @@ function getPoseSequencesFromDatabase()
     try {
         $stmt = $pdo->query('SELECT sequence_name, pose_data FROM pose_sequences');
         $sequences = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         // Decode JSON data
         foreach ($sequences as &$sequence) {
             $sequence['pose_data'] = json_decode($sequence['pose_data'], true);
@@ -186,7 +187,8 @@ function getPoseSequencesFromDatabase()
     }
 }
 
-function getOrCreateSequence($selectedPoses) {
+function getOrCreateSequence($selectedPoses)
+{
     $pdo = getDbConnection();
     $sequenceName = implode("-", array_column($selectedPoses, 'name')); // Create a unique name based on pose names
 
@@ -248,5 +250,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     echo json_encode(['success' => true, 'saved_sequences' => $retrievedSequences]);
 }
-
-?>
