@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import './profile.css';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +11,7 @@ const Profile = () => {
   const [userDetails, setUserDetails] = useState({});
   const [savedPoses, setSavedPoses] = useState([]);
   const [previousVideos, setPreviousVideos] = useState([]);
+  const [generatedVideos, setGeneratedVideos] = useState([]); // State for multiple generated videos
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -31,6 +33,7 @@ const Profile = () => {
         setUserDetails(userResponse.data);
         setSavedPoses(posesResponse.data.slice(0, 3));
         fetchPreviousVideos();
+        fetchGeneratedVideos(); // Fetch generated videos from localStorage
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Error fetching data. Please try again later.');
@@ -50,6 +53,11 @@ const Profile = () => {
       } catch (error) {
         console.error('Error fetching previous videos:', error);
       }
+    };
+
+    const fetchGeneratedVideos = () => {
+      const storedGeneratedVideos = JSON.parse(localStorage.getItem('generatedVideos')) || [];
+      setGeneratedVideos(storedGeneratedVideos);
     };
 
     fetchData();
@@ -82,6 +90,10 @@ const Profile = () => {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  };
+
+  const handleWatchVideo = (selectedPoses) => {
+    navigate('/generate', { state: { selectedPoses } });
   };
 
   if (loading) {
@@ -137,6 +149,27 @@ const Profile = () => {
         ) : (
           <p>No previously generated videos found.</p>
         )}
+      </div>
+      <div className="generated-videos">
+        <h2 className="section-title">Recently Generated Videos</h2>
+        <div className="generated-videos-grid">
+          {generatedVideos.length > 0 ? (
+            generatedVideos.map((video, index) => (
+              <div key={index} className="generated-video-item mb-4">
+                <img 
+                  src={video.imageUrl} 
+                  alt={`Video ${index + 1}`} 
+                  className="generated-video-image"
+                  onClick={() => handleWatchVideo(video.selectedPoses)}
+                  style={{ cursor: 'pointer' }}
+                />
+                <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
+              </div>
+            ))
+          ) : (
+            <p>No videos generated yet.</p>
+          )}
+        </div>
       </div>
     </div>
   );
