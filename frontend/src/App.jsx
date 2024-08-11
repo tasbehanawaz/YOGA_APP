@@ -4,13 +4,18 @@ import Home from './Pages/Home/home';
 import Layout from './components/layout/layout';
 import Categories from './Pages/categories/categories';
 import Register from './Pages/login/logins'; // Correct default import
+import Register from './Pages/login/logins'; // Correct default import
 import Result from './Pages/result/result';
 import SignIn from './components/signIn/signIn';
 import Sequence from './Pages/sequence/sequence';
 import Profile from './Pages/profile/profile';
 import SavedPoses from './Pages/saved/savedPoses'; // Correct import name
+import SavedPoses from './Pages/saved/savedPoses'; // Correct import name
 import Generate from './Pages/Generate/generate';
 import About from './Pages/about/about';
+import { AuthProvider } from './contexts/AuthContext';
+
+import YogaPoseDetails from './Pages/yogaPosesDetails/detailsPage.jsx'; // Add this import
 import { AuthProvider } from './contexts/AuthContext';
 
 import YogaPoseDetails from './Pages/yogaPosesDetails/detailsPage.jsx'; // Add this import
@@ -84,12 +89,13 @@ function App() {
               </Layout>
             }
           />
-
+  
           <Route
             path="/save"
             element={
               <Layout>
                 <SavedPoses />
+
               </Layout>
             }
           />
@@ -98,6 +104,7 @@ function App() {
             element={
               <Layout>
                 <SavedPoses />
+
               </Layout>
             }
           />
