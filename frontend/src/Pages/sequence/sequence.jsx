@@ -3,13 +3,7 @@ import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
 import { useNavigate } from 'react-router-dom';
 import './sequence.css';
-import {
-  Spinner,
-  Button,
-  Input,
-  Select,
-  Option,
-} from '@material-tailwind/react';
+import { Spinner, Button, Input, Select, Option } from '@material-tailwind/react';
 
 const Sequence = () => {
   const [poses, setPoses] = useState([]);
@@ -32,9 +26,7 @@ const Sequence = () => {
   const fetchAllPoses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        'http://localhost:8001/FetchAllYogaPoses.php'
-      );
+      const response = await axios.get('http://localhost:8001/FetchAllYogaPoses.php');
       if (response.data.status === 'success') {
         setPoses(response.data.data);
       } else {
@@ -51,15 +43,11 @@ const Sequence = () => {
     setLoading(true);
     console.log('Applying filters:', filters);
     try {
-      const response = await axios.post(
-        'http://localhost:8001/FetchAllYogaPoses.php',
-        filters,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await axios.post('http://localhost:8001/FetchAllYogaPoses.php', filters, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       console.log('Filtered response:', response.data);
       if (response.data.status === 'success') {
         setPoses(response.data.data);
@@ -115,37 +103,39 @@ const Sequence = () => {
     });
   };
 
-  const handleGenerateVideo = () => {
-    if (selectedPoses.length > 0) {
-      navigate('/generate', { state: { selectedPoses, filters } });
-    } else {
-      alert('Please select at least two poses.');
-    }
+  const saveGeneratedVideo = (videoDetails) => {
+    // Retrieve existing videos from localStorage
+    const storedGeneratedVideos = JSON.parse(localStorage.getItem('generatedVideos')) || [];
+
+    // Add the new video details to the existing list
+    const updatedGeneratedVideos = [videoDetails, ...storedGeneratedVideos];
+
+    // Save updated list to localStorage
+    localStorage.setItem('generatedVideos', JSON.stringify(updatedGeneratedVideos));
   };
 
-  const handleSavePose = async (pose) => {
-    try {
-      const response = await axios.post(
-        'http://localhost:8001/save_pose.php',
-        {
-          english_name: pose.english_name,
-          pose_description: pose.pose_description,
-          url_png: pose.url_png,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      if (response.data.success) {
-        alert('Pose saved successfully!');
-      } else {
-        alert(response.data.message);
-      }
-    } catch (error) {
-      console.error('Error saving the pose:', error);
-      alert('Error saving pose.');
+  const handleGenerateVideo = () => {
+    if (selectedPoses.length > 0) {
+      const selectedPosesDetails = selectedPoses.map((poseName) => {
+        const pose = poses.find((p) => p.english_name === poseName);
+        return {
+          poseName: pose.english_name,
+          imageUrl: pose.url_png || 'https://via.placeholder.com/150',
+        };
+      });
+
+      const newVideo = {
+        type: 'selected',
+        selectedPoses: selectedPosesDetails.map((pose) => pose.poseName),
+        imageUrl: selectedPosesDetails[0].imageUrl, // Use the first pose's image as a thumbnail
+      };
+
+      // Save the generated video details to localStorage
+      saveGeneratedVideo(newVideo);
+
+      navigate('/generate', { state: { selectedPoses: newVideo.selectedPoses, filters } });
+    } else {
+      alert('Please select at least two poses.');
     }
   };
 
@@ -155,27 +145,51 @@ const Sequence = () => {
 
     while (randomPoses.length < 5 && posesCopy.length > 0) {
       const randomIndex = Math.floor(Math.random() * posesCopy.length);
-      randomPoses.push(posesCopy[randomIndex].english_name);
+      const pose = posesCopy[randomIndex];
+      randomPoses.push({
+        poseName: pose.english_name,
+        imageUrl: pose.url_png || 'https://via.placeholder.com/150',
+      });
       posesCopy.splice(randomIndex, 1);
     }
 
-    navigate('/generate', { state: { selectedPoses: randomPoses, filters } });
+    const newRandomVideo = {
+      type: 'random',
+      selectedPoses: randomPoses.map((pose) => pose.poseName),
+      imageUrl: randomPoses[0].imageUrl, // Use the first pose's image as a thumbnail
+    };
+
+    // Save the generated random video details to localStorage
+    saveGeneratedVideo(newRandomVideo);
+
+    navigate('/generate', { state: { selectedPoses: newRandomVideo.selectedPoses, filters } });
   };
 
   const handleGenerateFilteredRandomVideo = () => {
-    const filteredPoses = poses.filter(
-      (pose) => pose.difficulty_level === filters.difficulty_level
-    );
+    const filteredPoses = poses.filter((pose) => pose.difficulty_level === filters.difficulty_level);
     const randomPoses = [];
     const posesCopy = [...filteredPoses];
 
     while (randomPoses.length < 5 && posesCopy.length > 0) {
       const randomIndex = Math.floor(Math.random() * posesCopy.length);
-      randomPoses.push(posesCopy[randomIndex].english_name);
+      const pose = posesCopy[randomIndex];
+      randomPoses.push({
+        poseName: pose.english_name,
+        imageUrl: pose.url_png || 'https://via.placeholder.com/150',
+      });
       posesCopy.splice(randomIndex, 1);
     }
 
-    navigate('/generate', { state: { selectedPoses: randomPoses, filters } });
+    const newRandomVideo = {
+      type: 'random',
+      selectedPoses: randomPoses.map((pose) => pose.poseName),
+      imageUrl: randomPoses[0].imageUrl, // Use the first pose's image as a thumbnail
+    };
+
+    // Save the generated random video details to localStorage
+    saveGeneratedVideo(newRandomVideo);
+
+    navigate('/generate', { state: { selectedPoses: newRandomVideo.selectedPoses, filters } });
   };
 
   return (
@@ -185,42 +199,15 @@ const Sequence = () => {
       <div className="filter-options">
         <h2 className="filter-title">Filter Options</h2>
         <div className="filter-inputs">
-          <Input
-            name="age"
-            type="number"
-            label="Age"
-            onChange={handleFilterChange}
-            value={filters.age}
-          />
-          <Input
-            name="height"
-            type="number"
-            label="Height (feet)"
-            onChange={handleFilterChange}
-            value={filters.height}
-            step="0.1"
-          />
-          <Input
-            name="weight"
-            type="number"
-            label="Weight (kg)"
-            onChange={handleFilterChange}
-            value={filters.weight}
-          />
-          <Select
-            name="gender"
-            label="Gender"
-            onChange={(value) => handleSelectChange('gender', value)}
-          >
+          <Input name="age" type="number" label="Age" onChange={handleFilterChange} value={filters.age} />
+          <Input name="height" type="number" label="Height (feet)" onChange={handleFilterChange} value={filters.height} step="0.1" />
+          <Input name="weight" type="number" label="Weight (kg)" onChange={handleFilterChange} value={filters.weight} />
+          <Select name="gender" label="Gender" onChange={(value) => handleSelectChange('gender', value)}>
             <Option value="women">Women</Option>
             <Option value="man">Man</Option>
             <Option value="non-binary">Non-binary</Option>
           </Select>
-          <Select
-            name="difficulty_level"
-            label="Difficulty Level"
-            onChange={(value) => handleSelectChange('difficulty_level', value)}
-          >
+          <Select name="difficulty_level" label="Difficulty Level" onChange={(value) => handleSelectChange('difficulty_level', value)}>
             <Option value="all">All</Option>
             <Option value="beginner">Beginner</Option>
             <Option value="intermediate">Intermediate</Option>
@@ -244,13 +231,8 @@ const Sequence = () => {
           {appliedFilters.height && <p>Height: {appliedFilters.height}</p>}
           {appliedFilters.weight && <p>Weight: {appliedFilters.weight}</p>}
           {appliedFilters.gender && <p>Gender: {appliedFilters.gender}</p>}
-          {appliedFilters.difficulty_level && (
-            <p>Difficulty Level: {appliedFilters.difficulty_level}</p>
-          )}
-          <Button
-            className="random-video-btn"
-            onClick={handleGenerateFilteredRandomVideo}
-          >
+          {appliedFilters.difficulty_level && <p>Difficulty Level: {appliedFilters.difficulty_level}</p>}
+          <Button className="random-video-btn" onClick={handleGenerateFilteredRandomVideo}>
             Generate Random Video
           </Button>
         </div>
@@ -278,16 +260,10 @@ const Sequence = () => {
       )}
 
       <div className="sticky-button-container">
-        <Button
-          className="bg-blue-900 text-white py-2 px-4 rounded"
-          onClick={handleGenerateVideo}
-        >
+        <Button className="bg-blue-900 text-white py-2 px-4 rounded" onClick={handleGenerateVideo}>
           Generate Video
         </Button>
-        <Button
-          className="bg-green-900 text-white py-2 px-4 rounded"
-          onClick={handleGenerateRandomVideo}
-        >
+        <Button className="bg-green-900 text-white py-2 px-4 rounded" onClick={handleGenerateRandomVideo}>
           Generate Random Video
         </Button>
       </div>
