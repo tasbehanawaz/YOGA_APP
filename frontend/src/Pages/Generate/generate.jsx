@@ -91,29 +91,19 @@ const VideoGenerator = () => {
     document.body.removeChild(a);
   };
 
-  const saveVideoToDatabase = async () => {
-    try {
-      const response = await axios.post(
-        'http://localhost:8001/save_video.php',
-        {
-          user_id: user.id,
-          video_path: videoUrl,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      if (response.data.success) {
-        alert('Video saved successfully!');
-      } else {
-        alert(response.data.message);
-      }
-    } catch (error) {
-      console.error('Error saving the video:', error);
-      alert('Error saving video.');
-    }
+  const saveVideoToProfile = () => {
+    // Save the video to the profile page (by updating localStorage)
+    const newVideo = {
+      videoPath: videoUrl,
+      selectedPoses,
+      imageUrl: 'path_to_thumbnail', // Replace with actual logic to get the thumbnail URL
+      type: selectedPoses.length > 0 ? 'selected' : 'random',
+    };
+
+    const existingVideos = JSON.parse(localStorage.getItem('profileVideos')) || [];
+    existingVideos.unshift(newVideo); // Add the new video to the beginning
+    localStorage.setItem('profileVideos', JSON.stringify(existingVideos));
+    alert('Video saved to your profile!');
   };
 
   const toggleDetails = (index) => {
@@ -140,7 +130,7 @@ const VideoGenerator = () => {
                 onError={() => alert('Error loading video.')}
               />
               <button
-                onClick={saveVideoToDatabase}
+                onClick={saveVideoToProfile}
                 className="mt-4 px-4 py-2 bg-blue-900 hover:bg-blue-500 text-white rounded"
               >
                 Save Video To Profile
