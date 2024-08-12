@@ -10,7 +10,6 @@ const Profile = () => {
   const { user, logout } = useAuth();
   const [userDetails, setUserDetails] = useState({});
   const [savedPoses, setSavedPoses] = useState([]);
-  const [previousVideos, setPreviousVideos] = useState([]);
   const [generatedVideos, setGeneratedVideos] = useState([]); // State for multiple generated videos
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,26 +31,12 @@ const Profile = () => {
 
         setUserDetails(userResponse.data);
         setSavedPoses(posesResponse.data.slice(0, 3));
-        fetchPreviousVideos();
         fetchGeneratedVideos(); // Fetch generated videos from localStorage
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Error fetching data. Please try again later.');
       } finally {
         setLoading(false);
-      }
-    };
-
-    const fetchPreviousVideos = async () => {
-      try {
-        const response = await axios.post(
-          'http://localhost:8001/fetch_previous_videos.php',
-          { user_id: user.id }
-        );
-        console.log('Fetched previous videos:', response.data);
-        setPreviousVideos(response.data);
-      } catch (error) {
-        console.error('Error fetching previous videos:', error);
       }
     };
 
@@ -96,11 +81,9 @@ const Profile = () => {
     navigate('/generate', { state: { selectedPoses } });
   };
 
-
   const handleViewAllVideos = () => {
     navigate('/all-generated-videos');
   };
-
 
   if (loading) {
     return <div className="loading-spinner"><div className="spinner"></div></div>;
@@ -133,33 +116,9 @@ const Profile = () => {
         ))}
         <button className="button" onClick={handleViewAllPoses}>View All</button>
       </div>
-      <div className="previous-videos">
-        <h2 className="text-2xl font-bold mb-4">Previously Generated Videos</h2>
-        {previousVideos.length > 0 ? (
-          previousVideos.map((video, index) => (
-            <div key={index} className="previous-video mb-4">
-              <video
-                className="previous-video-content"
-                src={video.videoPath}
-                controls
-                onError={() => alert('Error loading video.')}
-              />
-              <button
-                onClick={() => handleDownload(video.videoPath)}
-                className="mt-2 px-4 py-2 bg-blue-900 hover:bg-blue-500 text-white rounded"
-              >
-                Download
-              </button>
-            </div>
-          ))
-        ) : (
-          <p>No previously generated videos found.</p>
-        )}
-      </div>
       <div className="generated-videos">
         <h2 className="section-title">Recently Generated Videos</h2>
         <div className="generated-videos-grid">
-
           {generatedVideos.slice(0, 4).map((video, index) => (
             <div key={index} className="generated-video-item mb-4">
               <img 
@@ -180,7 +139,6 @@ const Profile = () => {
             </button>
           </div>
         )}
-
       </div>
     </div>
   );
