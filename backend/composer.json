@@ -1,21 +1,25 @@
 {
-    "name": "tasbea/yoga-backend",
-    "description": "Backend for Yoga Application",
-    "type": "project",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Tasbea\\YogaBackend\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Tasbeha Nawaz",
-            "email": "tasbehanawaz@gmail.com"
-        }
-    ],
-    "minimum-stability": "stable",
-    "require": {
-        "guzzlehttp/guzzle": "^7.8"
+  "name": "tasbea/yoga-backend",
+  "description": "Backend for Yoga Application",
+  "type": "project",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Tasbea\\YogaBackend\\": "src/"
     }
+  },
+  "authors": [
+    {
+      "name": "Tasbeha Nawaz",
+      "email": "tasbehanawaz@gmail.com"
+    },
+    {
+      "name": "Justice Unanka Eke",
+      "email": "unankajustice@gmail.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "guzzlehttp/guzzle": "^7.8"
+  }
 }
