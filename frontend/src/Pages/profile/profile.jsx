@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import './profile.css';
 import { useNavigate } from 'react-router-dom';
@@ -95,9 +96,11 @@ const Profile = () => {
     navigate('/generate', { state: { selectedPoses } });
   };
 
+
   const handleViewAllVideos = () => {
     navigate('/all-generated-videos');
   };
+
 
   if (loading) {
     return <div className="loading-spinner"><div className="spinner"></div></div>;
@@ -156,6 +159,7 @@ const Profile = () => {
       <div className="generated-videos">
         <h2 className="section-title">Recently Generated Videos</h2>
         <div className="generated-videos-grid">
+
           {generatedVideos.slice(0, 4).map((video, index) => (
             <div key={index} className="generated-video-item mb-4">
               <img 
@@ -176,6 +180,7 @@ const Profile = () => {
             </button>
           </div>
         )}
+
       </div>
     </div>
   );
