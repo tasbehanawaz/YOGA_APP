@@ -8,8 +8,8 @@ import { Spinner, Button } from '@material-tailwind/react';
 const Categories = () => {
   const [poses, setPoses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
-  const [error, setError] = useState(null);
+  const [filter, setFilter] = useState('mixed');
+  const [error, setError] = useState(null); // Add an error state
   const navigate = useNavigate();
 
   const fetchAllPoses = useCallback(async () => {
@@ -69,18 +69,10 @@ const Categories = () => {
   return (
     <div className="categories-container m-8">
       <div className="flex flex-row w-full justify-center mb-4">
-        <Button onClick={() => setFilter('mixed')} className="mr-2">
-          Mixed
-        </Button>
-        <Button onClick={() => setFilter('beginner')} className="mr-2">
-          Beginner
-        </Button>
-        <Button onClick={() => setFilter('intermediate')} className="mr-2">
-          Intermediate
-        </Button>
-        <Button onClick={() => setFilter('advanced')} className="mr-2">
-          Advanced
-        </Button>
+        <Button onClick={() => setFilter('mixed')} className="mr-2">Mixed</Button>
+        <Button onClick={() => setFilter('beginner')} className="mr-2">Beginner</Button>
+        <Button onClick={() => setFilter('intermediate')} className="mr-2">Intermediate</Button>
+        <Button onClick={() => setFilter('advanced')} className="mr-2">Advanced</Button>
       </div>
       <div className="flex flex-row w-full justify-center">
         {loading ? (
