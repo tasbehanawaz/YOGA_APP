@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import './profile.css';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +9,7 @@ const Profile = () => {
   const { user, logout } = useAuth();
   const [userDetails, setUserDetails] = useState({});
   const [savedPoses, setSavedPoses] = useState([]);
-  const [generatedVideos, setGeneratedVideos] = useState([]); // State for multiple generated videos
+  const [profileVideos, setProfileVideos] = useState([]); // State for saved videos
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -31,7 +30,7 @@ const Profile = () => {
 
         setUserDetails(userResponse.data);
         setSavedPoses(posesResponse.data.slice(0, 3));
-        fetchGeneratedVideos(); // Fetch generated videos from localStorage
+        fetchProfileVideos(); // Fetch saved videos from localStorage
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Error fetching data. Please try again later.');
@@ -40,13 +39,13 @@ const Profile = () => {
       }
     };
 
-    const fetchGeneratedVideos = () => {
-      const storedGeneratedVideos = JSON.parse(localStorage.getItem('generatedVideos')) || [];
-      setGeneratedVideos(storedGeneratedVideos);
+    const fetchProfileVideos = () => {
+      const storedProfileVideos = JSON.parse(localStorage.getItem('profileVideos')) || [];
+      setProfileVideos(storedProfileVideos);
     };
 
     fetchData();
-  }, [user, navigate]);
+  }, [user, navigate]);  // Keep 'user' and 'navigate' dependencies here for the navigation to work properly.
 
   const handleLogout = async () => {
     const confirmed = window.confirm('Are you sure you want to log out?');
@@ -78,7 +77,7 @@ const Profile = () => {
   };
 
   const handleWatchVideo = (selectedPoses) => {
-    navigate('/generate', { state: { selectedPoses } });
+    navigate('/generate', { state: { selectedPoses }, replace: true });
   };
 
   const handleViewAllVideos = () => {
@@ -94,7 +93,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="profile-container">
+    <div key={user.id} className="profile-container">
       <div className="user-details">
         <h2>User Details</h2>
         <p>User ID: {user.id}</p>
@@ -116,15 +115,15 @@ const Profile = () => {
         ))}
         <button className="button" onClick={handleViewAllPoses}>View All</button>
       </div>
-      <div className="generated-videos">
-        <h2 className="section-title">Recently Generated Videos</h2>
-        <div className="generated-videos-grid">
-          {generatedVideos.slice(0, 4).map((video, index) => (
-            <div key={index} className="generated-video-item mb-4">
+      <div className="profile-videos">
+        <h2 className="section-title">Your Saved Videos</h2>
+        <div className="profile-videos-grid">
+          {profileVideos.slice(0, 4).map((video, index) => (
+            <div key={index} className="profile-video-item mb-4">
               <img 
                 src={video.imageUrl} 
                 alt={`Video ${index + 1}`} 
-                className="generated-video-image"
+                className="profile-video-image"
                 onClick={() => handleWatchVideo(video.selectedPoses)}
                 style={{ cursor: 'pointer' }}
               />
@@ -132,7 +131,7 @@ const Profile = () => {
             </div>
           ))}
         </div>
-        {generatedVideos.length > 4 && (
+        {profileVideos.length > 4 && (
           <div className="view-all-container">
             <button className="button view-all-button" onClick={handleViewAllVideos}>
               View All
