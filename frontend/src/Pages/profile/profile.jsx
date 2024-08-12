@@ -27,9 +27,7 @@ const Profile = () => {
       try {
         const [userResponse, posesResponse] = await Promise.all([
           axios.get(`http://localhost:8001/get_user.php?user_id=${user.id}`),
-          axios.get(
-            `http://localhost:8001/get_saved_poses.php?user_id=${user.id}`
-          ),
+          axios.get(`http://localhost:8001/get_saved_poses.php?user_id=${user.id}`)
         ]);
 
         setUserDetails(userResponse.data);
@@ -98,12 +96,14 @@ const Profile = () => {
     navigate('/generate', { state: { selectedPoses } });
   };
 
+
+  const handleViewAllVideos = () => {
+    navigate('/all-generated-videos');
+  };
+
+
   if (loading) {
-    return (
-      <div className="loading-spinner">
-        <div className="spinner"></div>
-      </div>
-    );
+    return <div className="loading-spinner"><div className="spinner"></div></div>;
   }
 
   if (error) {
@@ -117,29 +117,21 @@ const Profile = () => {
         <p>User ID: {user.id}</p>
         <p>Username: {user.username}</p>
         <p>Session Token: {user.session_token}</p>
-        <button className="button" onClick={handleLogout}>
-          Logout
-        </button>
+        <button className="button" onClick={handleLogout}>Logout</button>
       </div>
       <div className="saved-poses">
         <h2>Saved Poses</h2>
         {savedPoses.map((pose, index) => (
-          <div
-            key={index}
-            className="pose-item"
-            onClick={() => handleReadMore(pose.name)}
-          >
-            <img
-              src={pose.image_url || 'https://via.placeholder.com/150'}
-              alt={pose.name}
-              className="pose-image"
+          <div key={index} className="pose-item" onClick={() => handleReadMore(pose.name)}>
+            <img 
+              src={pose.image_url || 'https://via.placeholder.com/150'} 
+              alt={pose.name} 
+              className="pose-image" 
             />
             <p>{pose.name}</p>
           </div>
         ))}
-        <button className="button" onClick={handleViewAllPoses}>
-          View All
-        </button>
+        <button className="button" onClick={handleViewAllPoses}>View All</button>
       </div>
       <div className="previous-videos">
         <h2 className="text-2xl font-bold mb-4">Previously Generated Videos</h2>
@@ -167,23 +159,28 @@ const Profile = () => {
       <div className="generated-videos">
         <h2 className="section-title">Recently Generated Videos</h2>
         <div className="generated-videos-grid">
-          {generatedVideos.length > 0 ? (
-            generatedVideos.map((video, index) => (
-              <div key={index} className="generated-video-item mb-4">
-                <img 
-                  src={video.imageUrl} 
-                  alt={`Video ${index + 1}`} 
-                  className="generated-video-image"
-                  onClick={() => handleWatchVideo(video.selectedPoses)}
-                  style={{ cursor: 'pointer' }}
-                />
-                <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
-              </div>
-            ))
-          ) : (
-            <p>No videos generated yet.</p>
-          )}
+
+          {generatedVideos.slice(0, 4).map((video, index) => (
+            <div key={index} className="generated-video-item mb-4">
+              <img 
+                src={video.imageUrl} 
+                alt={`Video ${index + 1}`} 
+                className="generated-video-image"
+                onClick={() => handleWatchVideo(video.selectedPoses)}
+                style={{ cursor: 'pointer' }}
+              />
+              <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
+            </div>
+          ))}
         </div>
+        {generatedVideos.length > 4 && (
+          <div className="view-all-container">
+            <button className="button view-all-button" onClick={handleViewAllVideos}>
+              View All
+            </button>
+          </div>
+        )}
+
       </div>
     </div>
   );

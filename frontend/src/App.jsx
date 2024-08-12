@@ -1,3 +1,4 @@
+
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home/home';
@@ -12,8 +13,9 @@ import SavedPoses from './Pages/saved/savedPoses'; // Correct import name
 import Generate from './Pages/Generate/generate';
 import About from './Pages/about/about';
 import { AuthProvider } from './contexts/AuthContext';
-
 import YogaPoseDetails from './Pages/yogaPosesDetails/detailsPage.jsx'; // Add this import
+
+import AllGeneratedVideos from './Pages/AllGeneratedVideos/AllGeneratedVideos'; // Import for the new component
 
 function App() {
   return (
@@ -84,15 +86,6 @@ function App() {
               </Layout>
             }
           />
-
-          <Route
-            path="/save"
-            element={
-              <Layout>
-                <SavedPoses />
-              </Layout>
-            }
-          />
           <Route
             path="/save"
             element={
@@ -114,6 +107,14 @@ function App() {
             element={
               <Layout>
                 <YogaPoseDetails />
+              </Layout>
+            }
+          />
+          <Route
+            path="/all-generated-videos"
+            element={
+              <Layout>
+                <AllGeneratedVideos />
               </Layout>
             }
           />
