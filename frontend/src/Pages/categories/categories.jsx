@@ -17,7 +17,11 @@ const Categories = () => {
     setError(null);
     try {
       const url = 'http://localhost:8001/fetchAllYogaPoses.php';
-      const response = await axios.post(url, { difficulty_level: filter });
+      
+      // Only include the filter if it's not 'mixed'
+      const postData = filter !== 'mixed' ? { difficulty_level: filter } : {};
+
+      const response = await axios.post(url, postData);
       if (response.data.status === 'success') {
         setPoses(response.data.data);
       } else {
