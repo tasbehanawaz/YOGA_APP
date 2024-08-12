@@ -16,7 +16,11 @@ const VideoGenerator = () => {
   useEffect(() => {
     if (selectedPoses.length > 0) {
       fetchPoseDetails();
-      handleGenerateVideo();
+      if (user) {
+        handleGenerateVideo();
+      } else {
+        alert('Please sign in to generate video');
+      }
     }
     fetchPreviousVideos();
   }, [selectedPoses]);
@@ -79,8 +83,6 @@ const VideoGenerator = () => {
     a.click();
     document.body.removeChild(a);
   };
-
-  
 
   const saveVideoToDatabase = async () => {
     try {
@@ -146,7 +148,12 @@ const VideoGenerator = () => {
             Click on the yoga pose name to see more details.
           </p>
           {poseDetails.map((pose, index) => (
-            <div key={index} className={`pose-detail ${expandedPoseIndex === index ? 'expanded' : ''}`}>
+            <div
+              key={index}
+              className={`pose-detail ${
+                expandedPoseIndex === index ? 'expanded' : ''
+              }`}
+            >
               <h2
                 className="pose-title text-xl font-semibold cursor-pointer"
                 onClick={() => toggleDetails(index)}
