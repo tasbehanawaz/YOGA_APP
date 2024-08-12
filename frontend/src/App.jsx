@@ -1,4 +1,3 @@
-
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home/home';
@@ -31,7 +30,7 @@ function App() {
             }
           />
           <Route
-            path="/Generate"
+            path="/generate"
             element={
               <Layout>
                 <Generate />

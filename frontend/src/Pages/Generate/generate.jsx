@@ -56,9 +56,13 @@ const VideoGenerator = () => {
             type: selectedPoses.length > 0 ? 'selected' : 'random',
           };
 
-          const existingVideos = JSON.parse(localStorage.getItem('generatedVideos')) || [];
+          const existingVideos =
+            JSON.parse(localStorage.getItem('generatedVideos')) || [];
           existingVideos.unshift(newVideo); // Add the new video to the beginning
-          localStorage.setItem('generatedVideos', JSON.stringify(existingVideos));
+          localStorage.setItem(
+            'generatedVideos',
+            JSON.stringify(existingVideos)
+          );
           setGeneratedVideos(existingVideos);
         } else {
           console.error('Error generating video:', response.data.error);
@@ -73,7 +77,8 @@ const VideoGenerator = () => {
   };
 
   const fetchGeneratedVideos = () => {
-    const storedGeneratedVideos = JSON.parse(localStorage.getItem('generatedVideos')) || [];
+    const storedGeneratedVideos =
+      JSON.parse(localStorage.getItem('generatedVideos')) || [];
     setGeneratedVideos(storedGeneratedVideos);
   };
 
@@ -144,7 +149,12 @@ const VideoGenerator = () => {
             Click on the yoga pose name to see more details.
           </p>
           {poseDetails.map((pose, index) => (
-            <div key={index} className={`pose-detail ${expandedPoseIndex === index ? 'expanded' : ''}`}>
+            <div
+              key={index}
+              className={`pose-detail ${
+                expandedPoseIndex === index ? 'expanded' : ''
+              }`}
+            >
               <h2
                 className="pose-title text-xl font-semibold cursor-pointer"
                 onClick={() => toggleDetails(index)}
@@ -173,6 +183,7 @@ const VideoGenerator = () => {
               src={video.videoPath}  
               alt={`Video ${index + 1}`} 
               className="generated-video-preview"
+
               onClick={() => setVideoUrl(video.videoPath)}
               style={{ cursor: 'pointer' }}
               controls
@@ -184,7 +195,10 @@ const VideoGenerator = () => {
         ))}
         {generatedVideos.length > 4 && (
           <div className="view-all-container">
-            <button className="button view-all-button" onClick={handleViewAllVideos}>
+            <button
+              className="button view-all-button"
+              onClick={handleViewAllVideos}
+            >
               View All
             </button>
           </div>
