@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 const VideoGenerator = () => {
@@ -8,17 +8,18 @@ const VideoGenerator = () => {
   const [videoUrl, setVideoUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const { state } = useLocation();
+  const navigate = useNavigate();
   const { selectedPoses } = state || { selectedPoses: [] };
   const [poseDetails, setPoseDetails] = useState([]);
-  const [previousVideos, setPreviousVideos] = useState([]);
   const [expandedPoseIndex, setExpandedPoseIndex] = useState(null);
+  const [generatedVideos, setGeneratedVideos] = useState([]);
 
   useEffect(() => {
     if (selectedPoses.length > 0) {
       fetchPoseDetails();
       handleGenerateVideo();
     }
-    fetchPreviousVideos();
+    fetchGeneratedVideos(); // Fetch generated videos from localStorage
   }, [selectedPoses]);
 
   const fetchPoseDetails = async () => {
@@ -46,6 +47,19 @@ const VideoGenerator = () => {
         setLoading(false);
         if (response.data.videoPath) {
           setVideoUrl(response.data.videoPath);
+
+          // Save the generated video details to localStorage
+          const newVideo = {
+            videoPath: response.data.videoPath,
+            selectedPoses,
+            imageUrl: 'path_to_thumbnail', // Replace with actual logic to get the thumbnail URL
+            type: selectedPoses.length > 0 ? 'selected' : 'random',
+          };
+
+          const existingVideos = JSON.parse(localStorage.getItem('generatedVideos')) || [];
+          existingVideos.unshift(newVideo); // Add the new video to the beginning
+          localStorage.setItem('generatedVideos', JSON.stringify(existingVideos));
+          setGeneratedVideos(existingVideos);
         } else {
           console.error('Error generating video:', response.data.error);
           alert('Failed to generate video.');
@@ -58,17 +72,9 @@ const VideoGenerator = () => {
       });
   };
 
-  const fetchPreviousVideos = async () => {
-    try {
-      const response = await axios.post(
-        'http://localhost:8001/fetch_previous_videos.php',
-        { user_id: user.id }
-      );
-      console.log('Fetched previous videos:', response.data);
-      setPreviousVideos(response.data);
-    } catch (error) {
-      console.error('Error fetching previous videos:', error);
-    }
+  const fetchGeneratedVideos = () => {
+    const storedGeneratedVideos = JSON.parse(localStorage.getItem('generatedVideos')) || [];
+    setGeneratedVideos(storedGeneratedVideos);
   };
 
   const handleDownload = (videoUrl) => {
@@ -79,8 +85,6 @@ const VideoGenerator = () => {
     a.click();
     document.body.removeChild(a);
   };
-
-  
 
   const saveVideoToDatabase = async () => {
     try {
@@ -109,6 +113,10 @@ const VideoGenerator = () => {
 
   const toggleDetails = (index) => {
     setExpandedPoseIndex(expandedPoseIndex === index ? null : index);
+  };
+
+  const handleViewAllVideos = () => {
+    navigate('/all-generated-videos');
   };
 
   return (
@@ -168,26 +176,25 @@ const VideoGenerator = () => {
         </div>
       </div>
       <div className="sidebar w-full md:w-1/4 flex flex-col items-center md:items-start md:pl-4">
-        <h2 className="text-2xl font-bold mb-4">Previously Generated Videos</h2>
-        {previousVideos.length > 0 ? (
-          previousVideos.map((video, index) => (
-            <div key={index} className="previous-video mb-4">
-              <video
-                className="previous-video-content"
-                src={video.videoPath}
-                controls
-                onError={() => alert('Error loading video.')}
-              />
-              <button
-                onClick={() => handleDownload(video.videoPath)}
-                className="mt-2 px-4 py-2 bg-blue-900 hover:bg-blue-500 text-white rounded"
-              >
-                Download
-              </button>
-            </div>
-          ))
-        ) : (
-          <p>No previously generated videos found.</p>
+        <h2 className="text-2xl font-bold mb-4">Recently Generated Videos</h2>
+        {generatedVideos.slice(0, 4).map((video, index) => (
+          <div key={index} className="generated-video-item mb-4">
+            <img 
+              src={video.imageUrl}  
+              alt={`Video ${index + 1}`} 
+              className="generated-video-image"
+              onClick={() => setVideoUrl(video.videoPath)}
+              style={{ cursor: 'pointer' }}
+            />
+            <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
+          </div>
+        ))}
+        {generatedVideos.length > 4 && (
+          <div className="view-all-container">
+            <button className="button view-all-button" onClick={handleViewAllVideos}>
+              View All
+            </button>
+          </div>
         )}
       </div>
     </div>
