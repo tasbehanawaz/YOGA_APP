@@ -17,11 +17,7 @@ const VideoGenerator = () => {
   useEffect(() => {
     if (selectedPoses.length > 0) {
       fetchPoseDetails();
-      if (user) {
-        handleGenerateVideo();
-      } else {
-        alert('Please sign in to generate video');
-      }
+      handleGenerateVideo();
     }
     fetchGeneratedVideos(); // Fetch generated videos from localStorage
   }, [selectedPoses]);
@@ -60,9 +56,13 @@ const VideoGenerator = () => {
             type: selectedPoses.length > 0 ? 'selected' : 'random',
           };
 
-          const existingVideos = JSON.parse(localStorage.getItem('generatedVideos')) || [];
+          const existingVideos =
+            JSON.parse(localStorage.getItem('generatedVideos')) || [];
           existingVideos.unshift(newVideo); // Add the new video to the beginning
-          localStorage.setItem('generatedVideos', JSON.stringify(existingVideos));
+          localStorage.setItem(
+            'generatedVideos',
+            JSON.stringify(existingVideos)
+          );
           setGeneratedVideos(existingVideos);
         } else {
           console.error('Error generating video:', response.data.error);
@@ -77,7 +77,8 @@ const VideoGenerator = () => {
   };
 
   const fetchGeneratedVideos = () => {
-    const storedGeneratedVideos = JSON.parse(localStorage.getItem('generatedVideos')) || [];
+    const storedGeneratedVideos =
+      JSON.parse(localStorage.getItem('generatedVideos')) || [];
     setGeneratedVideos(storedGeneratedVideos);
   };
 
@@ -188,9 +189,9 @@ const VideoGenerator = () => {
         <h2 className="text-2xl font-bold mb-4">Recently Generated Videos</h2>
         {generatedVideos.slice(0, 4).map((video, index) => (
           <div key={index} className="generated-video-item mb-4">
-            <img 
-              src={video.imageUrl}  
-              alt={`Video ${index + 1}`} 
+            <img
+              src={video.imageUrl}
+              alt={`Video ${index + 1}`}
               className="generated-video-image"
               onClick={() => setVideoUrl(video.videoPath)}
               style={{ cursor: 'pointer' }}
@@ -200,7 +201,10 @@ const VideoGenerator = () => {
         ))}
         {generatedVideos.length > 4 && (
           <div className="view-all-container">
-            <button className="button view-all-button" onClick={handleViewAllVideos}>
+            <button
+              className="button view-all-button"
+              onClick={handleViewAllVideos}
+            >
               View All
             </button>
           </div>
