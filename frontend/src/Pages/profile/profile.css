@@ -1,20 +1,31 @@
 /* profile.css */
 
+/* General Profile Container Styling */
 .profile-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
 
-.user-details, .saved-poses, .previous-videos, .generated-videos {
+/* User Details Section */
+.user-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 30px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
 }
 
-h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
+.user-details p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
 }
 
+/* Section Titles */
 .section-title {
   font-size: 28px;
   font-weight: bold;
@@ -25,34 +36,71 @@ h2 {
   padding-bottom: 5px;
 }
 
+/* Saved Poses Section */
+.saved-poses {
+  margin-bottom: 30px;
+}
+
 .pose-item {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
 }
 
-.pose-image, .generated-video-image {
-  width: 100px;
-  height: 100px;
+.pose-image {
+  width: 60px;
+  height: 60px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 8px;
   margin-right: 15px;
 }
 
-.button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 10px;
+.pose-item p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
 }
 
-.button:hover {
-  background-color: #0056b3;
+/* Profile Videos Section */
+.profile-videos {
+  margin-bottom: 30px;
 }
 
+.profile-videos-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.profile-video-item {
+  flex: 1 1 calc(33.333% - 20px); /* 3 videos per row */
+  max-width: 100%;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.profile-video-preview {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.profile-video-item p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* View All Button */
 .view-all-container {
   text-align: center;
   margin-top: 20px;
@@ -60,7 +108,7 @@ h2 {
 
 .view-all-button {
   padding: 10px 20px;
-  background-color: #28a745;
+  background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -68,5 +116,29 @@ h2 {
 }
 
 .view-all-button:hover {
-  background-color: #218838;
+  background-color: #0056b3;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+  .profile-video-item {
+    flex: 1 1 calc(50% - 20px); /* 2 videos per row on medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-video-item {
+    flex: 1 1 100%; /* 1 video per row on small screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .user-details {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-details p {
+    margin-bottom: 10px;
+  }
 }

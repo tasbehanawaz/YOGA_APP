@@ -120,12 +120,15 @@ const Profile = () => {
         <div className="profile-videos-grid">
           {profileVideos.slice(0, 4).map((video, index) => (
             <div key={index} className="profile-video-item mb-4">
-              <img 
-                src={video.imageUrl} 
+              <video 
+                src={video.videoPath} 
                 alt={`Video ${index + 1}`} 
-                className="profile-video-image"
+                className="profile-video-preview"
                 onClick={() => handleWatchVideo(video.selectedPoses)}
                 style={{ cursor: 'pointer' }}
+                controls
+                muted
+                width="100%"
               />
               <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
             </div>

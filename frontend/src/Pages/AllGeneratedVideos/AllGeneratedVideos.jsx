@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import './AllGeneratedVideos.css';
 import { useNavigate } from 'react-router-dom';
 
-
-
 const AllGeneratedVideos = () => {
   const navigate = useNavigate();
   const [generatedVideos, setGeneratedVideos] = useState([]);
@@ -24,12 +22,15 @@ const AllGeneratedVideos = () => {
         {generatedVideos.length > 0 ? (
           generatedVideos.map((video, index) => (
             <div key={index} className="generated-video-item mb-4">
-              <img 
-                src={video.imageUrl} 
-                alt={`Video ${index + 1}`} 
-                className="generated-video-image"
+              <video
+                src={video.videoPath}
+                alt={`Video ${index + 1}`}
+                className="generated-video-preview"
                 onClick={() => handleWatchVideo(video.selectedPoses)}
                 style={{ cursor: 'pointer' }}
+                controls
+                muted
+                width="100%"
               />
               <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
             </div>
@@ -46,4 +47,3 @@ const AllGeneratedVideos = () => {
 };
 
 export default AllGeneratedVideos;
-

@@ -179,12 +179,16 @@ const VideoGenerator = () => {
         <h2 className="text-2xl font-bold mb-4">Recently Generated Videos</h2>
         {generatedVideos.slice(0, 4).map((video, index) => (
           <div key={index} className="generated-video-item mb-4">
-            <img
-              src={video.imageUrl}
-              alt={`Video ${index + 1}`}
-              className="generated-video-image"
+            <video 
+              src={video.videoPath}  
+              alt={`Video ${index + 1}`} 
+              className="generated-video-preview"
+
               onClick={() => setVideoUrl(video.videoPath)}
               style={{ cursor: 'pointer' }}
+              controls
+              muted
+              width="100%"
             />
             <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
           </div>
