@@ -62,3 +62,23 @@
     flex: 1 1 100%; /* Full width on very small screens */
   }
 }
+
+/* AllGeneratedVideos.css */
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: blue;
+}
