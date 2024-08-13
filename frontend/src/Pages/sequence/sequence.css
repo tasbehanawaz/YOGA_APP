@@ -21,6 +21,9 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .filter-title {
@@ -42,7 +45,8 @@
   position: center;
 }
 
-.apply-filters-btn, .reset-filters-btn {
+.apply-filters-btn,
+.reset-filters-btn {
   background-color: #1e40af; /* Tailwind's blue-900 */
   color: white;
   padding: 0.5rem 1rem; /* Reduced padding */
@@ -52,7 +56,8 @@
   transition: background-color 0.3s;
 }
 
-.apply-filters-btn:hover, .reset-filters-btn:hover {
+.apply-filters-btn:hover,
+.reset-filters-btn:hover {
   background-color: #1a3a8b; /* Slightly darker blue for hover effect */
 }
 
@@ -80,7 +85,10 @@
 .poses-grid {
   display: grid;
   gap: 2rem;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(300px, 1fr)
+  ); /* Responsive columns */
   margin-top: 2rem;
 }
 
@@ -121,6 +129,11 @@
 }
 
 .card-container.selected {
-  background-color: rgba(52, 211, 153, 0.3); /* Tailwind's green-400 with reduced opacity */
+  background-color: rgba(
+    52,
+    211,
+    153,
+    0.3
+  ); /* Tailwind's green-400 with reduced opacity */
   border-color: #34d399; /* Tailwind's green-400 */
 }
