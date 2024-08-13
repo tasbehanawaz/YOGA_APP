@@ -226,7 +226,7 @@ const Sequence = () => {
   return (
     <div className="sequence-container">
       <div className="filter-options">
-        <h1 className="title">Select Yoga Poses</h1>
+        <h1 className="text-1xl font-bold mb-2">Select Yoga Poses</h1>
 
         <ButtonWithIcon onClick={openDrawer} />
         <SidebarWithBurgerMenu

@@ -10,7 +10,7 @@ export function ButtonWithIcon({ onClick }) {
     <div className="flex items-center gap-4">
       <Button
         variant="outlined"
-        className="flex items-center gap-3"
+        className="flex items-center gap-3 p-2 text-sm h-8"
         onClick={onClick}
       >
         <svg
