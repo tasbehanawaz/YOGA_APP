@@ -58,7 +58,13 @@ const VideoGenerator = () => {
 
           const existingVideos =
             JSON.parse(localStorage.getItem('generatedVideos')) || [];
+          const existingVideos =
+            JSON.parse(localStorage.getItem('generatedVideos')) || [];
           existingVideos.unshift(newVideo); // Add the new video to the beginning
+          localStorage.setItem(
+            'generatedVideos',
+            JSON.stringify(existingVideos)
+          );
           localStorage.setItem(
             'generatedVideos',
             JSON.stringify(existingVideos)
@@ -77,6 +83,8 @@ const VideoGenerator = () => {
   };
 
   const fetchGeneratedVideos = () => {
+    const storedGeneratedVideos =
+      JSON.parse(localStorage.getItem('generatedVideos')) || [];
     const storedGeneratedVideos =
       JSON.parse(localStorage.getItem('generatedVideos')) || [];
     setGeneratedVideos(storedGeneratedVideos);
@@ -155,6 +163,12 @@ const VideoGenerator = () => {
                 expandedPoseIndex === index ? 'expanded' : ''
               }`}
             >
+            <div
+              key={index}
+              className={`pose-detail ${
+                expandedPoseIndex === index ? 'expanded' : ''
+              }`}
+            >
               <h2
                 className="pose-title text-xl font-semibold cursor-pointer"
                 onClick={() => toggleDetails(index)}
@@ -203,6 +217,14 @@ const VideoGenerator = () => {
             </button>
           </div>
         )}
+        <div className="view-all-container">
+          <button
+            className="button view-all-button"
+            onClick={handleViewAllVideos}
+          >
+            View All
+          </button>
+        </div>
       </div>
     </div>
   );

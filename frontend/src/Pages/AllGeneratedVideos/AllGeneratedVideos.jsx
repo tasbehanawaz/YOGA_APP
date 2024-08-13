@@ -15,6 +15,11 @@ const AllGeneratedVideos = () => {
     navigate('/generate', { state: { selectedPoses } });
   };
 
+  const handleClearVideos = () => {
+    localStorage.removeItem('generatedVideos'); // Remove videos from localStorage
+    setGeneratedVideos([]); // Clear the state
+  };
+
   return (
     <div className="all-generated-videos-container">
       <h2 className="section-title">All Recently Generated Videos</h2>
@@ -39,9 +44,14 @@ const AllGeneratedVideos = () => {
           <p>No videos generated yet.</p>
         )}
       </div>
-      <button className="button" onClick={() => navigate('/profile')}>
-        Back to Profile
-      </button>
+      <div className="buttons-container">
+        <button className="button" onClick={handleClearVideos}>
+          Clear Videos
+        </button>
+        <button className="button" onClick={() => navigate('/profile')}>
+          Back to Profile
+        </button>
+      </div>
     </div>
   );
 };
