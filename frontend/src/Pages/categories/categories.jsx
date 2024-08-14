@@ -73,6 +73,9 @@ const Categories = () => {
   return (
     <div className="categories-container m-8">
       <div className="flex flex-row w-full justify-center mb-4">
+      <Button onClick={() => setFilter('all')} className="mr-2">
+          All
+        </Button>
         <Button onClick={() => setFilter('beginner')} className="mr-2">
           Beginner
         </Button>

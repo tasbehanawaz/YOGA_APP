@@ -7,6 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 const Profile = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  // eslint-disable-next-line no-unused-vars
   const [userDetails, setUserDetails] = useState({});
   const [savedPoses, setSavedPoses] = useState([]);
   const [profileVideos, setProfileVideos] = useState([]); // State for saved videos
@@ -63,6 +64,7 @@ const Profile = () => {
     navigate('/save');
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleReadMore = (poseName) => {
     navigate(`/pose/${poseName}`);
   };

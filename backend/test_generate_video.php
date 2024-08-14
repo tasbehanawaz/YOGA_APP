@@ -68,8 +68,8 @@ function fetchUrlWithCurl($url)
 function definePoseSequence()
 {
     return [
-        ['name' => 'Boat', 'duration' => 5, 'position' => '1'],
-        ['name' => 'Bow', 'duration' => 5, 'position' => '2'],
+        ['name' => 'Boat', 'duration' => 2, 'position' => '1'],
+        ['name' => 'Bow', 'duration' => 10, 'position' => '2'],
         ['name' => 'Bridge', 'duration' => 5, 'position' => '3'],
         ['name' => 'Butterfly', 'duration' => 5, 'position' => '4'],
         ['name' => 'Camel', 'duration' => 5, 'position' => '5'],
