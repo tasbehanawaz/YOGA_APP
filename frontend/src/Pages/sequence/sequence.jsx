@@ -165,12 +165,20 @@ const Sequence = () => {
     navigate('/generate', { state: { selectedPoses: newRandomVideo.selectedPoses, filters } });
   };
 
+
   const handleGenerateFilteredRandomVideo = () => {
+
+    // console.log('Poses:', JSON.stringify(poses));
+    // console.log('Filters:', JSON.stringify(filters));
+
     const filteredPoses = poses.filter((pose) => pose.difficulty_level === filters.difficulty_level);
     const randomPoses = [];
     const posesCopy = [...filteredPoses];
 
-    while (randomPoses.length < 5 && posesCopy.length > 0) {
+    // console.log('Filtered poses:', JSON.stringify(filteredPoses));
+    // console.log('Poses copy:', JSON.stringify(posesCopy));
+
+    while (randomPoses.length < 2 && posesCopy.length > 0) {
       const randomIndex = Math.floor(Math.random() * posesCopy.length);
       const pose = posesCopy[randomIndex];
       randomPoses.push({
@@ -179,6 +187,8 @@ const Sequence = () => {
       });
       posesCopy.splice(randomIndex, 1);
     }
+
+    console.log('Filter poses:', JSON.stringify(randomPoses));
 
     const newRandomVideo = {
       type: 'random',
@@ -209,9 +219,9 @@ const Sequence = () => {
           </Select>
           <Select name="difficulty_level" label="Difficulty Level" onChange={(value) => handleSelectChange('difficulty_level', value)}>
             <Option value="all">All</Option>
-            <Option value="beginner">Beginner</Option>
-            <Option value="intermediate">Intermediate</Option>
-            <Option value="advanced">Advanced</Option>
+            <Option value="Beginner">Beginner</Option>
+            <Option value="Intermediate">Intermediate</Option>
+            <Option value="Advanced">Advanced</Option>
           </Select>
           <div className="filter-buttons">
             <Button className="apply-filters-btn" onClick={handleApplyFilters}>
@@ -233,7 +243,7 @@ const Sequence = () => {
           {appliedFilters.gender && <p>Gender: {appliedFilters.gender}</p>}
           {appliedFilters.difficulty_level && <p>Difficulty Level: {appliedFilters.difficulty_level}</p>}
           <Button className="random-video-btn" onClick={handleGenerateFilteredRandomVideo}>
-            Generate Random Video
+            Generate Session
           </Button>
         </div>
       )}
@@ -264,7 +274,7 @@ const Sequence = () => {
           Generate Video
         </Button>
         <Button className="bg-green-900 text-white py-2 px-4 rounded" onClick={handleGenerateRandomVideo}>
-          Generate Random Video
+          Generate Random Session
         </Button>
       </div>
     </div>
