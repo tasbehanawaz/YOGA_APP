@@ -1,37 +1,35 @@
-import React from 'react';
+import { useState } from 'react';
+import PropTypes from 'prop-types';
 import { CheckboxVerticalListGroup } from '../checkbox/checkbox';
 import {
-  IconButton,
   Typography,
   List,
   ListItem,
   ListItemPrefix,
-  ListItemSuffix,
-  Chip,
   Accordion,
   AccordionHeader,
   AccordionBody,
   Drawer,
   Card,
-  Slider,
-  ButtonGroup,
   Button,
 } from '@material-tailwind/react';
 
 import {
   ChevronDownIcon,
-  VideoCameraIcon,
   StarIcon,
   TrophyIcon,
 } from '@heroicons/react/24/outline';
 
 export function SidebarWithBurgerMenu({
   isDrawerOpen,
-  openDrawer,
   closeDrawer,
+  setCheckedFocusAreas,
+  setCheckedDifficulty,
+  handleApplyFilters,
 }) {
-  const [open, setOpen] = React.useState(0);
-  const focusAreas = ['Balance', 'Flexibility', 'Core Strength'];
+  const [open, setOpen] = useState(0);
+
+  const focusAreas = ['Balance', 'Flexibility', 'Core'];
   const difficulty = ['Beginner', 'Intermediate', 'Advanced'];
 
   const handleOpen = (value) => {
@@ -56,7 +54,6 @@ export function SidebarWithBurgerMenu({
               Filter your results
             </Typography>
           </div>
-
           <List>
             <Accordion
               open={open === 1}
@@ -83,10 +80,12 @@ export function SidebarWithBurgerMenu({
                 </AccordionHeader>
               </ListItem>
               <AccordionBody className="py-1">
-                <CheckboxVerticalListGroup labels={focusAreas} />
+                <CheckboxVerticalListGroup
+                  labels={focusAreas}
+                  onChange={setCheckedFocusAreas}
+                />
               </AccordionBody>
             </Accordion>
-
             <Accordion
               open={open === 2}
               icon={
@@ -112,44 +111,16 @@ export function SidebarWithBurgerMenu({
                 </AccordionHeader>
               </ListItem>
               <AccordionBody className="py-1">
-                <CheckboxVerticalListGroup labels={difficulty} />
-              </AccordionBody>
-            </Accordion>
-
-            <Accordion
-              open={open === 3}
-              icon={
-                <ChevronDownIcon
-                  strokeWidth={2.5}
-                  className={`mx-auto h-4 w-4 transition-transform ${
-                    open === 3 ? 'rotate-180' : ''
-                  }`}
+                <CheckboxVerticalListGroup
+                  labels={difficulty}
+                  onChange={setCheckedDifficulty}
                 />
-              }
-            >
-              <ListItem className="p-0" selected={open === 3}>
-                <AccordionHeader
-                  onClick={() => handleOpen(3)}
-                  className="border-b-0 p-3"
-                >
-                  <ListItemPrefix>
-                    <VideoCameraIcon className="h-5 w-5" />
-                  </ListItemPrefix>
-                  <Typography color="blue-gray" className="mr-auto font-normal">
-                    Length of Video
-                  </Typography>
-                </AccordionHeader>
-              </ListItem>
-              <AccordionBody className="py-1">
-                <div className="w-96">
-                  <Slider defaultValue={50} />
-                </div>
               </AccordionBody>
             </Accordion>
-
             <div className="flex flex-col gap-3">
-              <Button className="bg-green-900">Apply Filters</Button>
-              <Button className="bg-blue-900">Reset Filters</Button>
+              <Button className="bg-green-900" onClick={handleApplyFilters}>
+                Apply Filters
+              </Button>
             </div>
           </List>
         </Card>
@@ -157,3 +128,10 @@ export function SidebarWithBurgerMenu({
     </>
   );
 }
+SidebarWithBurgerMenu.propTypes = {
+  isDrawerOpen: PropTypes.bool.isRequired,
+  closeDrawer: PropTypes.func.isRequired,
+  setCheckedFocusAreas: PropTypes.func.isRequired,
+  setCheckedDifficulty: PropTypes.func.isRequired,
+  handleApplyFilters: PropTypes.func.isRequired,
+};

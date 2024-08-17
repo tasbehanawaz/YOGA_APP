@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   Checkbox,
   Card,
@@ -8,7 +9,17 @@ import {
 } from '@material-tailwind/react';
 import PropTypes from 'prop-types';
 
-export function CheckboxVerticalListGroup({ labels }) {
+export function CheckboxVerticalListGroup({ labels, onChange }) {
+  const [checkedItems, setCheckedItems] = useState({});
+
+  const handleCheckboxChange = (index) => {
+    setCheckedItems((prev) => {
+      const newCheckedItems = { ...prev, [index]: !prev[index] };
+      onChange(newCheckedItems);
+      return newCheckedItems;
+    });
+  };
+
   return (
     <Card>
       <List>
@@ -26,6 +37,8 @@ export function CheckboxVerticalListGroup({ labels }) {
                   containerProps={{
                     className: 'p-0',
                   }}
+                  checked={!!checkedItems[index]}
+                  onChange={() => handleCheckboxChange(index)}
                 />
               </ListItemPrefix>
               <Typography color="blue-gray" className="font-medium">
@@ -38,6 +51,8 @@ export function CheckboxVerticalListGroup({ labels }) {
     </Card>
   );
 }
+
 CheckboxVerticalListGroup.propTypes = {
   labels: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onChange: PropTypes.func.isRequired,
 };
