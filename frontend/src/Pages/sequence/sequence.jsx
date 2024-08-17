@@ -18,13 +18,12 @@ const Sequence = () => {
   const [loading, setLoading] = useState(true);
   const [selectedPoses, setSelectedPoses] = useState([]);
   const [filters, setFilters] = useState({
-    age: '',
-    height: '',
-    weight: '',
-    gender: '',
-    difficulty_level: 'all',
+    focusAreas: [],
+    difficulty: [],
   });
   const [appliedFilters, setAppliedFilters] = useState({});
+  const [checkedFocusAreas, setCheckedFocusAreas] = useState({});
+  const [checkedDifficulty, setCheckedDifficulty] = useState({});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const openDrawer = () => setIsDrawerOpen(true);
@@ -56,7 +55,6 @@ const Sequence = () => {
 
   const fetchFilteredPoses = async (filters) => {
     setLoading(true);
-    console.log('Applying filters:', filters);
     try {
       const response = await axios.post(
         'http://localhost:8001/FetchAllYogaPoses.php',
@@ -80,34 +78,41 @@ const Sequence = () => {
     }
   };
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: value,
-    }));
-  };
-
-  const handleSelectChange = (name, value) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: value,
-    }));
-  };
-
   const handleApplyFilters = () => {
+    const focusAreaLabels = {
+      0: 'Balance',
+      1: 'Flexibility',
+      2: 'Core',
+      // Add other mappings as needed
+    };
+
+    const difficultyLabels = {
+      0: 'Beginner',
+      1: 'Intermediate',
+      2: 'Advanced',
+      // Add other mappings as needed
+    };
+
+    const selectedFocusAreas = Object.keys(checkedFocusAreas)
+      .filter((key) => checkedFocusAreas[key])
+      .map((key) => focusAreaLabels[key]);
+
+    const selectedDifficulties = Object.keys(checkedDifficulty)
+      .filter((key) => checkedDifficulty[key])
+      .map((key) => difficultyLabels[key]);
+
+    const filters = {
+      difficulty_level: selectedDifficulties,
+      focus_area: selectedFocusAreas,
+    };
+
+    console.log('Applying filters:', filters);
     fetchFilteredPoses(filters);
     setAppliedFilters(filters);
   };
 
   const handleResetFilters = () => {
-    setFilters({
-      age: '',
-      height: '',
-      weight: '',
-      gender: '',
-      difficulty_level: 'all',
-    });
+    setFilters({ focusAreas: [], difficulty: [] });
     fetchAllPoses();
     setAppliedFilters({});
   };
@@ -192,37 +197,6 @@ const Sequence = () => {
     });
   };
 
-  const handleGenerateFilteredRandomVideo = () => {
-    const filteredPoses = poses.filter(
-      (pose) => pose.difficulty_level === filters.difficulty_level
-    );
-    const randomPoses = [];
-    const posesCopy = [...filteredPoses];
-
-    while (randomPoses.length < 5 && posesCopy.length > 0) {
-      const randomIndex = Math.floor(Math.random() * posesCopy.length);
-      const pose = posesCopy[randomIndex];
-      randomPoses.push({
-        poseName: pose.english_name,
-        imageUrl: pose.url_png || 'https://via.placeholder.com/150',
-      });
-      posesCopy.splice(randomIndex, 1);
-    }
-
-    const newRandomVideo = {
-      type: 'random',
-      selectedPoses: randomPoses.map((pose) => pose.poseName),
-      imageUrl: randomPoses[0].imageUrl, // Use the first pose's image as a thumbnail
-    };
-
-    // Save the generated random video details to localStorage
-    saveGeneratedVideo(newRandomVideo);
-
-    navigate('/generate', {
-      state: { selectedPoses: newRandomVideo.selectedPoses, filters },
-    });
-  };
-
   return (
     <div className="sequence-container">
       <div className="filter-options">
@@ -233,6 +207,11 @@ const Sequence = () => {
           isDrawerOpen={isDrawerOpen}
           openDrawer={openDrawer}
           closeDrawer={closeDrawer}
+          checkedFocusAreas={checkedFocusAreas}
+          setCheckedFocusAreas={setCheckedFocusAreas}
+          checkedDifficulty={checkedDifficulty}
+          setCheckedDifficulty={setCheckedDifficulty}
+          handleApplyFilters={handleApplyFilters}
         />
       </div>
 
@@ -249,6 +228,7 @@ const Sequence = () => {
               imageUrl={pose.url_png}
               poseDescription={pose.pose_benefits}
               difficultyLevel={pose.difficulty_level}
+              focusArea={pose.focus_area}
               onSave={() => handleSavePose(pose)}
               onClick={() => handlePoseSelect(pose.english_name)}
               isSelected={selectedPoses.includes(pose.english_name)}
