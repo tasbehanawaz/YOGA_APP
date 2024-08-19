@@ -3,13 +3,7 @@ import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
 import { useNavigate } from 'react-router-dom';
 import './sequence.css';
-import {
-  Spinner,
-  Button,
-  Input,
-  Select,
-  Option,
-} from '@material-tailwind/react';
+import { Spinner, Button } from '@material-tailwind/react';
 import { ButtonWithIcon } from '../../components/buttonWithIcon/buttonwithIcon';
 import { SidebarWithBurgerMenu } from '../../components/sidebar/sidebar';
 
@@ -17,13 +11,13 @@ const Sequence = () => {
   const [poses, setPoses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPoses, setSelectedPoses] = useState([]);
-  const [filters, setFilters] = useState({
+  const [filters] = useState({
     focusAreas: [],
     difficulty: [],
   });
-  const [appliedFilters, setAppliedFilters] = useState({});
-  const [checkedFocusAreas, setCheckedFocusAreas] = useState({});
-  const [checkedDifficulty, setCheckedDifficulty] = useState({});
+  // const [appliedFilters, setAppliedFilters] = useState({});
+  const [checkedFocusAreas, setCheckedFocusAreas] = useState({}); //this stores the filters which are checked
+  const [checkedDifficulty, setCheckedDifficulty] = useState({}); //this stores the filters which are checked
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const openDrawer = () => setIsDrawerOpen(true);
@@ -106,15 +100,17 @@ const Sequence = () => {
       focus_area: selectedFocusAreas,
     };
 
-    console.log('Applying filters:', filters);
+    // console.log('Applying filters:', filters);
+
     fetchFilteredPoses(filters);
-    setAppliedFilters(filters);
   };
 
   const handleResetFilters = () => {
-    setFilters({ focusAreas: [], difficulty: [] });
-    fetchAllPoses();
-    setAppliedFilters({});
+    // setFilters({ focusAreas: [], difficulty: [] });
+    setCheckedFocusAreas({}); //untick the boxes
+    setCheckedDifficulty({}); //untick the boxes
+    fetchAllPoses(); // fetch all the data
+    handleApplyFilters({});
   };
 
   const handlePoseSelect = (poseName) => {
@@ -212,6 +208,7 @@ const Sequence = () => {
           checkedDifficulty={checkedDifficulty}
           setCheckedDifficulty={setCheckedDifficulty}
           handleApplyFilters={handleApplyFilters}
+          handleResetFilters={handleResetFilters}
         />
       </div>
 
@@ -229,7 +226,7 @@ const Sequence = () => {
               poseDescription={pose.pose_benefits}
               difficultyLevel={pose.difficulty_level}
               focusArea={pose.focus_area}
-              onSave={() => handleSavePose(pose)}
+              // onSave={() => handleSavePose(pose)}
               onClick={() => handlePoseSelect(pose.english_name)}
               isSelected={selectedPoses.includes(pose.english_name)}
             />

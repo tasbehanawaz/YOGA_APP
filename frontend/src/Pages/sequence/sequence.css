@@ -17,10 +17,10 @@
 
 .filter-options {
   background-color: #ffffff;
-  padding: 1rem; /* Reduced padding */
-  border-radius: 8px;
+  padding-top: 5rem; /* Reduced padding */
+  border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1.5rem;
+  margin-bottom: 5rem;
   display: flex;
   align-items: center;
   justify-content: center;

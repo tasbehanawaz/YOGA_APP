@@ -18,6 +18,7 @@ export function CardDefault({
   buttonOnClick,
   onSave,
   isSelected,
+  showFooter,
 }) {
   return (
     <Card
@@ -52,20 +53,22 @@ export function CardDefault({
           </Typography>
         )}
       </CardBody>
-      <CardFooter className="pt-0 flex items-center">
-        <Button
-          className="transition-colors duration-500 hover:bg-blue-500 mr-4"
-          onClick={buttonOnClick}
-        >
-          Read More
-        </Button>
-        <Button
-          className="transition-colors duration-500 hover:bg-blue-500"
-          onClick={onSave}
-        >
-          Save Pose
-        </Button>
-      </CardFooter>
+      {showFooter && (
+        <CardFooter className="pt-0 flex items-center">
+          <Button
+            className="transition-colors duration-500 hover:bg-blue-500 mr-4"
+            onClick={buttonOnClick}
+          >
+            Read More
+          </Button>
+          <Button
+            className="transition-colors duration-500 hover:bg-blue-500"
+            onClick={onSave}
+          >
+            Save Pose
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 }
@@ -80,6 +83,7 @@ CardDefault.propTypes = {
   onSave: PropTypes.func,
   isSelected: PropTypes.bool,
   focusArea: PropTypes.string,
+  showFooter: PropTypes.bool,
 };
 
 CardDefault.defaultProps = {

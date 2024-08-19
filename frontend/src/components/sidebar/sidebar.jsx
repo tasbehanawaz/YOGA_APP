@@ -23,9 +23,12 @@ import {
 export function SidebarWithBurgerMenu({
   isDrawerOpen,
   closeDrawer,
+  checkedFocusAreas,
   setCheckedFocusAreas,
+  checkedDifficulty,
   setCheckedDifficulty,
   handleApplyFilters,
+  handleResetFilters,
 }) {
   const [open, setOpen] = useState(0);
 
@@ -34,6 +37,12 @@ export function SidebarWithBurgerMenu({
 
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
+  };
+
+  const handleReset = () => {
+    setCheckedFocusAreas([]);
+    setCheckedDifficulty([]);
+    handleResetFilters();
   };
 
   return (
@@ -82,6 +91,7 @@ export function SidebarWithBurgerMenu({
               <AccordionBody className="py-1">
                 <CheckboxVerticalListGroup
                   labels={focusAreas}
+                  checkedItems={checkedFocusAreas}
                   onChange={setCheckedFocusAreas}
                 />
               </AccordionBody>
@@ -113,6 +123,7 @@ export function SidebarWithBurgerMenu({
               <AccordionBody className="py-1">
                 <CheckboxVerticalListGroup
                   labels={difficulty}
+                  checkedItems={checkedDifficulty}
                   onChange={setCheckedDifficulty}
                 />
               </AccordionBody>
@@ -120,6 +131,11 @@ export function SidebarWithBurgerMenu({
             <div className="flex flex-col gap-3">
               <Button className="bg-green-900" onClick={handleApplyFilters}>
                 Apply Filters
+              </Button>
+            </div>
+            <div className="flex flex-col gap-3">
+              <Button className="bg-red-900" onClick={handleReset}>
+                Reset Filetrs
               </Button>
             </div>
           </List>
@@ -134,4 +150,7 @@ SidebarWithBurgerMenu.propTypes = {
   setCheckedFocusAreas: PropTypes.func.isRequired,
   setCheckedDifficulty: PropTypes.func.isRequired,
   handleApplyFilters: PropTypes.func.isRequired,
+  handleResetFilters: PropTypes.func.isRequired,
+  checkedFocusAreas: PropTypes.func.isRequired,
+  checkedDifficulty: PropTypes.func.isRequired,
 };
