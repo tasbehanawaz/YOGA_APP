@@ -15,10 +15,10 @@ const Sequence = () => {
     focusAreas: [],
     difficulty: [],
   });
-  // const [appliedFilters, setAppliedFilters] = useState({});
   const [checkedFocusAreas, setCheckedFocusAreas] = useState({}); //this stores the filters which are checked
   const [checkedDifficulty, setCheckedDifficulty] = useState({}); //this stores the filters which are checked
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [duration, setDuration] = useState(5); // Default to 5 minutes
 
   const openDrawer = () => setIsDrawerOpen(true);
   const closeDrawer = () => setIsDrawerOpen(false);
@@ -100,13 +100,10 @@ const Sequence = () => {
       focus_area: selectedFocusAreas,
     };
 
-    // console.log('Applying filters:', filters);
-
     fetchFilteredPoses(filters);
   };
 
   const handleResetFilters = () => {
-    // setFilters({ focusAreas: [], difficulty: [] });
     setCheckedFocusAreas({}); //untick the boxes
     setCheckedDifficulty({}); //untick the boxes
     fetchAllPoses(); // fetch all the data
@@ -124,14 +121,11 @@ const Sequence = () => {
   };
 
   const saveGeneratedVideo = (videoDetails) => {
-    // Retrieve existing videos from localStorage
     const storedGeneratedVideos =
       JSON.parse(localStorage.getItem('generatedVideos')) || [];
 
-    // Add the new video details to the existing list
     const updatedGeneratedVideos = [videoDetails, ...storedGeneratedVideos];
 
-    // Save updated list to localStorage
     localStorage.setItem(
       'generatedVideos',
       JSON.stringify(updatedGeneratedVideos)
@@ -154,7 +148,6 @@ const Sequence = () => {
         imageUrl: selectedPosesDetails[0].imageUrl, // Use the first pose's image as a thumbnail
       };
 
-      // Save the generated video details to localStorage
       saveGeneratedVideo(newVideo);
 
       navigate('/generate', {
@@ -185,7 +178,6 @@ const Sequence = () => {
       imageUrl: randomPoses[0].imageUrl, // Use the first pose's image as a thumbnail
     };
 
-    // Save the generated random video details to localStorage
     saveGeneratedVideo(newRandomVideo);
 
     navigate('/generate', {
@@ -209,6 +201,10 @@ const Sequence = () => {
           setCheckedDifficulty={setCheckedDifficulty}
           handleApplyFilters={handleApplyFilters}
           handleResetFilters={handleResetFilters}
+          duration={duration}
+          setDuration={setDuration}
+          selectedPoses={selectedPoses}
+          generateVideo={handleGenerateVideo}
         />
       </div>
 
@@ -226,7 +222,6 @@ const Sequence = () => {
               poseDescription={pose.pose_benefits}
               difficultyLevel={pose.difficulty_level}
               focusArea={pose.focus_area}
-              // onSave={() => handleSavePose(pose)}
               onClick={() => handlePoseSelect(pose.english_name)}
               isSelected={selectedPoses.includes(pose.english_name)}
             />
@@ -234,7 +229,6 @@ const Sequence = () => {
         </div>
       )}
 
-      {/* Sticky Container */}
       <div className="sticky-button-container">
         <Button
           className="bg-blue-900 text-white py-2 px-4 rounded"
@@ -249,6 +243,7 @@ const Sequence = () => {
           Generate Random Video
         </Button>
       </div>
+      <div className="flex items-center"></div>
     </div>
   );
 };
