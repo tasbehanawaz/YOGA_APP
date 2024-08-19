@@ -33,6 +33,8 @@ export function SidebarWithBurgerMenu({
   handleResetFilters,
   duration,
   setDuration,
+  selectedPoses,
+  generateVideo,
 }) {
   const [open, setOpen] = useState(0);
 
@@ -48,6 +50,10 @@ export function SidebarWithBurgerMenu({
     setCheckedDifficulty([]);
     setDuration(5); // Reset duration to default value
     handleResetFilters();
+  };
+
+  const handleDurationChange = (e) => {
+    setDuration(parseInt(e.target.value));
   };
 
   return (
@@ -163,11 +169,18 @@ export function SidebarWithBurgerMenu({
                 </Typography>
                 <Slider
                   value={duration}
-                  onChange={(e) => setDuration(parseInt(e.target.value))}
+                  onChange={handleDurationChange}
                   min={1}
                   max={60}
                   step={1}
                 />
+                <Button
+                  className="mt-4 bg-blue-500"
+                  onClick={() => generateVideo(selectedPoses, duration)}
+                  disabled={selectedPoses.length === 0}
+                >
+                  Generate Video
+                </Button>
               </AccordionBody>
             </Accordion>
             <div className="flex flex-col gap-3 mt-4">
@@ -198,4 +211,6 @@ SidebarWithBurgerMenu.propTypes = {
   checkedDifficulty: PropTypes.array.isRequired,
   duration: PropTypes.number.isRequired,
   setDuration: PropTypes.func.isRequired,
+  selectedPoses: PropTypes.array.isRequired,
+  generateVideo: PropTypes.func.isRequired,
 };
