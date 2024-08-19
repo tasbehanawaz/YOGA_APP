@@ -12,12 +12,14 @@ import {
   Drawer,
   Card,
   Button,
+  Slider,
 } from '@material-tailwind/react';
 
 import {
   ChevronDownIcon,
   StarIcon,
   TrophyIcon,
+  ClockIcon,
 } from '@heroicons/react/24/outline';
 
 export function SidebarWithBurgerMenu({
@@ -29,6 +31,8 @@ export function SidebarWithBurgerMenu({
   setCheckedDifficulty,
   handleApplyFilters,
   handleResetFilters,
+  duration,
+  setDuration,
 }) {
   const [open, setOpen] = useState(0);
 
@@ -42,6 +46,7 @@ export function SidebarWithBurgerMenu({
   const handleReset = () => {
     setCheckedFocusAreas([]);
     setCheckedDifficulty([]);
+    setDuration(5); // Reset duration to default value
     handleResetFilters();
   };
 
@@ -128,14 +133,51 @@ export function SidebarWithBurgerMenu({
                 />
               </AccordionBody>
             </Accordion>
-            <div className="flex flex-col gap-3">
+            <Accordion
+              open={open === 3}
+              icon={
+                <ChevronDownIcon
+                  strokeWidth={2.5}
+                  className={`mx-auto h-4 w-4 transition-transform ${
+                    open === 3 ? 'rotate-180' : ''
+                  }`}
+                />
+              }
+            >
+              <ListItem className="p-0" selected={open === 3}>
+                <AccordionHeader
+                  onClick={() => handleOpen(3)}
+                  className="border-b-0 p-3"
+                >
+                  <ListItemPrefix>
+                    <ClockIcon className="h-5 w-5" />
+                  </ListItemPrefix>
+                  <Typography color="blue-gray" className="mr-auto font-normal">
+                    Duration
+                  </Typography>
+                </AccordionHeader>
+              </ListItem>
+              <AccordionBody className="py-1">
+                <Typography className="mb-2">
+                  Video Duration: {duration} minutes
+                </Typography>
+                <Slider
+                  value={duration}
+                  onChange={(e) => setDuration(parseInt(e.target.value))}
+                  min={1}
+                  max={60}
+                  step={1}
+                />
+              </AccordionBody>
+            </Accordion>
+            <div className="flex flex-col gap-3 mt-4">
               <Button className="bg-green-900" onClick={handleApplyFilters}>
                 Apply Filters
               </Button>
             </div>
             <div className="flex flex-col gap-3">
               <Button className="bg-red-900" onClick={handleReset}>
-                Reset Filetrs
+                Reset Filters
               </Button>
             </div>
           </List>
@@ -144,6 +186,7 @@ export function SidebarWithBurgerMenu({
     </>
   );
 }
+
 SidebarWithBurgerMenu.propTypes = {
   isDrawerOpen: PropTypes.bool.isRequired,
   closeDrawer: PropTypes.func.isRequired,
@@ -151,6 +194,8 @@ SidebarWithBurgerMenu.propTypes = {
   setCheckedDifficulty: PropTypes.func.isRequired,
   handleApplyFilters: PropTypes.func.isRequired,
   handleResetFilters: PropTypes.func.isRequired,
-  checkedFocusAreas: PropTypes.func.isRequired,
-  checkedDifficulty: PropTypes.func.isRequired,
+  checkedFocusAreas: PropTypes.array.isRequired,
+  checkedDifficulty: PropTypes.array.isRequired,
+  duration: PropTypes.number.isRequired,
+  setDuration: PropTypes.func.isRequired,
 };
