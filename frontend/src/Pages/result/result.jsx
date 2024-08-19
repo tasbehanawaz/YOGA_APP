@@ -66,6 +66,7 @@ const Result = () => {
         onSave={() => handleSavePose(pose)}
         buttonOnClick={() => handleReadMore(pose.english_name)}
         className="w-72"
+        showFooter={true}
       />
     </div>
   );

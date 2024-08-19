@@ -111,6 +111,7 @@ const Categories = () => {
             onSave={() => handleSavePose(pose)}
             buttonOnClick={() => handleReadMore(pose.english_name)}
             className="m-12"
+            showFooter={true}
           />
         ))}
     </div>

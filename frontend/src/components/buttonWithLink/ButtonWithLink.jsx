@@ -12,9 +12,6 @@ export function ButtonWithLink() {
   return (
     <div className="flex items-center gap-4">
       <Button onClick={handleGenerateSequenceClick}>Generate a sequence</Button>
-      <a href="#buttons-with-link">
-        <Button variant="gradient">Learn More</Button>
-      </a>
     </div>
   );
 }
