@@ -43,7 +43,9 @@ export function NavbarWithSearch() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:8001/FetchYogaPoses.php?poseName=${searchQuery}`
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/FetchYogaPoses.php?poseName=${searchQuery}`
       );
       setLoading(false);
       navigate('/search', { state: { data: response.data } });
