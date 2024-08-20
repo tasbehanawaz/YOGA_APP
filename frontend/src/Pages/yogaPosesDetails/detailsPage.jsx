@@ -18,7 +18,7 @@ const YogaPoseDetails = () => {
     const fetchPoseDetails = async () => {
       try {
         const response = await axios.get(
-          'http://localhost:8001/FetchYogaPoses.php',
+          `${import.meta.env.VITE_BACKEND_URL}/FetchYogaPoses.php`,
           { params: { poseName: name } }
         );
 

@@ -33,7 +33,7 @@ const Sequence = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        'http://localhost:8001/FetchAllYogaPoses.php'
+        `${import.meta.env.VITE_BACKEND_URL}/FetchAllYogaPoses.php`
       );
       if (response.data.status === 'success') {
         setPoses(response.data.data);
@@ -51,7 +51,7 @@ const Sequence = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        'http://localhost:8001/FetchAllYogaPoses.php',
+        `${import.meta.env.VITE_BACKEND_URL}/FetchAllYogaPoses.php`,
         filters,
         {
           headers: {

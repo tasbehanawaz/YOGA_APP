@@ -17,7 +17,7 @@ const VideoGenerator = () => {
   const fetchPoseDetails = useCallback(async () => {
     try {
       const response = await axios.post(
-        'http://localhost:8001/FetchYogaPoses.php',
+        `${import.meta.env.VITE_BACKEND_URL}/FetchYogaPoses.php`,
         { poses: selectedPoses }
       );
       setPoseDetails(response.data);
@@ -29,7 +29,7 @@ const VideoGenerator = () => {
   const handleGenerateVideo = useCallback(() => {
     setLoading(true);
     axios
-      .post('http://localhost:8001/generate_video.php', {
+      .post(`${import.meta.env.VITE_BACKEND_URL}/generate_video.php`, {
         poses: selectedPoses,
         user_id: user.id,
         session_token: user.session_token,

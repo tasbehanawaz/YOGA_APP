@@ -25,8 +25,16 @@ const Profile = () => {
       setError(null);
       try {
         const [userResponse, posesResponse] = await Promise.all([
-          axios.get(`http://localhost:8001/get_user.php?user_id=${user.id}`),
-          axios.get(`http://localhost:8001/get_saved_poses.php?user_id=${user.id}`)
+          axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/get_user.php?user_id=${
+              user.id
+            }`
+          ),
+          axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/get_saved_poses.php?user_id=${
+              user.id
+            }`
+          ),
         ]);
 
         setUserDetails(userResponse.data);
@@ -41,12 +49,13 @@ const Profile = () => {
     };
 
     const fetchProfileVideos = () => {
-      const storedProfileVideos = JSON.parse(localStorage.getItem('profileVideos')) || [];
+      const storedProfileVideos =
+        JSON.parse(localStorage.getItem('profileVideos')) || [];
       setProfileVideos(storedProfileVideos);
     };
 
     fetchData();
-  }, [user, navigate]);  // Keep 'user' and 'navigate' dependencies here for the navigation to work properly.
+  }, [user, navigate]); // Keep 'user' and 'navigate' dependencies here for the navigation to work properly.
 
   const handleLogout = async () => {
     const confirmed = window.confirm('Are you sure you want to log out?');
@@ -87,7 +96,11 @@ const Profile = () => {
   };
 
   if (loading) {
-    return <div className="loading-spinner"><div className="spinner"></div></div>;
+    return (
+      <div className="loading-spinner">
+        <div className="spinner"></div>
+      </div>
+    );
   }
 
   if (error) {
@@ -101,30 +114,38 @@ const Profile = () => {
         <p>User ID: {user.id}</p>
         <p>Username: {user.username}</p>
         <p>Session Token: {user.session_token}</p>
-        <button className="button" onClick={handleLogout}>Logout</button>
+        <button className="button" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
       <div className="saved-poses">
         <h2>Saved Poses</h2>
         {savedPoses.map((pose, index) => (
-          <div key={index} className="pose-item" onClick={() => handleReadMore(pose.name)}>
-            <img 
-              src={pose.image_url || 'https://via.placeholder.com/150'} 
-              alt={pose.name} 
-              className="pose-image" 
+          <div
+            key={index}
+            className="pose-item"
+            onClick={() => handleReadMore(pose.name)}
+          >
+            <img
+              src={pose.image_url || 'https://via.placeholder.com/150'}
+              alt={pose.name}
+              className="pose-image"
             />
             <p>{pose.name}</p>
           </div>
         ))}
-        <button className="button" onClick={handleViewAllPoses}>View All</button>
+        <button className="button" onClick={handleViewAllPoses}>
+          View All
+        </button>
       </div>
       <div className="profile-videos">
         <h2 className="section-title">Your Saved Videos</h2>
         <div className="profile-videos-grid">
           {profileVideos.slice(0, 4).map((video, index) => (
             <div key={index} className="profile-video-item mb-4">
-              <video 
-                src={video.videoPath} 
-                alt={`Video ${index + 1}`} 
+              <video
+                src={video.videoPath}
+                alt={`Video ${index + 1}`}
                 className="profile-video-preview"
                 onClick={() => handleWatchVideo(video.selectedPoses)}
                 style={{ cursor: 'pointer' }}
@@ -132,13 +153,18 @@ const Profile = () => {
                 muted
                 width="100%"
               />
-              <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
+              <p>
+                {video.type === 'random' ? 'Random Video' : 'Selected Video'}
+              </p>
             </div>
           ))}
         </div>
         {profileVideos.length > 4 && (
           <div className="view-all-container">
-            <button className="button view-all-button" onClick={handleViewAllVideos}>
+            <button
+              className="button view-all-button"
+              onClick={handleViewAllVideos}
+            >
               View All
             </button>
           </div>
