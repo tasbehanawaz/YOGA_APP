@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -14,30 +14,22 @@ const VideoGenerator = () => {
   const [expandedPoseIndex, setExpandedPoseIndex] = useState(null);
   const [generatedVideos, setGeneratedVideos] = useState([]);
 
-  useEffect(() => {
-    if (selectedPoses.length > 0) {
-      fetchPoseDetails();
-      handleGenerateVideo();
-    }
-    fetchGeneratedVideos(); // Fetch generated videos from localStorage
-  }, [selectedPoses]);
-
-  const fetchPoseDetails = async () => {
+  const fetchPoseDetails = useCallback(async () => {
     try {
       const response = await axios.post(
-        'http://localhost:8001/FetchYogaPoses.php',
+        `${import.meta.env.VITE_BACKEND_URL}/FetchYogaPoses.php`,
         { poses: selectedPoses }
       );
       setPoseDetails(response.data);
     } catch (error) {
       console.error('Error fetching pose details:', error);
     }
-  };
+  }, [selectedPoses]);
 
-  const handleGenerateVideo = () => {
+  const handleGenerateVideo = useCallback(() => {
     setLoading(true);
     axios
-      .post('http://localhost:8001/generate_video.php', {
+      .post(`${import.meta.env.VITE_BACKEND_URL}/generate_video.php`, {
         poses: selectedPoses,
         user_id: user.id,
         session_token: user.session_token,
@@ -74,21 +66,20 @@ const VideoGenerator = () => {
         console.error('Error generating video:', error);
         alert('Error generating video.');
       });
-  };
+  }, [selectedPoses, user.id, user.session_token]);
+
+  useEffect(() => {
+    if (selectedPoses.length > 0) {
+      fetchPoseDetails();
+      handleGenerateVideo();
+    }
+    fetchGeneratedVideos(); // Fetch generated videos from localStorage
+  }, [selectedPoses, fetchPoseDetails, handleGenerateVideo]);
 
   const fetchGeneratedVideos = () => {
     const storedGeneratedVideos =
       JSON.parse(localStorage.getItem('generatedVideos')) || [];
     setGeneratedVideos(storedGeneratedVideos);
-  };
-
-  const handleDownload = (videoUrl) => {
-    const a = document.createElement('a');
-    a.href = videoUrl;
-    a.setAttribute('download', videoUrl.split('/').pop());
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
   };
 
   const saveVideoToProfile = () => {
@@ -100,7 +91,8 @@ const VideoGenerator = () => {
       type: selectedPoses.length > 0 ? 'selected' : 'random',
     };
 
-    const existingVideos = JSON.parse(localStorage.getItem('profileVideos')) || [];
+    const existingVideos =
+      JSON.parse(localStorage.getItem('profileVideos')) || [];
     existingVideos.unshift(newVideo); // Add the new video to the beginning
     localStorage.setItem('profileVideos', JSON.stringify(existingVideos));
     alert('Video saved to your profile!');
@@ -135,35 +127,32 @@ const VideoGenerator = () => {
               >
                 Save Video To Profile
               </button>
-              <button
-                onClick={() => handleDownload(videoUrl)}
-                className="mt-4 px-4 py-2 bg-blue-900 hover:bg-blue-500 text-white rounded"
-              >
-                Download Video
-              </button>
             </div>
           )
         )}
         <div className="pose-details w-full max-w-3xl">
-          <p className="instruction-text">
+          <p className="instruction-text mb-4">
             Click on the yoga pose name to see more details.
           </p>
           {poseDetails.map((pose, index) => (
             <div
               key={index}
-              className={`pose-detail ${
-                expandedPoseIndex === index ? 'expanded' : ''
-              }`}
+              className="pose-detail mb-2 border border-gray-200 rounded"
             >
-              <h2
-                className="pose-title text-xl font-semibold cursor-pointer"
+              <button
+                className="w-full text-left px-4 py-2 bg-gray-100 hover:bg-gray-200 focus:outline-none"
                 onClick={() => toggleDetails(index)}
               >
-                {pose.english_name}
-              </h2>
+                <h2 className="pose-title text-xl font-semibold">
+                  {pose.english_name}
+                  <span className="float-right">
+                    {expandedPoseIndex === index ? '▲' : '▼'}
+                  </span>
+                </h2>
+              </button>
               {expandedPoseIndex === index && (
-                <div className="pose-extra-details">
-                  <p>
+                <div className="pose-extra-details p-4 bg-white">
+                  <p className="mb-2">
                     <strong>Description:</strong> {pose.pose_description}
                   </p>
                   <p>
@@ -179,9 +168,9 @@ const VideoGenerator = () => {
         <h2 className="text-2xl font-bold mb-4">Recently Generated Videos</h2>
         {generatedVideos.slice(0, 4).map((video, index) => (
           <div key={index} className="generated-video-item mb-4">
-            <video 
-              src={video.videoPath}  
-              alt={`Video ${index + 1}`} 
+            <video
+              src={video.videoPath}
+              alt={`Video ${index + 1}`}
               className="generated-video-preview"
               onClick={() => setVideoUrl(video.videoPath)}
               style={{ cursor: 'pointer' }}

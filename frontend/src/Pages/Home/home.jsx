@@ -3,15 +3,11 @@ import { CarouselDefault } from '../../components/carousel/carousel';
 import { Typography } from '@material-tailwind/react';
 import ButtonWithLink from '../../components/buttonWithLink/ButtonWithLink'; // Correct import path with case sensitivity
 
-
-
-
-
 const Program = () => {
   return (
     <>
       <div className="box">
-        <Typography variant="h4" className="m-6">
+        <Typography variant="h4" className="pt-20">
           Find Your Inner Peace
         </Typography>
         <div className="mt-4">

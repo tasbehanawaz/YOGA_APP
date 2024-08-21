@@ -16,8 +16,8 @@ const Categories = () => {
     setLoading(true);
     setError(null);
     try {
-      const url = 'http://localhost:8001/fetchAllYogaPoses.php';
-      
+      // https://yogaapp-1b12892092be.herokuapp.com/ === http://localhost:8001
+      const url = `${import.meta.env.VITE_BACKEND_URL}/FetchAllYogaPoses.php`;
       // Only include the filter if it's not 'mixed'
       const postData = filter !== 'mixed' ? { difficulty_level: filter } : {};
 
@@ -47,7 +47,7 @@ const Categories = () => {
     console.log('Saving pose:', pose);
     try {
       const response = await axios.post(
-        'http://localhost:8001/save_pose.php',
+        `${import.meta.env.VITE_BACKEND_URL}/save_pose.php`,
         {
           english_name: pose.english_name,
           pose_description: pose.pose_description,
@@ -73,7 +73,7 @@ const Categories = () => {
   return (
     <div className="categories-container m-8">
       <div className="flex flex-row w-full justify-center mb-4">
-      <Button onClick={() => setFilter('all')} className="mr-2">
+        <Button onClick={() => setFilter('all')} className="mr-2">
           All
         </Button>
         <Button onClick={() => setFilter('beginner')} className="mr-2">
@@ -112,6 +112,7 @@ const Categories = () => {
             onSave={() => handleSavePose(pose)}
             buttonOnClick={() => handleReadMore(pose.english_name)}
             className="m-12"
+            showFooter={true}
           />
         ))}
     </div>

@@ -5,6 +5,7 @@ import { Carousel, IconButton } from "@material-tailwind/react";
 import { useNavigate } from 'react-router-dom';
 
 const SavedPoses = () => {
+
     const [savedPoses, setSavedPoses] = useState([]);
     const [savedVideos, setSavedVideos] = useState([]);
     const itemsPerPage = 4; // Number of items to display per page
@@ -262,7 +263,64 @@ const SavedPoses = () => {
                 }
             `}</style>
         </div>
+
     );
+  }
+
+  return (
+    <div className="saved-poses-container">
+      <button onClick={handleResetPoses} className="reset-button">
+        Reset Saved Poses
+      </button>
+      <div className="poses-grid">
+        {savedPoses.map((pose) => (
+          <CardDefault
+            key={pose.id}
+            name={pose.name}
+            imageUrl={pose.image_url || 'https://via.placeholder.com/150'} // Placeholder if image_url is not available
+            poseDescription={pose.description}
+            onClick={() => console.log(`Clicked on ${pose.name}`)}
+            onSave={() => console.log(`Saved ${pose.name}`)}
+            isSelected={false}
+            buttonOnClick={() => handleReadMore(pose.name)} // Add Read More button functionality
+          />
+        ))}
+      </div>
+      <style jsx>{`
+        .saved-poses-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 2rem;
+          background-color: #f5f5f5;
+          min-height: 100vh;
+        }
+        .reset-button {
+          margin-bottom: 1rem;
+          background-color: #e53e3e;
+          color: white;
+          padding: 0.5rem 1rem;
+          border-radius: 0.25rem;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+        .reset-button:hover {
+          background-color: #c53030;
+        }
+        .poses-grid {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 1.5rem;
+        }
+        .no-poses-message {
+          font-size: 1.25rem;
+          color: #333;
+          margin-bottom: 1rem;
+        }
+      `}</style>
+    </div>
+  );
 };
 
 export default SavedPoses;

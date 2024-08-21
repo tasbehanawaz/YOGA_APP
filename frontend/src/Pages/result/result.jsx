@@ -33,7 +33,7 @@ const Result = () => {
     console.log('Saving pose:', pose); // Debugging line
     try {
       const response = await axios.post(
-        'http://localhost:8001/save_pose.php',
+        `${import.meta.env.VITE_BACKEND_URL}/save_pose.php`,
         {
           english_name: pose.english_name,
           pose_description: pose.pose_description,
@@ -66,6 +66,7 @@ const Result = () => {
         onSave={() => handleSavePose(pose)}
         buttonOnClick={() => handleReadMore(pose.english_name)}
         className="w-72"
+        showFooter={true}
       />
     </div>
   );
