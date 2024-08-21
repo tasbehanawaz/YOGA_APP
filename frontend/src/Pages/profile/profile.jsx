@@ -7,9 +7,8 @@ import { useAuth } from '../../contexts/AuthContext';
 const Profile = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  // eslint-disable-next-line no-unused-vars
   const [userDetails, setUserDetails] = useState({});
-  const [savedPoses, setSavedPoses] = useState([]);
+  const [savedPoses, setSavedPoses] = useState([]); // State for saved poses
   const [profileVideos, setProfileVideos] = useState([]); // State for saved videos
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,11 +25,11 @@ const Profile = () => {
       try {
         const [userResponse, posesResponse] = await Promise.all([
           axios.get(`http://localhost:8001/get_user.php?user_id=${user.id}`),
-          axios.get(`http://localhost:8001/get_saved_poses.php?user_id=${user.id}`)
+          axios.get(`http://localhost:8001/get_saved_poses.php?user_id=${user.id}`) // Ensure this API is correct
         ]);
 
         setUserDetails(userResponse.data);
-        setSavedPoses(posesResponse.data.slice(0, 3));
+        setSavedPoses(posesResponse.data); // Store the fetched saved poses
         fetchProfileVideos(); // Fetch saved videos from localStorage
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -64,7 +63,6 @@ const Profile = () => {
     navigate('/save');
   };
 
-  // eslint-disable-next-line no-unused-vars
   const handleReadMore = (poseName) => {
     navigate(`/pose/${poseName}`);
   };
@@ -105,16 +103,20 @@ const Profile = () => {
       </div>
       <div className="saved-poses">
         <h2>Saved Poses</h2>
-        {savedPoses.map((pose, index) => (
-          <div key={index} className="pose-item" onClick={() => handleReadMore(pose.name)}>
-            <img 
-              src={pose.image_url || 'https://via.placeholder.com/150'} 
-              alt={pose.name} 
-              className="pose-image" 
-            />
-            <p>{pose.name}</p>
-          </div>
-        ))}
+        {savedPoses.length === 0 ? (  // Conditionally render based on saved poses
+          <p>No saved poses available.</p>
+        ) : (
+          savedPoses.map((pose, index) => (
+            <div key={index} className="pose-item" onClick={() => handleReadMore(pose.name)}>
+              <img 
+                src={pose.image_url || 'https://via.placeholder.com/150'} 
+                alt={pose.name} 
+                className="pose-image" 
+              />
+              <p>{pose.name}</p>
+            </div>
+          ))
+        )}
         <button className="button" onClick={handleViewAllPoses}>View All</button>
       </div>
       <div className="profile-videos">
