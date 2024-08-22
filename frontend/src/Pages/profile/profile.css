@@ -1,144 +1,152 @@
-/* profile.css */
-
-/* General Profile Container Styling */
+/* Profile Container */
 .profile-container {
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 20px;
-}
-
-/* User Details Section */
-.user-details {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-}
-
-.user-details p {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 500;
-}
-
-/* Section Titles */
-.section-title {
-  font-size: 28px;
-  font-weight: bold;
-  color: #2c3e50;
-  border-bottom: 3px solid #3498db;
-  display: inline-block;
-  margin-bottom: 20px;
-  padding-bottom: 5px;
-}
-
-/* Saved Poses Section */
-.saved-poses {
-  margin-bottom: 30px;
-}
-
-.pose-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-}
-
-.pose-image {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-right: 15px;
-}
-
-.pose-item p {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-/* Profile Videos Section */
-.profile-videos {
-  margin-bottom: 30px;
-}
-
-.profile-videos-grid {
-  display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 20px;
+}
+
+/* Section Container */
+.section-container {
+  background-color: #f4f6f9;
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px solid #007bff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+/* Headings (H2) Styling */
+h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+/* Carousel Styling */
+.carousel {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 
-.profile-video-item {
-  flex: 1 1 calc(33.333% - 20px); /* 3 videos per row */
-  max-width: 100%;
-  box-sizing: border-box;
-  background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 8px;
+.carousel-items {
+  display: flex;
+  gap: 1rem;
+  overflow: hidden;
+  flex-wrap: wrap;
 }
 
-.profile-video-preview {
+/* Carousel Controls */
+.carousel-control {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #007bff;
+}
+
+.carousel-control:disabled {
+  color: #ddd;
+  cursor: not-allowed;
+}
+
+/* --- Restored Styling for Saved Poses Section --- */
+
+/* Saved Poses Item */
+.pose-item {
+  flex: 1 1 calc(25% - 1rem); /* Revert to original 1/4 of the container */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent; /* No background for individual items */
+  border: none; /* No border for individual items */
+}
+
+/* Pose Image Styling */
+.pose-image {
   width: 100%;
   height: auto;
   border-radius: 8px;
-  margin-bottom: 10px;
 }
 
-.profile-video-item p {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 500;
+/* Pose Name Styling */
+.pose-name {
+  font-size: 1rem;
+  margin-top: 8px;
   text-align: center;
+}
+
+/* --- Saved Videos Section Retains the New Styling --- */
+
+/* Saved Video Item */
+.profile-video-item {
+  flex: 1 1 calc(50% - 1rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Video Preview Styling */
+.profile-video-preview {
+  width: 100%;
+  height: 150px;
+  border-radius: 8px;
+  background-color: #f4f6f9;
+}
+
+/* Button Styling */
+.button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.button:hover {
+  background-color: #0056b3;
 }
 
 /* View All Button */
 .view-all-container {
   text-align: center;
-  margin-top: 20px;
 }
 
 .view-all-button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  margin-top: 8px;
 }
 
-.view-all-button:hover {
-  background-color: #0056b3;
+/* Loading Spinner */
+.loading-spinner .spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 992px) {
-  .profile-video-item {
-    flex: 1 1 calc(50% - 20px); /* 2 videos per row on medium screens */
-  }
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-@media (max-width: 768px) {
-  .profile-video-item {
-    flex: 1 1 100%; /* 1 video per row on small screens */
-  }
-}
-
-@media (max-width: 480px) {
-  .user-details {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .user-details p {
-    margin-bottom: 10px;
-  }
+/* Error Message */
+.error {
+  color: red;
+  text-align: center;
 }
