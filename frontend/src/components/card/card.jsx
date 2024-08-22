@@ -7,6 +7,7 @@ import {
   Typography,
   Button,
 } from '@material-tailwind/react';
+import React from 'react';
 
 export function CardDefault({
   name,
@@ -43,12 +44,12 @@ export function CardDefault({
         </Typography>
         <Typography>{poseDescription}</Typography>
         {difficultyLevel && ( // Conditionally render the difficulty level
-          <Typography variant="subtitle1" color="blue-gray" className="mt-2">
+          <Typography variant="paragraph" color="blue-gray" className="mt-2">
             Difficulty: {difficultyLevel}
           </Typography>
         )}
         {focusArea && ( // Conditionally render the difficulty level
-          <Typography variant="subtitle1" color="blue-gray" className="mt-2">
+          <Typography variant="paragraph" color="blue-gray" className="mt-2">
             Focus Area: {focusArea}
           </Typography>
         )}

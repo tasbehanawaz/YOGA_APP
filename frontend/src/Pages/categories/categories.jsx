@@ -1,10 +1,23 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
 import { useNavigate } from 'react-router-dom';
 import './categories.css';
 import { Spinner, Button } from '@material-tailwind/react';
-import toast from 'react-hot-toast';
+
+
+
+// const backendUrl = import.meta.env?.VITE_BACKEND_URL || 'http://localhost:8001';
+
+// Adding fall back categories.jsx file
+const getBackendUrl = () => {
+  if (process.env.VITE_BACKEND_URL) {
+    return process.env.VITE_BACKEND_URL;
+  }
+  
+  return 'http://localhost:8001';
+};
+
 
 const Categories = () => {
   const [poses, setPoses] = useState([]);
@@ -17,7 +30,8 @@ const Categories = () => {
     setLoading(true);
     setError(null);
     try {
-      const url = `${import.meta.env.VITE_BACKEND_URL}/FetchAllYogaPoses.php`;
+      // https://yogaapp-1b12892092be.herokuapp.com/ === http://localhost:8001
+      const url = `${getBackendUrl()}/FetchAllYogaPoses.php`;
       // Only include the filter if it's not 'mixed'
       const postData = filter !== 'mixed' ? { difficulty_level: filter } : {};
 
@@ -47,7 +61,7 @@ const Categories = () => {
     console.log('Saving pose:', pose);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/save_pose.php`,
+        `${getBackendUrl()}/save_pose.php`,
         {
           english_name: pose.english_name,
           pose_description: pose.pose_description,
