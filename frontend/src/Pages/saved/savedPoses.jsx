@@ -4,12 +4,18 @@ import axios from 'axios';
 import { Carousel, IconButton } from "@material-tailwind/react";
 import { useNavigate } from 'react-router-dom';
 
-const SavedPoses = () => {
+// Helper function to chunk items into groups of two
+const chunkArray = (array, chunkSize) => {
+    const chunks = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+        chunks.push(array.slice(i, i + chunkSize));
+    }
+    return chunks;
+};
 
+const SavedPoses = () => {
     const [savedPoses, setSavedPoses] = useState([]);
     const [savedVideos, setSavedVideos] = useState([]);
-    const itemsPerPage = 4; // Number of items to display per page
-
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -55,11 +61,15 @@ const SavedPoses = () => {
         }
     };
 
+    // Chunk the saved videos and poses into groups of two
+    const chunkedVideos = chunkArray(savedVideos, 2);
+    const chunkedPoses = chunkArray(savedPoses, 2);
+
     return (
         <div className="saved-poses-container">
             <h1>Favorites</h1>
 
-            {/* Saved Videos Section with Smaller Carousel */}
+            {/* Saved Videos Section */}
             <h2>Saved Videos</h2>
             {savedVideos.length === 0 ? (
                 <div className="no-poses-message">No saved videos available.</div>
@@ -80,7 +90,7 @@ const SavedPoses = () => {
                                 viewBox="0 0 24 24"
                                 strokeWidth={2}
                                 stroke="currentColor"
-                                className="h-5 w-5"
+                                className="h-6 w-6"
                             >
                                 <path
                                     strokeLinecap="round"
@@ -104,7 +114,7 @@ const SavedPoses = () => {
                                 viewBox="0 0 24 24"
                                 strokeWidth={2}
                                 stroke="currentColor"
-                                className="h-5 w-5"
+                                className="h-6 w-6"
                             >
                                 <path
                                     strokeLinecap="round"
@@ -115,24 +125,29 @@ const SavedPoses = () => {
                         </IconButton>
                     )}
                 >
-                    {savedVideos.map((video, index) => (
-                        <div key={index} className="media-item">
-                            <video 
-                                src={video.videoPath} 
-                                alt={`Video ${index + 1}`} 
-                                className="media-preview"
-                                onClick={() => handleWatchVideo(video.selectedPoses)}
-                                controls
-                                muted
-                                width="100%"
-                            />
-                            <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
+                    {chunkedVideos.map((videoGroup, index) => (
+                        <div key={index} className="flex justify-center items-center gap-2">
+                            {videoGroup.map((video, index) => (
+                                <div key={index} className="media-item w-1/2 p-1">
+                                    <video 
+                                        src={video.videoPath} 
+                                        alt={`Video ${index + 1}`} 
+                                        className="media-preview"
+                                        onClick={() => handleWatchVideo(video.selectedPoses)}
+                                        controls
+                                        muted
+                                        width="100%"
+                                        height="150"
+                                    />
+                                    <p className="text-xs mt-1">{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
+                                </div>
+                            ))}
                         </div>
                     ))}
                 </Carousel>
             )}
 
-            {/* Saved Poses Section with Smaller Carousel */}
+            {/* Saved Poses Section */}
             <h2>Saved Poses</h2>
             {savedPoses.length === 0 ? (
                 <div className="no-poses-message">No saved poses available.</div>
@@ -153,7 +168,7 @@ const SavedPoses = () => {
                                 viewBox="0 0 24 24"
                                 strokeWidth={2}
                                 stroke="currentColor"
-                                className="h-5 w-5"
+                                className="h-6 w-6"
                             >
                                 <path
                                     strokeLinecap="round"
@@ -177,7 +192,7 @@ const SavedPoses = () => {
                                 viewBox="0 0 24 24"
                                 strokeWidth={2}
                                 stroke="currentColor"
-                                className="h-5 w-5"
+                                className="h-6 w-6"
                             >
                                 <path
                                     strokeLinecap="round"
@@ -188,14 +203,18 @@ const SavedPoses = () => {
                         </IconButton>
                     )}
                 >
-                    {savedPoses.map((pose) => (
-                        <div key={pose.id} className="media-item">
-                            <CardDefault
-                                name={pose.name}
-                                imageUrl={pose.image_url || 'https://via.placeholder.com/150'}
-                                poseDescription={pose.description}
-                                onClick={() => handleReadMore(pose.name)}
-                            />
+                    {chunkedPoses.map((poseGroup, index) => (
+                        <div key={index} className="flex justify-center items-center gap-2">
+                            {poseGroup.map((pose) => (
+                                <div key={pose.id} className="media-item w-1/2 p-1">
+                                    <CardDefault
+                                        name={pose.name}
+                                        imageUrl={pose.image_url || 'https://via.placeholder.com/100'}
+                                        poseDescription={pose.description}
+                                        onClick={() => handleReadMore(pose.name)}
+                                    />
+                                </div>
+                            ))}
                         </div>
                     ))}
                 </Carousel>
@@ -214,15 +233,21 @@ const SavedPoses = () => {
                 }
 
                 h1, h2 {
-                    font-size: 2rem;
+                    font-size: 1.5rem;
                     color: #1e2a38;
-                    margin-bottom: 1.5rem;
+                    margin-bottom: 1rem;
                 }
 
                 .media-item {
                     background-color: #fff;
                     border-radius: 8px;
-                    padding: 1rem;
+                    padding: 0.5rem;
+                    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+                    transition: transform 0.2s;
+                }
+
+                .media-item:hover {
+                    transform: translateY(-3px);
                 }
 
                 .media-preview {
@@ -235,10 +260,10 @@ const SavedPoses = () => {
                     margin-top: 2rem;
                     background-color: #007bff;
                     color: white;
-                    padding: 0.6rem 1.2rem;
+                    padding: 0.5rem 1rem;
                     border-radius: 5px;
                     cursor: pointer;
-                    font-size: 1rem;
+                    font-size: 0.9rem;
                     transition: background-color 0.3s ease;
                 }
 
@@ -246,81 +271,24 @@ const SavedPoses = () => {
                     background-color: #0056b3;
                 }
 
-                .pagination {
-                    margin-top: 1rem;
-                    font-size: 1.2rem;
-                    color: #333;
-                }
-
                 @media (max-width: 768px) {
                     h1, h2 {
-                        font-size: 1.5rem;
+                        font-size: 1.2rem;
                     }
 
-                    .clear-button {
-                        font-size: 0.9rem;
+                    .media-item {
+                        width: 50%;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .media-item {
+                        width: 100%;
                     }
                 }
             `}</style>
         </div>
-
     );
-  }
-
-  return (
-    <div className="saved-poses-container">
-      <button onClick={handleResetPoses} className="reset-button">
-        Reset Saved Poses
-      </button>
-      <div className="poses-grid">
-        {savedPoses.map((pose) => (
-          <CardDefault
-            key={pose.id}
-            name={pose.name}
-            imageUrl={pose.image_url || 'https://via.placeholder.com/150'} // Placeholder if image_url is not available
-            poseDescription={pose.description}
-            onClick={() => console.log(`Clicked on ${pose.name}`)}
-            onSave={() => console.log(`Saved ${pose.name}`)}
-            isSelected={false}
-            buttonOnClick={() => handleReadMore(pose.name)} // Add Read More button functionality
-          />
-        ))}
-      </div>
-      <style jsx>{`
-        .saved-poses-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding: 2rem;
-          background-color: #f5f5f5;
-          min-height: 100vh;
-        }
-        .reset-button {
-          margin-bottom: 1rem;
-          background-color: #e53e3e;
-          color: white;
-          padding: 0.5rem 1rem;
-          border-radius: 0.25rem;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-        }
-        .reset-button:hover {
-          background-color: #c53030;
-        }
-        .poses-grid {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: 1.5rem;
-        }
-        .no-poses-message {
-          font-size: 1.25rem;
-          color: #333;
-          margin-bottom: 1rem;
-        }
-      `}</style>
-    </div>
-  );
 };
 
 export default SavedPoses;

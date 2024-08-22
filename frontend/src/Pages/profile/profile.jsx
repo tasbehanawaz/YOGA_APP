@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import './profile.css';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +14,12 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // State to track the visible index for poses and videos
+  const [poseIndex, setPoseIndex] = useState(0);
+  const [videoIndex, setVideoIndex] = useState(0);
+
+  const ITEMS_PER_PAGE = 4; // Show 4 items at a time
+
   useEffect(() => {
     if (!user) {
       navigate('/SignIn');
@@ -24,14 +31,13 @@ const Profile = () => {
       setError(null);
       try {
         const [userResponse, posesResponse] = await Promise.all([
-
           axios.get(`http://localhost:8001/get_user.php?user_id=${user.id}`),
-          axios.get(`http://localhost:8001/get_saved_poses.php?user_id=${user.id}`) // Ensure this API is correct
-     ]);
+          axios.get(`http://localhost:8001/get_saved_poses.php?user_id=${user.id}`)
+        ]);
 
         setUserDetails(userResponse.data);
-        setSavedPoses(posesResponse.data); // Store the fetched saved poses
-        fetchProfileVideos(); // Fetch saved videos from localStorage
+        setSavedPoses(posesResponse.data); 
+        fetchProfileVideos();
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Error fetching data. Please try again later.');
@@ -41,13 +47,12 @@ const Profile = () => {
     };
 
     const fetchProfileVideos = () => {
-      const storedProfileVideos =
-        JSON.parse(localStorage.getItem('profileVideos')) || [];
+      const storedProfileVideos = JSON.parse(localStorage.getItem('profileVideos')) || [];
       setProfileVideos(storedProfileVideos);
     };
 
     fetchData();
-  }, [user, navigate]); // Keep 'user' and 'navigate' dependencies here for the navigation to work properly.
+  }, [user, navigate]);
 
   const handleLogout = async () => {
     const confirmed = window.confirm('Are you sure you want to log out?');
@@ -86,12 +91,21 @@ const Profile = () => {
     navigate('/all-generated-videos');
   };
 
+  // Function to handle next and previous navigation
+  const handleNext = (setIndex, items, index) => {
+    if (index < items.length - ITEMS_PER_PAGE) {
+      setIndex(index + ITEMS_PER_PAGE);
+    }
+  };
+
+  const handlePrev = (setIndex, index) => {
+    if (index > 0) {
+      setIndex(index - ITEMS_PER_PAGE);
+    }
+  };
+
   if (loading) {
-    return (
-      <div className="loading-spinner">
-        <div className="spinner"></div>
-      </div>
-    );
+    return <div className="loading-spinner"><div className="spinner"></div></div>;
   }
 
   if (error) {
@@ -105,60 +119,91 @@ const Profile = () => {
         <p>User ID: {user.id}</p>
         <p>Username: {user.username}</p>
         <p>Session Token: {user.session_token}</p>
-        <button className="button" onClick={handleLogout}>
-          Logout
-        </button>
+        <button className="button" onClick={handleLogout}>Logout</button>
       </div>
+
+      {/* Saved Poses Section */}
       <div className="saved-poses">
         <h2>Saved Poses</h2>
-
-        {savedPoses.length === 0 ? (  // Conditionally render based on saved poses
+        {savedPoses.length === 0 ? (
           <p>No saved poses available.</p>
         ) : (
-          savedPoses.map((pose, index) => (
-            <div key={index} className="pose-item" onClick={() => handleReadMore(pose.name)}>
-              <img 
-                src={pose.image_url || 'https://via.placeholder.com/150'} 
-                alt={pose.name} 
-                className="pose-image" 
-              />
-              <p>{pose.name}</p>
-            </div>
-          ))
-        )}
-        <button className="button" onClick={handleViewAllPoses}>View All</button>
-
-      </div>
-      <div className="profile-videos">
-        <h2 className="section-title">Your Saved Videos</h2>
-        <div className="profile-videos-grid">
-          {profileVideos.slice(0, 4).map((video, index) => (
-            <div key={index} className="profile-video-item mb-4">
-              <video
-                src={video.videoPath}
-                alt={`Video ${index + 1}`}
-                className="profile-video-preview"
-                onClick={() => handleWatchVideo(video.selectedPoses)}
-                style={{ cursor: 'pointer' }}
-                controls
-                muted
-                width="100%"
-              />
-              <p>
-                {video.type === 'random' ? 'Random Video' : 'Selected Video'}
-              </p>
-            </div>
-          ))}
-        </div>
-        {profileVideos.length > 4 && (
-          <div className="view-all-container">
-            <button
-              className="button view-all-button"
-              onClick={handleViewAllVideos}
+          <div className="carousel">
+            <button 
+              className="carousel-control prev" 
+              onClick={() => handlePrev(setPoseIndex, poseIndex)}
+              disabled={poseIndex === 0} // Disable if at the beginning
             >
-              View All
+              &#8249; {/* Left arrow symbol */}
+            </button>
+            <div className="carousel-items">
+              {savedPoses.slice(poseIndex, poseIndex + ITEMS_PER_PAGE).map((pose, index) => (
+                <div key={index} className="pose-item" onClick={() => handleReadMore(pose.name)}>
+                  <img
+                    src={pose.image_url || 'https://via.placeholder.com/150'}
+                    alt={pose.name}
+                    className="pose-image"
+                  />
+                  <p className="pose-name">{pose.name}</p> {/* Pose name at the bottom */}
+                </div>
+              ))}
+            </div>
+            <button 
+              className="carousel-control next" 
+              onClick={() => handleNext(setPoseIndex, savedPoses, poseIndex)}
+              disabled={poseIndex >= savedPoses.length - ITEMS_PER_PAGE} // Disable if at the end
+            >
+              &#8250; {/* Right arrow symbol */}
             </button>
           </div>
+        )}
+        {savedPoses.length > ITEMS_PER_PAGE && (
+          <button className="button view-all-button" onClick={handleViewAllPoses}>View All Favorites</button>
+        )}
+      </div>
+
+      {/* Saved Videos Section */}
+      <div className="profile-videos">
+        <h2>Your Saved Videos</h2>
+        <div className="carousel">
+          <button 
+            className="carousel-control prev" 
+            onClick={() => handlePrev(setVideoIndex, videoIndex)}
+            disabled={videoIndex === 0} // Disable if at the beginning
+          >
+            &#8249; {/* Left arrow symbol */}
+          </button>
+          <div className="carousel-items">
+            {profileVideos.slice(videoIndex, videoIndex + ITEMS_PER_PAGE).map((video, index) => (
+              <div key={index} className="profile-video-item mb-4">
+                <video
+                  src={video.videoPath}
+                  alt={`Video ${index + 1}`}
+                  className="profile-video-preview"
+                  onClick={() => handleWatchVideo(video.selectedPoses)}
+                  style={{ cursor: 'pointer' }}
+                  controls
+                  muted
+                  width="100%"
+                />
+                <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
+              </div>
+            ))}
+          </div>
+          <button 
+            className="carousel-control next" 
+            onClick={() => handleNext(setVideoIndex, profileVideos, videoIndex)}
+            disabled={videoIndex >= profileVideos.length - ITEMS_PER_PAGE} // Disable if at the end
+          >
+            &#8250; {/* Right arrow symbol */}
+          </button>
+        </div>
+
+        {/* View All Videos Button */}
+        {profileVideos.length > ITEMS_PER_PAGE && (
+          <button className="button view-all-button" onClick={handleViewAllVideos}>
+            View All Videos
+          </button>
         )}
       </div>
     </div>
