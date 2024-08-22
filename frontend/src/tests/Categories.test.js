@@ -12,6 +12,13 @@ import { expect } from '@jest/globals';
 // Mock Axios
 jest.mock('axios');
 
+// Set up environment variable mock
+jest.mock('dotenv', () => ({
+  config: jest.fn(),
+}));
+
+process.env.VITE_BACKEND_URL = 'http://localhost:8001';  // Ensure the env variable is set for the test
+
 // Mock environment variable
 global.import = {
   meta: {
