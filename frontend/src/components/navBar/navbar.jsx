@@ -1,42 +1,25 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, NavLink } from 'react-router-dom';
 import axios from 'axios';
-import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import {
-  Navbar,
-  MobileNav,
-  Typography,
-  Button,
-  Input,
-} from '@material-tailwind/react';
+import { Navbar, Typography, Button, Input } from '@material-tailwind/react';
 import './navbar.css';
 
 export function NavbarWithSearch() {
-  const { user, logout } = useAuth(); // Keep only one declaration
+  const { user, logout } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [openNav, setOpenNav] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
-      await logout(); // Assuming logout is an async function
-      navigate('/'); // Redirect to home page after logout
+      await logout();
+      navigate('/');
     } catch (error) {
       console.error('Logout failed:', error);
     }
   };
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 960) {
-        setOpenNav(false);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const handleSearch = async (event) => {
     event.preventDefault();
@@ -55,6 +38,9 @@ export function NavbarWithSearch() {
     }
   };
 
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const closeMenu = () => setIsMenuOpen(false);
+
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <Typography
@@ -65,8 +51,12 @@ export function NavbarWithSearch() {
       >
         <NavLink
           to="/"
-          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-          activeClassName="highlight"
+          className={({ isActive }) =>
+            `flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4 ${
+              isActive ? 'highlight' : ''
+            }`
+          }
+          onClick={closeMenu}
         >
           Home
         </NavLink>
@@ -79,8 +69,12 @@ export function NavbarWithSearch() {
       >
         <NavLink
           to="/sequence"
-          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-          activeClassName="highlight"
+          className={({ isActive }) =>
+            `flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4 ${
+              isActive ? 'highlight' : ''
+            }`
+          }
+          onClick={closeMenu}
         >
           Generate
         </NavLink>
@@ -93,8 +87,12 @@ export function NavbarWithSearch() {
       >
         <NavLink
           to="/categories"
-          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-          activeClassName="highlight"
+          className={({ isActive }) =>
+            `flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4 ${
+              isActive ? 'highlight' : ''
+            }`
+          }
+          onClick={closeMenu}
         >
           Categories
         </NavLink>
@@ -107,13 +105,17 @@ export function NavbarWithSearch() {
       >
         <NavLink
           to="/save"
-          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-          activeClassName="highlight"
+          className={({ isActive }) =>
+            `flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4 ${
+              isActive ? 'highlight' : ''
+            }`
+          }
+          onClick={closeMenu}
         >
           Saved
         </NavLink>
       </Typography>
-      {user ? ( // Ensure proper JSX syntax
+      {user ? (
         <>
           <Typography
             as="li"
@@ -123,8 +125,12 @@ export function NavbarWithSearch() {
           >
             <NavLink
               to="/profile"
-              className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-              activeClassName="highlight"
+              className={({ isActive }) =>
+                `flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4 ${
+                  isActive ? 'highlight' : ''
+                }`
+              }
+              onClick={closeMenu}
             >
               {user.username}
             </NavLink>
@@ -136,7 +142,10 @@ export function NavbarWithSearch() {
             className="flex items-center gap-x-2 p-1 font-medium"
           >
             <button
-              onClick={handleLogout}
+              onClick={() => {
+                handleLogout();
+                closeMenu();
+              }}
               className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
             >
               Logout
@@ -153,8 +162,12 @@ export function NavbarWithSearch() {
           >
             <NavLink
               to="/logins"
-              className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-              activeClassName="highlight"
+              className={({ isActive }) =>
+                `flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4 ${
+                  isActive ? 'highlight' : ''
+                }`
+              }
+              onClick={closeMenu}
             >
               Sign In
             </NavLink>
@@ -167,8 +180,12 @@ export function NavbarWithSearch() {
           >
             <NavLink
               to="/signin"
-              className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-              activeClassName="highlight"
+              className={({ isActive }) =>
+                `flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4 ${
+                  isActive ? 'highlight' : ''
+                }`
+              }
+              onClick={closeMenu}
             >
               Sign Up
             </NavLink>
@@ -177,6 +194,7 @@ export function NavbarWithSearch() {
       )}
     </ul>
   );
+
   return (
     <>
       <Navbar className="fixed-navbar mx-auto max-w-screen-xl px-4 py-2 lg:px-8 lg:py-4 z-10">
@@ -188,7 +206,29 @@ export function NavbarWithSearch() {
           >
             Yoga App
           </Typography>
+
+          {/* Hamburger menu for mobile */}
+          <button className="lg:hidden text-blue-gray-900" onClick={toggleMenu}>
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              ></path>
+            </svg>
+          </button>
+
+          {/* Desktop menu */}
           <div className="hidden lg:block">{navList}</div>
+
+          {/* Search form for desktop */}
           <div className="hidden items-center gap-x-2 lg:flex">
             <form
               onSubmit={handleSearch}
@@ -231,7 +271,33 @@ export function NavbarWithSearch() {
             </form>
           </div>
         </div>
-        <MobileNav open={openNav}>{navList}</MobileNav>
+
+        {/* Mobile menu */}
+        <div className={`lg:hidden ${isMenuOpen ? 'block' : 'hidden'}`}>
+          {navList}
+          <form
+            onSubmit={(e) => {
+              handleSearch(e);
+              closeMenu();
+            }}
+            className="relative flex w-full gap-2 mt-4"
+          >
+            <Input
+              type="search"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              containerProps={{ className: 'min-w-[200px]' }}
+              className="!border-t-blue-gray-300 pl-9 placeholder:text-blue-gray-300 focus:!border-blue-gray-300"
+              labelProps={{
+                className: 'before:content-none after:content-none',
+              }}
+            />
+            <Button type="submit" disabled={loading} className="ml-2">
+              {loading ? 'Searching...' : 'Search'}
+            </Button>
+          </form>
+        </div>
       </Navbar>
     </>
   );
