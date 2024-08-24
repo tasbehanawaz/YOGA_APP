@@ -24,17 +24,20 @@ export function SimpleRegistrationForm() {
     setSuccess('');
 
     // Sending data to the PHP backend
-    const response = await fetch('http://localhost:8001/register.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        username: username,
-        email: email,
-        password: password,
-      }),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/register.php`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          username: username,
+          email: email,
+          password: password,
+        }),
+      }
+    );
     const responseData = await response.json();
     if (responseData.error) {
       setError(responseData.error);

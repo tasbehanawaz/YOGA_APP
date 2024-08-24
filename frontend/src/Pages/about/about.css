@@ -86,3 +86,11 @@
     text-align: center;
   }
 }
+
+.about-container {
+  padding-top: 80px; /* Adjust the value based on your navbar height */
+}
+
+.bold-title {
+  margin-top: 0;
+}

@@ -1,3 +1,4 @@
+
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home/home';
@@ -13,7 +14,6 @@ import Generate from './Pages/Generate/generate';
 import About from './Pages/about/about';
 import { AuthProvider } from './contexts/AuthContext';
 import YogaPoseDetails from './Pages/yogaPosesDetails/detailsPage.jsx'; // Add this import
-
 import AllGeneratedVideos from './Pages/AllGeneratedVideos/AllGeneratedVideos'; // Import for the new component
 
 function App() {
@@ -45,8 +45,9 @@ function App() {
               </Layout>
             }
           />
+          {/* Change logins to login to match the navigation */}
           <Route
-            path="/logins"
+            path="/login"
             element={
               <Layout>
                 <Register />

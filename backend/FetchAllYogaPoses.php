@@ -22,7 +22,6 @@ try {
     } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = json_decode(file_get_contents('php://input'), true);
         $filterOptions = isset($data) ? $data : [];
-
         $poses = fetchAndClassifyAllYogaPoses($filterOptions);
         echo json_encode(['status' => 'success', 'data' => $poses]);
     } else {
@@ -40,7 +39,6 @@ function fetchAndClassifyAllYogaPoses($filterOptions = [])
     if (!empty($filterOptions)) {
         $classifiedPoses = applyFilters($classifiedPoses, $filterOptions);
     }
-    printDifficultyDistribution($classifiedPoses);
     return $classifiedPoses;
 }
 
@@ -48,9 +46,35 @@ function applyFilters($poses, $filters)
 {
     $filteredPoses = $poses;
 
+    // Adjust difficulty level based on age if provided and no specific difficulty is selected
+    if (isset($filters['age'])) {
+        switch ($filters['age']) {
+            case '18-25':
+                $filters['difficulty_level'] = 'Advanced'; // Younger users can handle advanced poses
+                break;
+            case '26-30':
+                $filters['difficulty_level'] = 'Intermediate'; // Mid-range users might prefer intermediate poses
+                break;
+            case '31-50':
+            case '50+':
+                $filters['difficulty_level'] = 'Beginner'; // Older users tend to prefer beginner-level poses
+                break;
+            default:
+                break;
+        }
+    }
+
+    // Filter by difficulty level
     if (isset($filters['difficulty_level']) && $filters['difficulty_level'] !== 'all') {
         $filteredPoses = array_filter($filteredPoses, function ($pose) use ($filters) {
             return strtolower($pose['difficulty_level']) === strtolower($filters['difficulty_level']);
+        });
+    }
+
+    // Filter by focus area if applicable
+    if (isset($filters['focus_area']) && $filters['focus_area'] !== '') {
+        $filteredPoses = array_filter($filteredPoses, function ($pose) use ($filters) {
+            return strtolower($pose['focus_area']) === strtolower($filters['focus_area']);
         });
     }
 
@@ -59,50 +83,38 @@ function applyFilters($poses, $filters)
 
 function classifyPoses($poses)
 {
+    // Classification logic for difficulty level (already present)
     $advancedCriteria = ['balance', 'strength', 'flexibility', 'advanced', 'challenging', 'complex', 'inversion', 'headstand', 'handstand', 'arm balance', 'backbend'];
     $intermediateCriteria = ['moderate', 'intermediate', 'flowing', 'dynamic', 'twist', 'lunge', 'core strength'];
     $beginnerCriteria = ['beginner', 'easy', 'gentle', 'relaxing', 'basic'];
 
-    $specificPoseAdjustments = [
-        'Shoulder Stand' => 3,
-        'Splits' => 3,
-        'Pigeon' => 1.5,
-        'Bridge' => 1,
-        'Plow' => 2.5,
-        'Bow' => 2,
-        'Wheel' => 2.5,
-        'Crow' => 2.5,
-    ];
+    // Focus Area Keywords
+    $balanceKeywords = ["stability", "focus", "equilibrium", "alignment", "movement", "center", "concentration", "coordination"];
+    $flexibilityKeywords = ["stretch", "elevate", "lengthen", "loosen", "extend", "open", "elasticity", "mobility", "spread"];
+    $coreKeywords = ["abdominal", "core", "engagement", "bandhas", "support", "spine", "strengthens", "stabilize"];
 
     foreach ($poses as &$pose) {
         $description = strtolower($pose['pose_benefits'] . ' ' . ($pose['pose_description'] ?? '') . ' ' . $pose['english_name']);
         $points = 0;
 
-        if (str_contains($description, 'beginner')) $points -= 2;
-        if (str_contains($description, 'intermediate')) $points += 1;
-        if (str_contains($description, 'advanced')) $points += 2;
-
+        // Classify based on advanced, intermediate, or beginner criteria
         foreach ($advancedCriteria as $criterion) {
-            if (str_contains($description, $criterion)) $points += 1.5;
+            if (str_contains($description, $criterion)) {
+                $points += 1.5;
+            }
         }
         foreach ($intermediateCriteria as $criterion) {
-            if (str_contains($description, $criterion)) $points += 1;
+            if (str_contains($description, $criterion)) {
+                $points += 1;
+            }
         }
         foreach ($beginnerCriteria as $criterion) {
-            if (str_contains($description, $criterion)) $points -= 1;
-        }
-
-        if (str_contains($description, 'arm balance') || str_contains($description, 'inversion')) $points += 2;
-        if (str_contains($description, 'core strength')) $points += 1;
-        if (str_contains($description, 'relaxation')) $points -= 1;
-
-        foreach ($specificPoseAdjustments as $poseName => $adjustment) {
-            if (stripos($pose['english_name'], $poseName) !== false) {
-                $points += $adjustment;
-                break;
+            if (str_contains($description, $criterion)) {
+                $points -= 1;
             }
         }
 
+        // Set difficulty level
         if ($points >= 2.5) {
             $pose['difficulty_level'] = 'Advanced';
         } elseif ($points >= 0.5) {
@@ -111,22 +123,34 @@ function classifyPoses($poses)
             $pose['difficulty_level'] = 'Beginner';
         }
 
-        $pose['difficulty_points'] = $points;
+        // Classify based on focus area
+        if (str_contains_any($description, $balanceKeywords)) {
+            $pose['focus_area'] = 'Balance';
+        } elseif (str_contains_any($description, $flexibilityKeywords)) {
+            $pose['focus_area'] = 'Flexibility';
+        } elseif (str_contains_any($description, $coreKeywords)) {
+            $pose['focus_area'] = 'Core';
+        } else {
+            $pose['focus_area'] = 'General'; // Default if no match
+        }
     }
     return $poses;
 }
 
-function printDifficultyDistribution($poses)
+// Helper function to check if a description contains any keyword
+function str_contains_any($text, $keywords)
 {
-    $distribution = array_count_values(array_column($poses, 'difficulty_level'));
-    error_log("Difficulty Distribution: " . json_encode($distribution));
-    foreach ($poses as $pose) {
-        error_log("{$pose['english_name']}: Level: {$pose['difficulty_level']}, Points: {$pose['difficulty_points']}");
+    foreach ($keywords as $keyword) {
+        if (str_contains($text, strtolower($keyword))) {
+            return true;
+        }
     }
+    return false;
 }
 
 function fetchAllYogaPoses()
 {
+    // Fetch poses from the external API
     $apiUrl = "https://yoga-api-nzy4.onrender.com/v1/poses";
     return makeApiRequest($apiUrl);
 }

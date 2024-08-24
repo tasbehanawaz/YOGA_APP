@@ -14,9 +14,9 @@
   },
   "dependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^20.1.0",
+    "@heroicons/react": "^2.1.5",
     "@material-tailwind/react": "^2.1.9",
     "axios": "^1.7.2",
-    "axois": "^0.0.1-security",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -35,6 +35,6 @@
     "postcss": "^8.4.38",
     "react-router-dom": "^6.23.1",
     "tailwindcss": "^3.4.3",
-    "vite": "^5.3.5"
+    "vite": "^5.4.1"
   }
 }

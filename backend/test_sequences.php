@@ -1,5 +1,5 @@
 <?php
-
+/*
 ob_start(); // Start output buffering
 
 require_once 'db.php';
