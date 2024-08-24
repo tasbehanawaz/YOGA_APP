@@ -1,5 +1,6 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+require 'cors.php';
+
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
@@ -218,4 +219,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         unlink($framePath);
     }
 }
-?>

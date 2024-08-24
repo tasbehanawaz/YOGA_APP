@@ -16,7 +16,6 @@ const Categories = () => {
     setLoading(true);
     setError(null);
     try {
-      // https://yogaapp-1b12892092be.herokuapp.com/ === http://localhost:8001
       const url = `${import.meta.env.VITE_BACKEND_URL}/FetchAllYogaPoses.php`;
       // Only include the filter if it's not 'mixed'
       const postData = filter !== 'mixed' ? { difficulty_level: filter } : {};

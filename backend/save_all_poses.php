@@ -1,7 +1,7 @@
 <?php
+require 'cors.php';
 require 'db.php';
 
-header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 if (php_sapi_name() == "cli" || $_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -74,4 +74,3 @@ function savePoseToDatabase($pose)
 
     return $stmt->rowCount() > 0;
 }
-?>
