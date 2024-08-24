@@ -40,6 +40,11 @@ if ($user && password_verify($password, $user['password'])) {
 
     // Set cookies
     $expiry = time() + (30 * 24 * 60 * 60);  // Cookie expires in 30 days
+
+    // Debugging: Print current time and expiry time
+    error_log("Current time: " . date('Y-m-d H:i:s', time()));
+    error_log("Expiry time: " . date('Y-m-d H:i:s', $expiry));
+
     setcookie('user_id', $user['id'], $expiry, '/', '', false, false);
     setcookie('username', $user['username'], $expiry, '/', '', false, false);
     setcookie('session_token', $session_token, $expiry, '/', '', false, false);
