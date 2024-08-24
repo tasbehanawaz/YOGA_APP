@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/useAuth';
 
 const VideoGenerator = () => {
   const { user } = useAuth();
@@ -60,7 +60,10 @@ const VideoGenerator = () => {
           const updatedVideos = [newVideo, ...existingVideos];
 
           // Update localStorage and state with new video list
-          localStorage.setItem('generatedVideos', JSON.stringify(updatedVideos));
+          localStorage.setItem(
+            'generatedVideos',
+            JSON.stringify(updatedVideos)
+          );
           setGeneratedVideos(updatedVideos);
           setVideoAdded(true); // Ensure this flag prevents re-generation in this session
         } else {
@@ -81,7 +84,9 @@ const VideoGenerator = () => {
       JSON.parse(localStorage.getItem('generatedVideos')) || [];
 
     const uniqueVideos = Array.from(
-      new Map(storedGeneratedVideos.map((video) => [video.videoPath, video])).values()
+      new Map(
+        storedGeneratedVideos.map((video) => [video.videoPath, video])
+      ).values()
     );
 
     setGeneratedVideos(uniqueVideos);
@@ -93,7 +98,13 @@ const VideoGenerator = () => {
       handleGenerateVideo();
     }
     fetchGeneratedVideos();
-  }, [selectedPoses, fetchPoseDetails, handleGenerateVideo, fetchGeneratedVideos, videoAdded]);
+  }, [
+    selectedPoses,
+    fetchPoseDetails,
+    handleGenerateVideo,
+    fetchGeneratedVideos,
+    videoAdded,
+  ]);
 
   const saveVideoToProfile = () => {
     const newVideo = {
@@ -201,7 +212,9 @@ const VideoGenerator = () => {
                   muted
                   width="100%"
                 />
-                <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
+                <p>
+                  {video.type === 'random' ? 'Random Video' : 'Selected Video'}
+                </p>
                 <p>Generated on: {formatDate(video.generatedAt)}</p>
               </div>
             ))}

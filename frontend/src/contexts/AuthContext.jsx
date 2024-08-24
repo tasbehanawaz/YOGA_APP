@@ -1,46 +1,10 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
+import { checkLoginStatus, logoutUser } from '../components/utils/authutils';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { Spinner } from '@material-tailwind/react';
 
 const AuthContext = createContext();
-
-const checkLoginStatus = () => {
-  const cookieArray = document.cookie.split(/;\s*/);
-  const cookies = cookieArray.reduce((acc, cookie) => {
-    const [key, value] = cookie.split('=');
-    acc[key] = value;
-    return acc;
-  }, {});
-
-  if (cookies.user_id && cookies.username && cookies.session_token) {
-    return {
-      id: cookies.user_id,
-      username: cookies.username,
-      session_token: cookies.session_token,
-    };
-  }
-
-  return null;
-};
-
-const logoutUser = async () => {
-  try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/logout.php`,
-      {},
-      { withCredentials: true }
-    );
-    if (response.data.success) {
-      return true;
-    } else {
-      throw new Error(response.data.error || 'Logout failed');
-    }
-  } catch (error) {
-    console.error('Logout error:', error);
-    return false;
-  }
-};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(checkLoginStatus());
@@ -106,4 +70,4 @@ AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export const useAuth = () => useContext(AuthContext);
+export { AuthContext };
