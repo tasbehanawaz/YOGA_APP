@@ -1,42 +1,25 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, NavLink } from 'react-router-dom';
 import axios from 'axios';
-import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import {
-  Navbar,
-  MobileNav,
-  Typography,
-  Button,
-  Input,
-} from '@material-tailwind/react';
+import { Navbar, Typography, Button, Input } from '@material-tailwind/react';
 import './navbar.css';
 
 export function NavbarWithSearch() {
-  const { user, logout } = useAuth(); // Keep only one declaration
+  const { user, logout } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [openNav, setOpenNav] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
-      await logout(); // Assuming logout is an async function
-      navigate('/'); // Redirect to home page after logout
+      await logout();
+      navigate('/');
     } catch (error) {
       console.error('Logout failed:', error);
     }
   };
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 960) {
-        setOpenNav(false);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const handleSearch = async (event) => {
     event.preventDefault();
@@ -54,6 +37,7 @@ export function NavbarWithSearch() {
       setLoading(false);
     }
   };
+
 
 const navList = (
   <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
