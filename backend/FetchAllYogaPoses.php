@@ -22,7 +22,6 @@ try {
     } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = json_decode(file_get_contents('php://input'), true);
         $filterOptions = isset($data) ? $data : [];
-
         $poses = fetchAndClassifyAllYogaPoses($filterOptions);
         echo json_encode(['status' => 'success', 'data' => $poses]);
     } else {
@@ -40,18 +39,44 @@ function fetchAndClassifyAllYogaPoses($filterOptions = [])
     if (!empty($filterOptions)) {
         $classifiedPoses = applyFilters($classifiedPoses, $filterOptions);
     }
-    printDifficultyDistribution($classifiedPoses);
     return $classifiedPoses;
 }
 
 function applyFilters($poses, $filters)
 {
+
     $filteredPoses = $poses;
 
     if (isset($filters['difficulty_level']) && $filters['difficulty_level'] !== 'all') {
-        $filteredPoses = array_filter($filteredPoses, function ($pose) use ($filters) {
-            return strtolower($pose['difficulty_level']) === strtolower($filters['difficulty_level']);
-        });
+        if (is_array($filters['difficulty_level'])) {
+            $difficultyLevels = array_map('strtolower', $filters['difficulty_level']);
+            // If the array is not empty then filter
+            if (!empty($difficultyLevels)) {
+                $filteredPoses = array_filter($filteredPoses, function ($pose) use ($difficultyLevels) {
+                    return in_array(strtolower($pose['difficulty_level']), $difficultyLevels);
+                });
+            }
+        } else {
+            $filteredPoses = array_filter($filteredPoses, function ($pose) use ($filters) {
+                return strtolower($pose['difficulty_level']) === strtolower($filters['difficulty_level']);
+            });
+        }
+    }
+    // Filter by focus area
+    if (isset($filters['focus_area']) && ($filters['focus_area'] !== 'all')) {
+        if (is_array($filters['focus_area'])) {
+            $focusAreas = array_map('strtolower', $filters['focus_area']);
+            // If the array is not empty then filter
+            if (!empty($focusAreas)) {
+                $filteredPoses = array_filter($filteredPoses, function ($pose) use ($focusAreas) {
+                    return in_array(strtolower($pose['focus_area']), $focusAreas);
+                });
+            }
+        } else {
+            $filteredPoses = array_filter($filteredPoses, function ($pose) use ($filters) {
+                return strtolower($pose['focus_area']) === strtolower($filters['focus_area']);
+            });
+        }
     }
 
     return array_values($filteredPoses);
@@ -62,6 +87,16 @@ function classifyPoses($poses)
     $advancedCriteria = ['balance', 'strength', 'flexibility', 'advanced', 'challenging', 'complex', 'inversion', 'headstand', 'handstand', 'arm balance', 'backbend'];
     $intermediateCriteria = ['moderate', 'intermediate', 'flowing', 'dynamic', 'twist', 'lunge', 'core strength'];
     $beginnerCriteria = ['beginner', 'easy', 'gentle', 'relaxing', 'basic'];
+
+    // Focus Area
+    $balance = ["stability", "focus", "equilibrium", "alignment", "movement", "center", "concentration", "coordination"];
+    $flexibility = ["stretch", "elevate", "lengthen", "loosen", "extend", "open", "elasticity", "mobility", "spread"];
+    $core = ["abdominal", "core", "engagement", "bandhas", "support", "spine", "strengthens", "stabilize"];
+
+    $balance_score = 0;
+    $flexibility_score = 0;
+    $core_score = 0;
+
 
     $specificPoseAdjustments = [
         'Shoulder Stand' => 3,
@@ -78,6 +113,11 @@ function classifyPoses($poses)
         $description = strtolower($pose['pose_benefits'] . ' ' . ($pose['pose_description'] ?? '') . ' ' . $pose['english_name']);
         $points = 0;
 
+        // Calculating scores for Focus Areas
+        calculate_score($description, $balance, $balance_score);
+        calculate_score($description, $flexibility, $flexibility_score);
+        calculate_score($description, $core, $core_score);
+
         if (str_contains($description, 'beginner')) $points -= 2;
         if (str_contains($description, 'intermediate')) $points += 1;
         if (str_contains($description, 'advanced')) $points += 2;
@@ -93,7 +133,7 @@ function classifyPoses($poses)
         }
 
         if (str_contains($description, 'arm balance') || str_contains($description, 'inversion')) $points += 2;
-        if (str_contains($description, 'core strength')) $points += 1;
+        if (str_contains($description, 'core')) $points += 1;
         if (str_contains($description, 'relaxation')) $points -= 1;
 
         foreach ($specificPoseAdjustments as $poseName => $adjustment) {
@@ -101,6 +141,17 @@ function classifyPoses($poses)
                 $points += $adjustment;
                 break;
             }
+        }
+
+        $highest_score = max($balance_score, $flexibility_score, $core_score);
+
+
+        if ($highest_score == $balance_score) {
+            $pose['focus_area']  = 'balance';
+        } elseif ($highest_score == $flexibility_score) {
+            $pose['focus_area']  = 'flexibility';
+        } else {
+            $pose['focus_area']  = 'core';
         }
 
         if ($points >= 2.5) {
@@ -114,6 +165,19 @@ function classifyPoses($poses)
         $pose['difficulty_points'] = $points;
     }
     return $poses;
+}
+
+function calculate_score($description, $focus_area, &$focus_area_score)
+{
+    $focus_area_score = 0;
+
+    foreach ($focus_area as $keyword) {
+        if (str_contains($description, $keyword)) {
+            $focus_area_score++;
+        }
+    }
+
+    return $focus_area_score;
 }
 
 function printDifficultyDistribution($poses)

@@ -27,7 +27,7 @@ const checkLoginStatus = () => {
 const logoutUser = async () => {
   try {
     const response = await axios.post(
-      'http://localhost:8001/logout.php',
+      `${import.meta.env.VITE_BACKEND_URL}/logout.php`,
       {},
       { withCredentials: true }
     );
@@ -50,9 +50,12 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     const fetchUser = async () => {
       try {
-        const response = await axios.get('http://localhost:8001/get_user.php', {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/get_user.php`,
+          {
+            withCredentials: true,
+          }
+        );
         if (response.data.id) {
           setUser(response.data);
         } else {
@@ -71,7 +74,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     const response = await axios.post(
-      'http://localhost:8001/signin.php',
+      `${import.meta.env.VITE_BACKEND_URL}/signin.php`,
       credentials,
       { withCredentials: true }
     );
