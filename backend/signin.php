@@ -1,7 +1,25 @@
 <?php
-require 'db.php';  
+require 'db.php';
 
-header("Access-Control-Allow-Origin: http://localhost:5173");
+// List of allowed origins
+$allowed_origins = [
+    'http://localhost:5173',
+    'https://yogaposesapp.netlify.app', // Add other allowed origins here
+];
+
+// Get the origin of the incoming request
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+// Check if the origin is allowed
+if (in_array($origin, $allowed_origins)) {
+    header("Access-Control-Allow-Origin: $origin");
+} else {
+    header("HTTP/1.1 403 Forbidden");
+    echo "Invalid requester.";
+    exit;
+}
+
+
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -38,17 +56,17 @@ if ($user && password_verify($password, $user['password'])) {
     // Set session cookie options
     ini_set('session.cookie_samesite', 'None');
     ini_set('session.cookie_secure', 'true');
-    
+
     // Set cookies
     $expiry = time() + (30 * 24 * 60 * 60);  // Cookie expires in 30 days
     setcookie('user_id', $user['id'], $expiry, '/', '', false, false);
     setcookie('username', $user['username'], $expiry, '/', '', false, false);
     setcookie('session_token', $session_token, $expiry, '/', '', false, false);
-    
+
     // Store the session token in the database 
     $stmt = $pdo->prepare("UPDATE users SET session_token = ? WHERE id = ?");
     $stmt->execute([$session_token, $user['id']]);
-    
+
     echo json_encode([
         'success' => true,
         'user' => [
@@ -59,4 +77,3 @@ if ($user && password_verify($password, $user['password'])) {
 } else {
     echo json_encode(['error' => 'Invalid username or password']);
 }
-?>
