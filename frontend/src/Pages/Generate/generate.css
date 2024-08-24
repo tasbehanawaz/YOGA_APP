@@ -1,3 +1,7 @@
+
+
+
+
 .generate-container {
   display: flex;
   flex-direction: column;
@@ -128,46 +132,3 @@ button:disabled {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.previous-video {
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.previous-video:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-}
-
-.previous-video-content {
-  width: 100%;
-  height: auto;
-  border: 2px solid #ddd;
-  border-radius: 10px;
-}
-
-.video-actions {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.previous-video .button {
-  width: 48%;
-  padding: 10px 0;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.previous-video .button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-}
