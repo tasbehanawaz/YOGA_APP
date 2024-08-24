@@ -113,100 +113,64 @@ const Profile = () => {
   }
 
   return (
-    <div key={user.id} className="profile-container">
-      <div className="user-details">
-        <h2>User Details</h2>
-        <p>User ID: {user.id}</p>
-        <p>Username: {user.username}</p>
-        <p>Session Token: {user.session_token}</p>
-        <button className="button" onClick={handleLogout}>Logout</button>
-      </div>
+   <div className="profile-container">
+  <div className="section-container user-details">
+    <h2>User Details</h2>
+    <p>User ID: {user.id}</p>
+    <p>Username: {user.username}</p>
+    <p>Session Token: {user.session_token}</p>
+    <button className="button" onClick={handleLogout}>Logout</button>
+  </div>
 
-      {/* Saved Poses Section */}
-      <div className="saved-poses">
-        <h2>Saved Poses</h2>
-        {savedPoses.length === 0 ? (
-          <p>No saved poses available.</p>
-        ) : (
-          <div className="carousel">
-            <button 
-              className="carousel-control prev" 
-              onClick={() => handlePrev(setPoseIndex, poseIndex)}
-              disabled={poseIndex === 0} // Disable if at the beginning
-            >
-              &#8249; {/* Left arrow symbol */}
-            </button>
-            <div className="carousel-items">
-              {savedPoses.slice(poseIndex, poseIndex + ITEMS_PER_PAGE).map((pose, index) => (
-                <div key={index} className="pose-item" onClick={() => handleReadMore(pose.name)}>
-                  <img
-                    src={pose.image_url || 'https://via.placeholder.com/150'}
-                    alt={pose.name}
-                    className="pose-image"
-                  />
-                  <p className="pose-name">{pose.name}</p> {/* Pose name at the bottom */}
-                </div>
-              ))}
+  {/* Saved Poses Section */}
+  <div className="section-container saved-poses">
+    <h2>Saved Poses</h2>
+    {savedPoses.length === 0 ? (
+      <p>No saved poses available.</p>
+    ) : (
+      <div className="carousel">
+        <button className="carousel-control prev" onClick={() => handlePrev(setPoseIndex, poseIndex)} disabled={poseIndex === 0}>
+          &#8249;
+        </button>
+        <div className="carousel-items">
+          {savedPoses.slice(poseIndex, poseIndex + ITEMS_PER_PAGE).map((pose, index) => (
+            <div key={index} className="pose-item" onClick={() => handleReadMore(pose.name)}>
+              <img src={pose.image_url || 'https://via.placeholder.com/150'} alt={pose.name} className="pose-image" />
+              <p className="pose-name">{pose.name}</p>
             </div>
-            <button 
-              className="carousel-control next" 
-              onClick={() => handleNext(setPoseIndex, savedPoses, poseIndex)}
-              disabled={poseIndex >= savedPoses.length - ITEMS_PER_PAGE} // Disable if at the end
-            >
-              &#8250; {/* Right arrow symbol */}
-            </button>
-          </div>
-        )}
-        {savedPoses.length > ITEMS_PER_PAGE && (
-          <button className="button view-all-button" onClick={handleViewAllPoses}>View All Favorites</button>
-        )}
-      </div>
-
-      {/* Saved Videos Section */}
-      <div className="profile-videos">
-        <h2>Your Saved Videos</h2>
-        <div className="carousel">
-          <button 
-            className="carousel-control prev" 
-            onClick={() => handlePrev(setVideoIndex, videoIndex)}
-            disabled={videoIndex === 0} // Disable if at the beginning
-          >
-            &#8249; {/* Left arrow symbol */}
-          </button>
-          <div className="carousel-items">
-            {profileVideos.slice(videoIndex, videoIndex + ITEMS_PER_PAGE).map((video, index) => (
-              <div key={index} className="profile-video-item mb-4">
-                <video
-                  src={video.videoPath}
-                  alt={`Video ${index + 1}`}
-                  className="profile-video-preview"
-                  onClick={() => handleWatchVideo(video.selectedPoses)}
-                  style={{ cursor: 'pointer' }}
-                  controls
-                  muted
-                  width="100%"
-                />
-                <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
-              </div>
-            ))}
-          </div>
-          <button 
-            className="carousel-control next" 
-            onClick={() => handleNext(setVideoIndex, profileVideos, videoIndex)}
-            disabled={videoIndex >= profileVideos.length - ITEMS_PER_PAGE} // Disable if at the end
-          >
-            &#8250; {/* Right arrow symbol */}
-          </button>
+          ))}
         </div>
-
-        {/* View All Videos Button */}
-        {profileVideos.length > ITEMS_PER_PAGE && (
-          <button className="button view-all-button" onClick={handleViewAllVideos}>
-            View All Videos
-          </button>
-        )}
+        <button className="carousel-control next" onClick={() => handleNext(setPoseIndex, savedPoses, poseIndex)} disabled={poseIndex >= savedPoses.length - ITEMS_PER_PAGE}>
+          &#8250;
+        </button>
       </div>
+    )}
+    {savedPoses.length > ITEMS_PER_PAGE && <button className="button view-all-button" onClick={handleViewAllPoses}>View All Favorites</button>}
+  </div>
+
+  {/* Saved Videos Section */}
+  <div className="section-container profile-videos">
+    <h2>Your Saved Videos</h2>
+    <div className="carousel">
+      <button className="carousel-control prev" onClick={() => handlePrev(setVideoIndex, videoIndex)} disabled={videoIndex === 0}>
+        &#8249;
+      </button>
+      <div className="carousel-items">
+        {profileVideos.slice(videoIndex, videoIndex + ITEMS_PER_PAGE).map((video, index) => (
+          <div key={index} className="profile-video-item mb-4">
+            <video src={video.videoPath} alt={`Video ${index + 1}`} className="profile-video-preview" onClick={() => handleWatchVideo(video.selectedPoses)} controls muted />
+            <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
+          </div>
+        ))}
+      </div>
+      <button className="carousel-control next" onClick={() => handleNext(setVideoIndex, profileVideos, videoIndex)} disabled={videoIndex >= profileVideos.length - ITEMS_PER_PAGE}>
+        &#8250;
+      </button>
     </div>
+    {profileVideos.length > ITEMS_PER_PAGE && <button className="button view-all-button" onClick={handleViewAllVideos}>View All Videos</button>}
+  </div>
+</div>
+
   );
 };
 

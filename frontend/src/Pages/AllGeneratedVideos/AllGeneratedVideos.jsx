@@ -49,7 +49,11 @@ const AllGeneratedVideos = () => {
           Clear Videos
         </button>
         <button className="button" onClick={() => navigate('/profile')}>
-          Back to Profile
+          Profile
+        </button>
+        {/* New Back to Generate button */}
+        <button className="button" onClick={() => navigate('/generate')}>
+          Back to Generate
         </button>
       </div>
     </div>
