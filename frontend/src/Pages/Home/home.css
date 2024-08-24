@@ -1,0 +1,100 @@
+/* Remove any background color from the carousel */
+.carousel-item {
+  background-color: transparent !important; /* Ensure no background color */
+}
+
+/* Center the carousel */
+.carousel-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto; /* Ensure it's centered */
+}
+
+/* Hero section */
+.hero-section {
+  padding: 100px 0;
+  text-align: center;
+}
+
+/* About Section */
+.about {
+  padding: 60px 20px;
+  
+}
+
+/* Feature and Testimonial Grid */
+.feature-grid, .testimonial-grid {
+  padding: 0 20px;
+}
+
+/* Testimonials */
+.testimonials {
+  background-color: #f9fafb;
+  text-align: center;
+}
+
+/* Call to Action Section */
+.cta {
+  background-color: #1e40af;
+  color: white;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.cta button {
+  background-color: white;
+  color: #1e40af;
+  padding: 10px 20px;
+}
+
+.feature-card, .testimonial-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s;
+}
+
+.feature-card:hover, .testimonial-card:hover {
+  transform: translateY(-10px);
+}
+
+.arrow-down {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 15px solid #000; /* You can adjust the color */
+  margin-bottom: 10px; /* Space between the arrow and the button */
+}
+
+.hero-section {
+  background-color: #f9f9f9; /* Example background color */
+  padding: 20px;
+}
+
+.about {
+  background-color: #f4f4f4;
+}
+
+.features {
+  background-color: #ffffff;
+}
+
+.testimonials {
+  background-color: #f9f9f9;
+}
+
+.cta {
+  background-color: #007BFF; /* Example CTA background */
+}
+
+.feature-card {
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px); /* Add a hover effect for feature cards */
+}

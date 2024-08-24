@@ -8,3 +8,13 @@
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.navbar {
+  position: relative;
+  z-index: 999; /* Below sidebar and overlay */
+}
+
+.footer {
+  position: relative;
+  z-index: 999; /* Below sidebar and overlay */
+}

@@ -1,5 +1,5 @@
 <?php
-
+/*
 require_once 'db.php'; // Ensure this is using require_once
 require_once 'fetchAllYogaPoses.php'; // Ensure this is using require_once
 

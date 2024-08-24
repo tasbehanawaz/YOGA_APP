@@ -69,156 +69,160 @@ const SavedPoses = () => {
         <div className="saved-poses-container">
             <h1>Favorites</h1>
 
-            {/* Saved Videos Section */}
-            <h2>Saved Videos</h2>
-            {savedVideos.length === 0 ? (
-                <div className="no-poses-message">No saved videos available.</div>
-            ) : (
-                <Carousel
-                    className="rounded-xl max-w-screen-lg mx-auto"
-                    prevArrow={({ handlePrev }) => (
-                        <IconButton
-                            variant="text"
-                            color="white"
-                            size="lg"
-                            onClick={handlePrev}
-                            className="!absolute top-2/4 left-2 -translate-y-2/4 bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={2}
-                                stroke="currentColor"
-                                className="h-6 w-6"
+            {/* Distinctive Container for Saved Videos Section */}
+            <div className="section-container">
+                <h2>Saved Videos</h2>
+                {savedVideos.length === 0 ? (
+                    <div className="no-poses-message">No saved videos available.</div>
+                ) : (
+                    <Carousel
+                        className="rounded-xl max-w-screen-lg mx-auto"
+                        prevArrow={({ handlePrev }) => (
+                            <IconButton
+                                variant="text"
+                                color="white"
+                                size="lg"
+                                onClick={handlePrev}
+                                className="carousel-control !absolute top-2/4 left-2 -translate-y-2/4 bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700"
                             >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-                                />
-                            </svg>
-                        </IconButton>
-                    )}
-                    nextArrow={({ handleNext }) => (
-                        <IconButton
-                            variant="text"
-                            color="white"
-                            size="lg"
-                            onClick={handleNext}
-                            className="!absolute top-2/4 right-2 -translate-y-2/4 bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={2}
-                                stroke="currentColor"
-                                className="h-6 w-6"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                                />
-                            </svg>
-                        </IconButton>
-                    )}
-                >
-                    {chunkedVideos.map((videoGroup, index) => (
-                        <div key={index} className="flex justify-center items-center gap-2">
-                            {videoGroup.map((video, index) => (
-                                <div key={index} className="media-item w-1/2 p-1">
-                                    <video 
-                                        src={video.videoPath} 
-                                        alt={`Video ${index + 1}`} 
-                                        className="media-preview"
-                                        onClick={() => handleWatchVideo(video.selectedPoses)}
-                                        controls
-                                        muted
-                                        width="100%"
-                                        height="150"
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={2}
+                                    stroke="currentColor"
+                                    className="h-6 w-6"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
                                     />
-                                    <p className="text-xs mt-1">{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
-                                </div>
-                            ))}
-                        </div>
-                    ))}
-                </Carousel>
-            )}
+                                </svg>
+                            </IconButton>
+                        )}
+                        nextArrow={({ handleNext }) => (
+                            <IconButton
+                                variant="text"
+                                color="white"
+                                size="lg"
+                                onClick={handleNext}
+                                className="carousel-control !absolute top-2/4 right-2 -translate-y-2/4 bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={2}
+                                    stroke="currentColor"
+                                    className="h-6 w-6"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                                    />
+                                </svg>
+                            </IconButton>
+                        )}
+                    >
+                        {chunkedVideos.map((videoGroup, index) => (
+                            <div key={index} className="flex justify-center items-center gap-2">
+                                {videoGroup.map((video, index) => (
+                                    <div key={index} className="media-item w-1/2 p-1">
+                                        <video 
+                                            src={video.videoPath} 
+                                            alt={`Video ${index + 1}`} 
+                                            className="media-preview"
+                                            onClick={() => handleWatchVideo(video.selectedPoses)}
+                                            controls
+                                            muted
+                                            width="100%"
+                                            height="150"
+                                        />
+                                        <p className="text-xs mt-1">{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                    </Carousel>
+                )}
+            </div>
 
-            {/* Saved Poses Section */}
-            <h2>Saved Poses</h2>
-            {savedPoses.length === 0 ? (
-                <div className="no-poses-message">No saved poses available.</div>
-            ) : (
-                <Carousel
-                    className="rounded-xl max-w-screen-lg mx-auto"
-                    prevArrow={({ handlePrev }) => (
-                        <IconButton
-                            variant="text"
-                            color="white"
-                            size="lg"
-                            onClick={handlePrev}
-                            className="!absolute top-2/4 left-2 -translate-y-2/4 bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={2}
-                                stroke="currentColor"
-                                className="h-6 w-6"
+            {/* Distinctive Container for Saved Poses Section */}
+            <div className="section-container">
+                <h2>Saved Poses</h2>
+                {savedPoses.length === 0 ? (
+                    <div className="no-poses-message">No saved poses available.</div>
+                ) : (
+                    <Carousel
+                        className="rounded-xl max-w-screen-lg mx-auto"
+                        prevArrow={({ handlePrev }) => (
+                            <IconButton
+                                variant="text"
+                                color="white"
+                                size="lg"
+                                onClick={handlePrev}
+                                className="carousel-control !absolute top-2/4 left-2 -translate-y-2/4 bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700"
                             >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-                                />
-                            </svg>
-                        </IconButton>
-                    )}
-                    nextArrow={({ handleNext }) => (
-                        <IconButton
-                            variant="text"
-                            color="white"
-                            size="lg"
-                            onClick={handleNext}
-                            className="!absolute top-2/4 right-2 -translate-y-2/4 bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={2}
-                                stroke="currentColor"
-                                className="h-6 w-6"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                                />
-                            </svg>
-                        </IconButton>
-                    )}
-                >
-                    {chunkedPoses.map((poseGroup, index) => (
-                        <div key={index} className="flex justify-center items-center gap-2">
-                            {poseGroup.map((pose) => (
-                                <div key={pose.id} className="media-item w-1/2 p-1">
-                                    <CardDefault
-                                        name={pose.name}
-                                        imageUrl={pose.image_url || 'https://via.placeholder.com/100'}
-                                        poseDescription={pose.description}
-                                        onClick={() => handleReadMore(pose.name)}
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={2}
+                                    stroke="currentColor"
+                                    className="h-6 w-6"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
                                     />
-                                </div>
-                            ))}
-                        </div>
-                    ))}
-                </Carousel>
-            )}
+                                </svg>
+                            </IconButton>
+                        )}
+                        nextArrow={({ handleNext }) => (
+                            <IconButton
+                                variant="text"
+                                color="white"
+                                size="lg"
+                                onClick={handleNext}
+                                className="carousel-control !absolute top-2/4 right-2 -translate-y-2/4 bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={2}
+                                    stroke="currentColor"
+                                    className="h-6 w-6"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                                    />
+                                </svg>
+                            </IconButton>
+                        )}
+                    >
+                        {chunkedPoses.map((poseGroup, index) => (
+                            <div key={index} className="flex justify-center items-center gap-2">
+                                {poseGroup.map((pose) => (
+                                    <div key={pose.id} className="media-item w-1/2 p-1">
+                                        <CardDefault
+                                            name={pose.name}
+                                            imageUrl={pose.image_url || 'https://via.placeholder.com/100'}
+                                            poseDescription={pose.description}
+                                            onClick={() => handleReadMore(pose.name)}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                    </Carousel>
+                )}
+            </div>
 
             <button onClick={handleClearPoses} className="clear-button">Clear Saved Items</button>
 
@@ -236,6 +240,17 @@ const SavedPoses = () => {
                     font-size: 1.5rem;
                     color: #1e2a38;
                     margin-bottom: 1rem;
+                }
+
+                .section-container {
+                    background-color: #fff;
+                    padding: 20px;
+                    border-radius: 12px;
+                    border: 2px solid #007bff;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    margin-bottom: 20px;
+                    width: 100%;
+                    max-width: 900px;
                 }
 
                 .media-item {
@@ -268,6 +283,18 @@ const SavedPoses = () => {
                 }
 
                 .clear-button:hover {
+                    background-color: #0056b3;
+                }
+
+                /* Arrow Customization */
+                .carousel-control {
+                    background-color: rgba(0, 123, 255, 0.7);
+                    border-radius: 50%;
+                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+                    transition: background-color 0.3s ease;
+                }
+
+                .carousel-control:hover {
                     background-color: #0056b3;
                 }
 
