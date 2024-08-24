@@ -1,6 +1,8 @@
 <?php
+require 'cors.php';
+
+
 header('Content-Type: application/json');
-header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -41,4 +43,3 @@ if (isset($_COOKIE['user_id']) && isset($_COOKIE['session_token'])) {
 } else {
     echo json_encode(['error' => 'No active session found']);
 }
-?>

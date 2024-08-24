@@ -1,6 +1,8 @@
 <?php
+
+require 'cors.php';
+
 header('Content-Type: application/json');
-header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Credentials: true");
 
 require 'db.php';  // This imports the getDbConnection function
@@ -30,4 +32,3 @@ if (isset($_COOKIE['user_id']) && isset($_COOKIE['session_token'])) {
 } else {
     echo json_encode(['error' => 'No active session found']);
 }
-?>

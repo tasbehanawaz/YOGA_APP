@@ -1,8 +1,7 @@
 <?php
+require 'cors.php';
 require 'db.php';
 
-// Add CORS headers
-header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
@@ -23,4 +22,3 @@ if ($stmt->execute()) {
 } else {
     echo json_encode(['success' => false, 'message' => 'Failed to reset saved poses.']);
 }
-?>
