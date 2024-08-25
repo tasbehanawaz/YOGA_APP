@@ -1,12 +1,58 @@
 .fixed-navbar {
   position: fixed;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  z-index: 1000; /* Ensure it's on top of other elements */
+  left: 0;
+  right: 0;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 1023px) {
+  .fixed-navbar {
+    padding: 0.5rem 1rem;
+  }
+
+  .fixed-navbar .container {
+    flex-wrap: wrap;
+  }
+
+  .fixed-navbar .lg\:hidden {
+    display: block;
+  }
+
+  .fixed-navbar .hidden.lg\:flex {
+    display: none;
+  }
+
+  .fixed-navbar .lg\:hidden + div {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .fixed-navbar ul {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .fixed-navbar li {
+    width: 100%;
+    padding: 0.5rem 0;
+  }
+
+  .fixed-navbar form {
+    width: 100%;
+    margin-top: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .fixed-navbar .lg\:hidden {
+    display: none;
+  }
+
+  .fixed-navbar .hidden.lg\:flex {
+    display: flex;
+  }
 }
 
 .navbar {
