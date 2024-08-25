@@ -163,7 +163,7 @@ export function NavbarWithSearch() {
               className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
               activeClassName="highlight"
             >
-              Sign In
+              Sign Up
             </NavLink>
           </Typography>
           <Typography
@@ -177,7 +177,7 @@ export function NavbarWithSearch() {
               className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
               activeClassName="highlight"
             >
-              Sign Up
+              Sign In
             </NavLink>
           </Typography>
         </>

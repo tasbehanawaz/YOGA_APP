@@ -3,6 +3,7 @@ import axios from 'axios';
 import { CardDefault } from '../../components/card/card'; // Assuming CardDefault is in this location
 import { useNavigate } from 'react-router-dom';
 import './sequence.css';
+
 import {
   Spinner,
   Button,
@@ -12,6 +13,10 @@ import {
 } from '@material-tailwind/react';
 import { MdMenu, MdClose } from 'react-icons/md'; // Icons for toggle button
 import toast from 'react-hot-toast';
+
+import { Spinner, Button, Input, Select, Option } from '@material-tailwind/react';
+import React from 'react';
+
 
 const Sequence = () => {
   const [poses, setPoses] = useState([]);
@@ -230,6 +235,7 @@ const Sequence = () => {
   };
 
   return (
+
     <div
       className="relative max-w-7xl mx-auto py-8 px-4"
       style={{ paddingTop: '100px' }}
@@ -245,6 +251,38 @@ const Sequence = () => {
             {isSidebarOpen ? 'Close Filters' : 'Filters'}
           </span>
         </Button>
+
+    <div className="sequence-container">
+      <h1 className="title">Select Yoga Poses</h1>
+
+      <div className="filter-options">
+        <h2 className="filter-title">Filter Options</h2>
+        <div className="filter-inputs">
+          <Input name="age" type="number" label="Age" onChange={handleFilterChange} value={filters.age} />
+          <Input name="height" type="number" label="Height (feet)" onChange={handleFilterChange} value={filters.height} step="0.1" />
+          <Input name="weight" type="number" label="Weight (kg)" onChange={handleFilterChange} value={filters.weight} />
+          <Select name="gender" label="Gender" onChange={(value) => handleSelectChange('gender', value)}>
+            <Option value="women">Women</Option>
+            <Option value="man">Man</Option>
+            <Option value="non-binary">Non-binary</Option>
+          </Select>
+          <Select name="difficulty_level" label="Difficulty Level" onChange={(value) => handleSelectChange('difficulty_level', value)} 
+          data-testid="difficulty-level-select">
+            <Option value="all">All</Option>
+            <Option value="Beginner">Beginner</Option>
+            <Option value="Intermediate">Intermediate</Option>
+            <Option value="Advanced">Advanced</Option>
+          </Select>
+          <div className="filter-buttons">
+            <Button className="apply-filters-btn" onClick={handleApplyFilters}>
+              Apply Filters
+            </Button>
+            <Button className="reset-filters-btn" onClick={handleResetFilters}>
+              Reset Filters
+            </Button>
+          </div>
+        </div>
+
       </div>
 
       {isSidebarOpen && (
