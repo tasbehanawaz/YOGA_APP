@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/useAuth';
+import toast from 'react-hot-toast';
 
 const VideoGenerator = () => {
   const { user } = useAuth();
@@ -29,6 +30,8 @@ const VideoGenerator = () => {
   }, [selectedPoses]);
 
   const handleGenerateVideo = useCallback(() => {
+    // eslint-disable-next-line no-debugger
+    debugger;
     if (videoAdded) return; // Prevent generating the same video more than once in a session
 
     setLoading(true);
@@ -68,13 +71,13 @@ const VideoGenerator = () => {
           setVideoAdded(true); // Ensure this flag prevents re-generation in this session
         } else {
           console.error('Error generating video:', response.data.error);
-          alert('Failed to generate video.');
+          toast.error('Failed to generate video.');
         }
       })
       .catch((error) => {
         setLoading(false);
         console.error('Error generating video:', error);
-        alert('Error generating video.');
+        toast.error('Error generating video.');
       });
   }, [selectedPoses, user.id, user.session_token, videoAdded]);
 
@@ -118,7 +121,7 @@ const VideoGenerator = () => {
       JSON.parse(localStorage.getItem('profileVideos')) || [];
     existingVideos.unshift(newVideo);
     localStorage.setItem('profileVideos', JSON.stringify(existingVideos));
-    alert('Video saved to your profile!');
+    toast.success('Video saved to your profile!');
   };
 
   const toggleDetails = (index) => {
@@ -148,7 +151,7 @@ const VideoGenerator = () => {
                 className="video-content"
                 src={videoUrl}
                 controls
-                onError={() => alert('Error loading video.')}
+                onError={() => toast.error('Error loading video.')}
               />
               <button
                 onClick={saveVideoToProfile}

@@ -45,9 +45,30 @@ if ($user && password_verify($password, $user['password'])) {
     error_log("Current time: " . date('Y-m-d H:i:s', time()));
     error_log("Expiry time: " . date('Y-m-d H:i:s', $expiry));
 
-    setcookie('user_id', $user['id'], $expiry, '/', '', false, false);
-    setcookie('username', $user['username'], $expiry, '/', '', false, false);
-    setcookie('session_token', $session_token, $expiry, '/', '', false, false);
+    setcookie('user_id', $user['id'], [
+        'expires' => $expiry,
+        'path' => '/',
+        'domain' => '', // Set your domain here if needed
+        'secure' => true,
+        'httponly' => false,
+        'samesite' => 'None'
+    ]);
+    setcookie('username', $user['username'], [
+        'expires' => $expiry,
+        'path' => '/',
+        'domain' => '', // Set your domain here if needed
+        'secure' => true,
+        'httponly' => false,
+        'samesite' => 'None'
+    ]);
+    setcookie('session_token', $session_token, [
+        'expires' => $expiry,
+        'path' => '/',
+        'domain' => '', // Set your domain here if needed
+        'secure' => true,
+        'httponly' => false,
+        'samesite' => 'None'
+    ]);
 
     // Store the session token in the database 
     $stmt = $pdo->prepare("UPDATE users SET session_token = ? WHERE id = ?");
