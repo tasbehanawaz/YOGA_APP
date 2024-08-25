@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/useAuth';
+import toast from 'react-hot-toast';
 
 const VideoGenerator = () => {
   const { user } = useAuth();
@@ -13,7 +14,9 @@ const VideoGenerator = () => {
   const [poseDetails, setPoseDetails] = useState([]);
   const [expandedPoseIndex, setExpandedPoseIndex] = useState(null);
   const [generatedVideos, setGeneratedVideos] = useState([]);
+  const [videoAdded, setVideoAdded] = useState(false);
 
+  // Fetch pose details based on selected poses
   const fetchPoseDetails = useCallback(async () => {
     try {
       const response = await axios.post(
@@ -27,6 +30,8 @@ const VideoGenerator = () => {
   }, [selectedPoses]);
 
   const handleGenerateVideo = useCallback(() => {
+    if (videoAdded) return; // Prevent generating the same video more than once in a session
+
     setLoading(true);
     axios
       .post(`${import.meta.env.VITE_BACKEND_URL}/generate_video.php`, {
@@ -40,62 +45,81 @@ const VideoGenerator = () => {
         if (response.data.videoPath) {
           setVideoUrl(response.data.videoPath);
 
-          // Save the generated video details to localStorage
           const newVideo = {
             videoPath: response.data.videoPath,
             selectedPoses,
             imageUrl: 'path_to_thumbnail', // Replace with actual logic to get the thumbnail URL
             type: selectedPoses.length > 0 ? 'selected' : 'random',
+            generatedAt: new Date().toISOString(), // Add timestamp for generation
           };
 
+          // Get existing videos from localStorage
           const existingVideos =
             JSON.parse(localStorage.getItem('generatedVideos')) || [];
-          existingVideos.unshift(newVideo); // Add the new video to the beginning
+
+          // Add the new video to the beginning of the array
+          const updatedVideos = [newVideo, ...existingVideos];
+
+          // Update localStorage and state with new video list
           localStorage.setItem(
             'generatedVideos',
-            JSON.stringify(existingVideos)
+            JSON.stringify(updatedVideos)
           );
-          setGeneratedVideos(existingVideos);
+          setGeneratedVideos(updatedVideos);
+          setVideoAdded(true); // Ensure this flag prevents re-generation in this session
         } else {
           console.error('Error generating video:', response.data.error);
-          alert('Failed to generate video.');
+          toast.error('Failed to generate video.');
         }
       })
       .catch((error) => {
         setLoading(false);
         console.error('Error generating video:', error);
-        alert('Error generating video.');
+        toast.error('Error generating video.');
       });
-  }, [selectedPoses, user.id, user.session_token]);
+  }, [selectedPoses, user.id, user.session_token, videoAdded]);
+
+  // Fetch generated videos from localStorage and ensure no duplicates
+  const fetchGeneratedVideos = useCallback(() => {
+    const storedGeneratedVideos =
+      JSON.parse(localStorage.getItem('generatedVideos')) || [];
+
+    const uniqueVideos = Array.from(
+      new Map(
+        storedGeneratedVideos.map((video) => [video.videoPath, video])
+      ).values()
+    );
+
+    setGeneratedVideos(uniqueVideos);
+  }, []);
 
   useEffect(() => {
-    if (selectedPoses.length > 0) {
+    if (selectedPoses.length > 0 && !videoAdded) {
       fetchPoseDetails();
       handleGenerateVideo();
     }
-    fetchGeneratedVideos(); // Fetch generated videos from localStorage
-  }, [selectedPoses, fetchPoseDetails, handleGenerateVideo]);
-
-  const fetchGeneratedVideos = () => {
-    const storedGeneratedVideos =
-      JSON.parse(localStorage.getItem('generatedVideos')) || [];
-    setGeneratedVideos(storedGeneratedVideos);
-  };
+    fetchGeneratedVideos();
+  }, [
+    selectedPoses,
+    fetchPoseDetails,
+    handleGenerateVideo,
+    fetchGeneratedVideos,
+    videoAdded,
+  ]);
 
   const saveVideoToProfile = () => {
-    // Save the video to the profile page (by updating localStorage)
     const newVideo = {
       videoPath: videoUrl,
       selectedPoses,
-      imageUrl: 'path_to_thumbnail', // Replace with actual logic to get the thumbnail URL
+      imageUrl: 'path_to_thumbnail',
       type: selectedPoses.length > 0 ? 'selected' : 'random',
     };
 
     const existingVideos =
       JSON.parse(localStorage.getItem('profileVideos')) || [];
-    existingVideos.unshift(newVideo); // Add the new video to the beginning
+    existingVideos.unshift(newVideo);
     localStorage.setItem('profileVideos', JSON.stringify(existingVideos));
-    alert('Video saved to your profile!');
+    toast.success('Video saved to your profile!');
   };
 
   const toggleDetails = (index) => {
@@ -106,8 +130,14 @@ const VideoGenerator = () => {
     navigate('/all-generated-videos');
   };
 
+  // Format the date for display
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString(); // Format date and time
+  };
+
   return (
-    <div className="generate-container flex flex-col md:flex-row">
+    <div className="generate-container flex flex-col md:flex-row mt-24">
       <div className="main-content flex-1 flex flex-col items-center">
         <h1 className="text-3xl font-bold mb-4 text-center">Generated Video</h1>
         {loading ? (
@@ -119,7 +149,7 @@ const VideoGenerator = () => {
                 className="video-content"
                 src={videoUrl}
                 controls
-                onError={() => alert('Error loading video.')}
+                onError={() => toast.error('Error loading video.')}
               />
               <button
                 onClick={saveVideoToProfile}
@@ -131,9 +161,7 @@ const VideoGenerator = () => {
           )
         )}
         <div className="pose-details w-full max-w-3xl">
-          <p className="instruction-text mb-4">
-            Click on the yoga pose name to see more details.
-          </p>
+          <p className="instruction-text mb-4"></p>
           {poseDetails.map((pose, index) => (
             <div
               key={index}
@@ -164,23 +192,37 @@ const VideoGenerator = () => {
           ))}
         </div>
       </div>
+
+      {/* Preview Bar with vertical scrollable videos */}
       <div className="sidebar w-full md:w-1/4 flex flex-col items-center md:items-start md:pl-4">
         <h2 className="text-2xl font-bold mb-4">Recently Generated Videos</h2>
-        {generatedVideos.slice(0, 4).map((video, index) => (
-          <div key={index} className="generated-video-item mb-4">
-            <video
-              src={video.videoPath}
-              alt={`Video ${index + 1}`}
-              className="generated-video-preview"
-              onClick={() => setVideoUrl(video.videoPath)}
-              style={{ cursor: 'pointer' }}
-              controls
-              muted
-              width="100%"
-            />
-            <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
+        {generatedVideos.length > 0 ? (
+          <div
+            className="video-preview-bar mb-4"
+            style={{ overflowY: 'scroll', maxHeight: '400px' }}
+          >
+            {generatedVideos.slice(0, 9).map((video, index) => (
+              <div key={index} className="generated-video-item mb-4">
+                <video
+                  src={video.videoPath}
+                  alt={`Generated Video ${index + 1}`}
+                  className="generated-video-preview"
+                  onClick={() => setVideoUrl(video.videoPath)}
+                  style={{ cursor: 'pointer' }}
+                  controls
+                  muted
+                  width="100%"
+                />
+                <p>
+                  {video.type === 'random' ? 'Random Video' : 'Selected Video'}
+                </p>
+                <p>Generated on: {formatDate(video.generatedAt)}</p>
+              </div>
+            ))}
           </div>
-        ))}
+        ) : (
+          <p>No videos generated yet.</p>
+        )}
         <div className="view-all-container">
           <button
             className="button view-all-button"

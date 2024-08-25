@@ -1,10 +1,22 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { CardDefault } from '../../components/card/card';
+import { CardDefault } from '../../components/card/card'; // Assuming CardDefault is in this location
 import { useNavigate } from 'react-router-dom';
 import './sequence.css';
+
+import {
+  Spinner,
+  Button,
+  Select,
+  Option,
+  Slider,
+} from '@material-tailwind/react';
+import { MdMenu, MdClose } from 'react-icons/md'; // Icons for toggle button
+import toast from 'react-hot-toast';
+
 import { Spinner, Button, Input, Select, Option } from '@material-tailwind/react';
 import React from 'react';
+
 
 const Sequence = () => {
   const [poses, setPoses] = useState([]);
@@ -12,13 +24,15 @@ const Sequence = () => {
   const [selectedPoses, setSelectedPoses] = useState([]);
   const [filters, setFilters] = useState({
     age: '',
-    height: '',
-    weight: '',
-    gender: '',
     difficulty_level: 'all',
+    focus_area: '',
   });
   const [appliedFilters, setAppliedFilters] = useState({});
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [duration, setDuration] = useState(5);
   const navigate = useNavigate();
+
+  const focusAreas = ['Core', 'Flexibility', 'Balance', 'Strength'];
 
   useEffect(() => {
     fetchAllPoses();
@@ -27,36 +41,16 @@ const Sequence = () => {
   const fetchAllPoses = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:8001/FetchAllYogaPoses.php');
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/FetchAllYogaPoses.php`
+      );
       if (response.data.status === 'success') {
         setPoses(response.data.data);
       } else {
         console.error('Error fetching poses:', response.data.message);
       }
     } catch (error) {
-      console.error('Error fetching the pose:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchFilteredPoses = async (filters) => {
-    setLoading(true);
-    console.log('Applying filters:', filters);
-    try {
-      const response = await axios.post('http://localhost:8001/FetchAllYogaPoses.php', filters, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      console.log('Filtered response:', response.data);
-      if (response.data.status === 'success') {
-        setPoses(response.data.data);
-      } else {
-        console.error('Error fetching poses:', response.data.message);
-      }
-    } catch (error) {
-      console.error('Error fetching the pose:', error);
+      console.error('Error fetching poses:', error);
     } finally {
       setLoading(false);
     }
@@ -77,21 +71,50 @@ const Sequence = () => {
     }));
   };
 
+  const handleDurationChange = (e) => {
+    setDuration(parseInt(e.target.value));
+  };
+
   const handleApplyFilters = () => {
     fetchFilteredPoses(filters);
     setAppliedFilters(filters);
+    setIsSidebarOpen(false);
+  };
+
+  const fetchFilteredPoses = async (filters) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/FetchAllYogaPoses.php`,
+        filters,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      if (response.data.status === 'success') {
+        setPoses(response.data.data);
+      } else {
+        console.error('Error fetching poses:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching poses:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleResetFilters = () => {
     setFilters({
       age: '',
-      height: '',
-      weight: '',
-      gender: '',
       difficulty_level: 'all',
+      focus_area: '',
     });
+    setDuration(5);
     fetchAllPoses();
     setAppliedFilters({});
+    setIsSidebarOpen(false);
   };
 
   const handlePoseSelect = (poseName) => {
@@ -105,14 +128,13 @@ const Sequence = () => {
   };
 
   const saveGeneratedVideo = (videoDetails) => {
-    // Retrieve existing videos from localStorage
-    const storedGeneratedVideos = JSON.parse(localStorage.getItem('generatedVideos')) || [];
-
-    // Add the new video details to the existing list
+    const storedGeneratedVideos =
+      JSON.parse(localStorage.getItem('generatedVideos')) || [];
     const updatedGeneratedVideos = [videoDetails, ...storedGeneratedVideos];
-
-    // Save updated list to localStorage
-    localStorage.setItem('generatedVideos', JSON.stringify(updatedGeneratedVideos));
+    localStorage.setItem(
+      'generatedVideos',
+      JSON.stringify(updatedGeneratedVideos)
+    );
   };
 
   const handleGenerateVideo = () => {
@@ -128,82 +150,108 @@ const Sequence = () => {
       const newVideo = {
         type: 'selected',
         selectedPoses: selectedPosesDetails.map((pose) => pose.poseName),
-        imageUrl: selectedPosesDetails[0].imageUrl, // Use the first pose's image as a thumbnail
+        imageUrl: selectedPosesDetails[0].imageUrl,
       };
 
-      // Save the generated video details to localStorage
       saveGeneratedVideo(newVideo);
-
-      navigate('/generate', { state: { selectedPoses: newVideo.selectedPoses, filters } });
+      navigate('/generate', {
+        state: { selectedPoses: newVideo.selectedPoses, filters, duration },
+      });
     } else {
-      alert('Please select at least two poses.');
+      toast('Please select at least two poses.');
     }
   };
 
-  const handleGenerateRandomVideo = () => {
-    const randomPoses = [];
-    const posesCopy = [...poses];
+  const handleGenerateRandomVideo = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/FetchAllYogaPoses.php`,
+        filters,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-    while (randomPoses.length < 5 && posesCopy.length > 0) {
-      const randomIndex = Math.floor(Math.random() * posesCopy.length);
-      const pose = posesCopy[randomIndex];
-      randomPoses.push({
-        poseName: pose.english_name,
-        imageUrl: pose.url_png || 'https://via.placeholder.com/150',
-      });
-      posesCopy.splice(randomIndex, 1);
+      if (response.data.status === 'success') {
+        const filteredPoses = response.data.data;
+
+        const randomPoses = [];
+        const posesCopy = [...filteredPoses];
+
+        while (randomPoses.length < 5 && posesCopy.length > 0) {
+          const randomIndex = Math.floor(Math.random() * posesCopy.length);
+          const pose = posesCopy[randomIndex];
+          randomPoses.push({
+            poseName: pose.english_name,
+            imageUrl: pose.url_png || 'https://via.placeholder.com/150',
+          });
+          posesCopy.splice(randomIndex, 1);
+        }
+
+        const newRandomVideo = {
+          type: 'random',
+          selectedPoses: randomPoses.map((pose) => pose.poseName),
+          imageUrl: randomPoses[0].imageUrl,
+        };
+
+        saveGeneratedVideo(newRandomVideo);
+        navigate('/generate', {
+          state: { selectedPoses: newRandomVideo.selectedPoses, filters },
+        });
+      } else {
+        console.error('Error fetching filtered poses:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error generating random video:', error);
+    } finally {
+      setLoading(false);
     }
-
-    const newRandomVideo = {
-      type: 'random',
-      selectedPoses: randomPoses.map((pose) => pose.poseName),
-      imageUrl: randomPoses[0].imageUrl, // Use the first pose's image as a thumbnail
-    };
-
-    // Save the generated random video details to localStorage
-    saveGeneratedVideo(newRandomVideo);
-
-    navigate('/generate', { state: { selectedPoses: newRandomVideo.selectedPoses, filters } });
   };
 
+  const renderAppliedFilters = () => {
+    const appliedFilterElements = [];
 
-  const handleGenerateFilteredRandomVideo = () => {
-
-    // console.log('Poses:', JSON.stringify(poses));
-    // console.log('Filters:', JSON.stringify(filters));
-
-    const filteredPoses = poses.filter((pose) => pose.difficulty_level === filters.difficulty_level);
-    const randomPoses = [];
-    const posesCopy = [...filteredPoses];
-
-    // console.log('Filtered poses:', JSON.stringify(filteredPoses));
-    // console.log('Poses copy:', JSON.stringify(posesCopy));
-
-    while (randomPoses.length < 2 && posesCopy.length > 0) {
-      const randomIndex = Math.floor(Math.random() * posesCopy.length);
-      const pose = posesCopy[randomIndex];
-      randomPoses.push({
-        poseName: pose.english_name,
-        imageUrl: pose.url_png || 'https://via.placeholder.com/150',
-      });
-      posesCopy.splice(randomIndex, 1);
+    if (appliedFilters.age) {
+      appliedFilterElements.push(<p key="age">Age: {appliedFilters.age}</p>);
+    }
+    if (
+      appliedFilters.difficulty_level &&
+      appliedFilters.difficulty_level !== 'all'
+    ) {
+      appliedFilterElements.push(
+        <p key="difficulty">Difficulty: {appliedFilters.difficulty_level}</p>
+      );
+    }
+    if (appliedFilters.focus_area) {
+      appliedFilterElements.push(
+        <p key="focus_area">Focus Area: {appliedFilters.focus_area}</p>
+      );
     }
 
-    console.log('Filter poses:', JSON.stringify(randomPoses));
-
-    const newRandomVideo = {
-      type: 'random',
-      selectedPoses: randomPoses.map((pose) => pose.poseName),
-      imageUrl: randomPoses[0].imageUrl, // Use the first pose's image as a thumbnail
-    };
-
-    // Save the generated random video details to localStorage
-    saveGeneratedVideo(newRandomVideo);
-
-    navigate('/generate', { state: { selectedPoses: newRandomVideo.selectedPoses, filters } });
+    return appliedFilterElements;
   };
 
   return (
+
+    <div
+      className="relative max-w-7xl mx-auto py-8 px-4"
+      style={{ paddingTop: '100px' }}
+    >
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Select Yoga Poses</h1>
+        <Button
+          className="bg-blue-500 text-white flex items-center"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          {isSidebarOpen ? <MdClose size={24} /> : <MdMenu size={24} />}
+          <span className="ml-2">
+            {isSidebarOpen ? 'Close Filters' : 'Filters'}
+          </span>
+        </Button>
+
     <div className="sequence-container">
       <h1 className="title">Select Yoga Poses</h1>
 
@@ -234,48 +282,139 @@ const Sequence = () => {
             </Button>
           </div>
         </div>
+
       </div>
 
+      {isSidebarOpen && (
+        <>
+          <div
+            className="fixed-overlay"
+            onClick={() => setIsSidebarOpen(false)}
+          ></div>
+          <div className="fixed-sidebar p-6">
+            <h2 className="text-2xl font-bold mb-4">Filter Options</h2>
+
+            <div className="filter-inputs space-y-4">
+              <Select
+                name="age"
+                label="Age Range"
+                value={filters.age}
+                onChange={(value) => handleSelectChange('age', value)}
+              >
+                <Option value="18-25">18-25</Option>
+                <Option value="26-30">26-30</Option>
+                <Option value="31-50">31-50</Option>
+                <Option value="50+">Above 50</Option>
+              </Select>
+
+              <Select
+                name="difficulty_level"
+                label="Difficulty Level"
+                value={filters.difficulty_level}
+                onChange={(value) =>
+                  handleSelectChange('difficulty_level', value)
+                }
+              >
+                <Option value="all">All</Option>
+                <Option value="Beginner">Beginner</Option>
+                <Option value="Intermediate">Intermediate</Option>
+                <Option value="Advanced">Advanced</Option>
+              </Select>
+
+              <Select
+                name="focus_area"
+                label="Focus Area"
+                value={filters.focus_area}
+                onChange={(value) => handleSelectChange('focus_area', value)}
+              >
+                <Option value="">None</Option>
+                {focusAreas.map((area) => (
+                  <Option key={area} value={area}>
+                    {area}
+                  </Option>
+                ))}
+              </Select>
+
+              <div>
+                <h2 className="text-lg font-semibold mt-4">
+                  Video Duration: {duration} minutes
+                </h2>
+                <Slider
+                  value={duration}
+                  onChange={handleDurationChange}
+                  min={1}
+                  max={60}
+                  step={1}
+                />
+              </div>
+
+              <div className="flex space-x-4 mt-4">
+                <Button
+                  className="bg-blue-500 text-white w-full text-sm py-2 px-3"
+                  onClick={handleApplyFilters}
+                >
+                  Apply Filters
+                </Button>
+                <Button
+                  className="bg-red-500 text-white w-full text-sm py-2 px-3"
+                  onClick={handleResetFilters}
+                >
+                  Reset Filters
+                </Button>
+              </div>
+
+              <Button
+                className="bg-yellow-500 text-white w-full mt-4"
+                onClick={handleGenerateRandomVideo}
+              >
+                Generate Filtered Random Session
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
+
       {Object.keys(appliedFilters).length > 0 && (
-        <div className="applied-filters">
-          <h2 className="applied-filters-title">Applied Filters</h2>
-          {appliedFilters.age && <p>Age: {appliedFilters.age}</p>}
-          {appliedFilters.height && <p>Height: {appliedFilters.height}</p>}
-          {appliedFilters.weight && <p>Weight: {appliedFilters.weight}</p>}
-          {appliedFilters.gender && <p>Gender: {appliedFilters.gender}</p>}
-          {appliedFilters.difficulty_level && <p>Difficulty Level: {appliedFilters.difficulty_level}</p>}
-          <Button className="random-video-btn" onClick={handleGenerateFilteredRandomVideo}>
-            Generate Session
-          </Button>
+        <div className="applied-filters mt-8 p-4 bg-gray-100 rounded-lg">
+          <h2 className="text-lg font-semibold mb-2">Applied Filters</h2>
+          {renderAppliedFilters()}
         </div>
       )}
 
-      {loading ? (
-        <div className="flex justify-center items-center">
-          <Spinner />
+      <div className="w-full">
+        <div className="poses-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {loading ? (
+            <div className="flex justify-center items-center">
+              <Spinner />
+            </div>
+          ) : (
+            poses.map((pose, index) => (
+              <CardDefault
+                key={index}
+                name={pose.english_name}
+                imageUrl={pose.url_png}
+                poseDescription={pose.pose_benefits}
+                difficultyLevel={pose.difficulty_level}
+                focusArea={pose.focus_area}
+                onClick={() => handlePoseSelect(pose.english_name)}
+                isSelected={selectedPoses.includes(pose.english_name)} // Add this line
+              />
+            ))
+          )}
         </div>
-      ) : (
-        <div className="poses-grid">
-          {poses.map((pose, index) => (
-            <CardDefault
-              key={index}
-              name={pose.english_name}
-              imageUrl={pose.url_png}
-              poseDescription={pose.pose_benefits}
-              difficultyLevel={pose.difficulty_level}
-              onSave={() => handleSavePose(pose)}
-              onClick={() => handlePoseSelect(pose.english_name)}
-              isSelected={selectedPoses.includes(pose.english_name)}
-            />
-          ))}
-        </div>
-      )}
+      </div>
 
-      <div className="sticky-button-container">
-        <Button className="bg-blue-900 text-white py-2 px-4 rounded" onClick={handleGenerateVideo}>
+      <div className="sticky-button-container mt-10 flex space-x-4 justify-center">
+        <Button
+          className="bg-blue-900 text-white py-2 px-4 rounded"
+          onClick={handleGenerateVideo}
+        >
           Generate Video
         </Button>
-        <Button className="bg-green-900 text-white py-2 px-4 rounded" onClick={handleGenerateRandomVideo}>
+        <Button
+          className="bg-green-900 text-white py-2 px-4 rounded"
+          onClick={handleGenerateRandomVideo}
+        >
           Generate Random Session
         </Button>
       </div>

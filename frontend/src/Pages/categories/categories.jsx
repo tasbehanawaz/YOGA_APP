@@ -4,6 +4,7 @@ import { CardDefault } from '../../components/card/card';
 import { useNavigate } from 'react-router-dom';
 import './categories.css';
 import { Spinner, Button } from '@material-tailwind/react';
+import toast from 'react-hot-toast';
 
 // const getBackendUrl = () => {
 //   return import.meta.env.VITE_BACKEND_URL || 'http://localhost:8001';
@@ -25,7 +26,9 @@ const Categories = () => {
     setLoading(true);
     setError(null);
     try {
+
       const url = `${getBackendUrl()}/FetchAllYogaPoses.php`;
+
       const postData = filter !== 'mixed' ? { difficulty_level: filter } : {};
 
       const response = await axios.post(url, postData);
@@ -66,13 +69,13 @@ const Categories = () => {
         }
       );
       if (response.data.success) {
-        alert('Pose saved successfully!');
+        toast.success('Pose saved successfully!');
       } else {
-        alert(response.data.message);
+        toast.error(response.data.message);
       }
     } catch (error) {
       console.error('Error saving the pose:', error);
-      alert('Error saving pose.');
+      toast('Error saving pose.');
     }
   };
 

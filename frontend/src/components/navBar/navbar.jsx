@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { NavLink } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/useAuth';
 import {
   Navbar,
   MobileNav,
@@ -78,20 +78,6 @@ export function NavbarWithSearch() {
         className="flex items-center gap-x-2 p-1 font-medium"
       >
         <NavLink
-          to="/sequence"
-          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-          activeClassName="highlight"
-        >
-          Generate
-        </NavLink>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="flex items-center gap-x-2 p-1 font-medium"
-      >
-        <NavLink
           to="/categories"
           className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
           activeClassName="highlight"
@@ -99,21 +85,41 @@ export function NavbarWithSearch() {
           Categories
         </NavLink>
       </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="flex items-center gap-x-2 p-1 font-medium"
-      >
-        <NavLink
-          to="/save"
-          className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
-          activeClassName="highlight"
-        >
-          Saved
-        </NavLink>
-      </Typography>
-      {user ? ( // Ensure proper JSX syntax
+
+      {user && ( // User is signed in, display 'Generate' and 'Saved'
+        <>
+          <Typography
+            as="li"
+            variant="small"
+            color="blue-gray"
+            className="flex items-center gap-x-2 p-1 font-medium"
+          >
+            <NavLink
+              to="/sequence"
+              className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
+              activeClassName="highlight"
+            >
+              Generate
+            </NavLink>
+          </Typography>
+          <Typography
+            as="li"
+            variant="small"
+            color="blue-gray"
+            className="flex items-center gap-x-2 p-1 font-medium"
+          >
+            <NavLink
+              to="/save"
+              className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
+              activeClassName="highlight"
+            >
+              Saved
+            </NavLink>
+          </Typography>
+        </>
+      )}
+
+      {user ? ( // User is signed in, display profile and logout
         <>
           <Typography
             as="li"
@@ -144,6 +150,7 @@ export function NavbarWithSearch() {
           </Typography>
         </>
       ) : (
+        // User is not signed in, display sign in and sign up options
         <>
           <Typography
             as="li"
@@ -152,7 +159,7 @@ export function NavbarWithSearch() {
             className="flex items-center gap-x-2 p-1 font-medium"
           >
             <NavLink
-              to="/logins"
+              to="/login"
               className="flex items-center hover:bg-blue-500 hover:text-white hover:py-2 hover:px-4"
               activeClassName="highlight"
             >
@@ -177,6 +184,7 @@ export function NavbarWithSearch() {
       )}
     </ul>
   );
+
   return (
     <>
       <Navbar className="fixed-navbar mx-auto max-w-screen-xl px-4 py-2 lg:px-8 lg:py-4 z-10">

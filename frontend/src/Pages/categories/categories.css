@@ -1,5 +1,6 @@
 .categories-container {
   display: flex;
+  padding-top: 80px; /* Adjust this value to match your navbar's height */
   flex-wrap: wrap;
   gap: 20px; /* adjust as needed */
   justify-content: center;

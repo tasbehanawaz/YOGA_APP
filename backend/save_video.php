@@ -1,7 +1,8 @@
 <?php
+
+require 'cors.php';
 require 'db.php';
 
-header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
@@ -31,4 +32,3 @@ if (isset($data['video_path'])) {
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid video data']);
 }
-?>

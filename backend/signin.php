@@ -1,7 +1,6 @@
 <?php
-require 'db.php';  
-
-header("Access-Control-Allow-Origin: http://localhost:5173");
+require 'cors.php';
+require 'db.php';
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -38,17 +37,43 @@ if ($user && password_verify($password, $user['password'])) {
     // Set session cookie options
     ini_set('session.cookie_samesite', 'None');
     ini_set('session.cookie_secure', 'true');
-    
+
     // Set cookies
     $expiry = time() + (30 * 24 * 60 * 60);  // Cookie expires in 30 days
-    setcookie('user_id', $user['id'], $expiry, '/', '', false, false);
-    setcookie('username', $user['username'], $expiry, '/', '', false, false);
-    setcookie('session_token', $session_token, $expiry, '/', '', false, false);
-    
+
+    // Debugging: Print current time and expiry time
+    error_log("Current time: " . date('Y-m-d H:i:s', time()));
+    error_log("Expiry time: " . date('Y-m-d H:i:s', $expiry));
+
+    setcookie('user_id', $user['id'], [
+        'expires' => $expiry,
+        'path' => '/',
+        'domain' => '', // Set your domain here if needed
+        'secure' => true,
+        'httponly' => false,
+        'samesite' => 'None'
+    ]);
+    setcookie('username', $user['username'], [
+        'expires' => $expiry,
+        'path' => '/',
+        'domain' => '', // Set your domain here if needed
+        'secure' => true,
+        'httponly' => false,
+        'samesite' => 'None'
+    ]);
+    setcookie('session_token', $session_token, [
+        'expires' => $expiry,
+        'path' => '/',
+        'domain' => '', // Set your domain here if needed
+        'secure' => true,
+        'httponly' => false,
+        'samesite' => 'None'
+    ]);
+
     // Store the session token in the database 
     $stmt = $pdo->prepare("UPDATE users SET session_token = ? WHERE id = ?");
     $stmt->execute([$session_token, $user['id']]);
-    
+
     echo json_encode([
         'success' => true,
         'user' => [
@@ -59,4 +84,3 @@ if ($user && password_verify($password, $user['password'])) {
 } else {
     echo json_encode(['error' => 'Invalid username or password']);
 }
-?>
