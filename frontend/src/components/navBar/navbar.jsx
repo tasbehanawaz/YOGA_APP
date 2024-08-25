@@ -162,7 +162,7 @@ export function NavbarWithSearch() {
               activeClassName="highlight"
               onClick={closeMenu}
             >
-              Sign In
+              Sign Up
             </NavLink>
           </Typography>
           <Typography
@@ -177,7 +177,7 @@ export function NavbarWithSearch() {
               activeClassName="highlight"
               onClick={closeMenu}
             >
-              Sign Up
+              Sign In
             </NavLink>
           </Typography>
         </>
