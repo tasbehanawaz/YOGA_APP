@@ -1,8 +1,7 @@
 <?php
+require 'cors.php';
 require 'db.php';
 
-// Add CORS headers
-header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
@@ -39,5 +38,3 @@ if (isset($data['english_name'], $data['pose_description'], $data['url_png'])) {
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid pose data']);
 }
-
-?>

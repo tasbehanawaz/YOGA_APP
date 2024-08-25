@@ -1,7 +1,8 @@
 <?php
+
+require 'cors.php';
 require 'db.php';
 
-header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -38,4 +39,3 @@ setcookie('username', '', time() - 3600, '/', '', false, false);
 setcookie('session_token', '', time() - 3600, '/', '', false, false);
 
 echo json_encode(['success' => true]);
-?>

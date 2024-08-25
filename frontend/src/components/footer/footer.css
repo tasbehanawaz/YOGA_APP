@@ -8,7 +8,7 @@ footer {
   z-index: 1000;
 }
 
-.text-center {
+footer > .text-center {
   display: flex;
   justify-content: center;
   align-items: center;

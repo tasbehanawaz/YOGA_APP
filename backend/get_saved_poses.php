@@ -1,7 +1,7 @@
 <?php
+require 'cors.php';
 require 'db.php'; // Ensure this includes the function getDbConnection()
 
-header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -12,4 +12,3 @@ $stmt->execute();
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 echo json_encode($results);
-?>
