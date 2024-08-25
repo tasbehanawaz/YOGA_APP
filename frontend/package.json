@@ -17,9 +17,7 @@
     "@heroicons/react": "^2.1.5",
     "@material-tailwind/react": "^2.1.9",
     "axios": "^1.7.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-hot-toast": "^2.4.1"
+    "iconv-lite": "^0.6.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
