@@ -4,6 +4,7 @@ import { CardDefault } from '../../components/card/card';
 import { useNavigate } from 'react-router-dom';
 import './categories.css';
 import { Spinner, Button } from '@material-tailwind/react';
+import toast from 'react-hot-toast';
 
 const Categories = () => {
   const [poses, setPoses] = useState([]);
@@ -59,13 +60,13 @@ const Categories = () => {
         }
       );
       if (response.data.success) {
-        alert('Pose saved successfully!');
+        toast.success('Pose saved successfully!');
       } else {
-        alert(response.data.message);
+        toast.error(response.data.message);
       }
     } catch (error) {
       console.error('Error saving the pose:', error);
-      alert('Error saving pose.');
+      toast('Error saving pose.');
     }
   };
 

@@ -11,6 +11,7 @@ import {
   Slider,
 } from '@material-tailwind/react';
 import { MdMenu, MdClose } from 'react-icons/md'; // Icons for toggle button
+import toast from 'react-hot-toast';
 
 const Sequence = () => {
   const [poses, setPoses] = useState([]);
@@ -152,7 +153,7 @@ const Sequence = () => {
         state: { selectedPoses: newVideo.selectedPoses, filters, duration },
       });
     } else {
-      alert('Please select at least two poses.');
+      toast('Please select at least two poses.');
     }
   };
 
