@@ -30,8 +30,6 @@ const VideoGenerator = () => {
   }, [selectedPoses]);
 
   const handleGenerateVideo = useCallback(() => {
-    // eslint-disable-next-line no-debugger
-    debugger;
     if (videoAdded) return; // Prevent generating the same video more than once in a session
 
     setLoading(true);
