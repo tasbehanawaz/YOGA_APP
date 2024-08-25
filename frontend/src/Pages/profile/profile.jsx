@@ -31,7 +31,7 @@ const Profile = () => {
       try {
         const [userResponse, posesResponse] = await Promise.all([
           axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}1/get_user.php?user_id=${
+            `${import.meta.env.VITE_BACKEND_URL}/get_user.php?user_id=${
               user.id
             }`
           ),
