@@ -23,9 +23,9 @@ const SITEMAP = [
   {
     title: 'Resources',
     links: [
-      <a href="https://blog.com" key="blog">
-        Blog
-      </a>,
+      <React.Fragment key="blog">
+        <Link to="/blog">Blog</Link>
+      </React.Fragment>,
     ],
   },
 ];
