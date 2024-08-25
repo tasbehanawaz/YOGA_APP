@@ -3,6 +3,7 @@ import { CardDefault } from '../../components/card/card';
 import PropTypes from 'prop-types'; // Add PropTypes for prop validation
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Import axios library
+import toast from 'react-hot-toast';
 
 const Result = () => {
   const location = useLocation();
@@ -46,13 +47,13 @@ const Result = () => {
         }
       );
       if (response.data.success) {
-        alert('Pose saved successfully!');
+        toast.success('Pose saved successfully!');
       } else {
-        alert(response.data.message);
+        toast.error(response.data.message);
       }
     } catch (error) {
       console.error('Error saving the pose:', error);
-      alert('Error saving pose.');
+      toast.error('Error saving pose.');
     }
   };
 
