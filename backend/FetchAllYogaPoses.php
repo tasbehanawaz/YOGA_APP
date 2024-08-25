@@ -3,11 +3,15 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require 'db.php';
+require_once 'db.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+if (!isset($_SERVER['REQUEST_METHOD'])) {
+    $_SERVER['REQUEST_METHOD'] = 'CLI'; // Set default for testing environment
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -31,6 +35,7 @@ try {
     error_log("Error in yoga poses API: " . $e->getMessage());
     echo json_encode(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()]);
 }
+
 
 function fetchAndClassifyAllYogaPoses($filterOptions = [])
 {

@@ -4,6 +4,7 @@ import { CardDefault } from '../../components/card/card';
 import { useNavigate } from 'react-router-dom';
 import './sequence.css';
 import { Spinner, Button, Input, Select, Option } from '@material-tailwind/react';
+import React from 'react';
 
 const Sequence = () => {
   const [poses, setPoses] = useState([]);
@@ -217,7 +218,8 @@ const Sequence = () => {
             <Option value="man">Man</Option>
             <Option value="non-binary">Non-binary</Option>
           </Select>
-          <Select name="difficulty_level" label="Difficulty Level" onChange={(value) => handleSelectChange('difficulty_level', value)}>
+          <Select name="difficulty_level" label="Difficulty Level" onChange={(value) => handleSelectChange('difficulty_level', value)} 
+          data-testid="difficulty-level-select">
             <Option value="all">All</Option>
             <Option value="Beginner">Beginner</Option>
             <Option value="Intermediate">Intermediate</Option>
