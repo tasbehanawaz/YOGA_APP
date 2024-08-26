@@ -2,10 +2,58 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Content-Type: video/mp4");
+header("Connection: keep-alive");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (!isset($input['poses']) || !is_array($input['poses'])) {
+            echo json_encode(['error' => 'Invalid input']);
+            exit;
+        }
+
+        $poseNames = $input['poses'];
+        $inputtedDuration = $input['duration'] * 60; //convert to seconds
+        $filters = isset($input['filters']) ? $input['filters'] : [];
+
+        $poses = fetchPoses($poseNames, $filters);
+        if (isset($poses['error'])) {
+            echo json_encode(['error' => $poses['error']]);
+            exit;
+        }
+
+        $framePaths = createFrames($poses);
+        if (isset($framePaths['error'])) {
+            echo json_encode(['error' => $framePaths['error']]);
+            exit;
+        }
+
+        $videoPath = generateVideo($framePaths, $poseNames, $inputtedDuration);
+        if (isset($videoPath['error'])) {
+            echo json_encode(['error' => $videoPath['error']]);
+            exit;
+        }
+
+        // Clean up resources
+        foreach ($framePaths as $framePath) {
+            if (file_exists($framePath)) {
+                unlink($framePath);
+            }
+        }
+
+        $fullUrl = 'http://localhost:8001/' . $videoPath;
+        echo json_encode(['videoPath' => $fullUrl]);
+    } catch (Exception $e) {
+        error_log($e->getMessage());
+        echo json_encode(['error' => 'An unexpected error occurred.']);
+        exit;
+    }
 }
 
 function fetchPoses($poseNames, $filters)
@@ -116,7 +164,7 @@ function createSrtFile($poseName, $floatDuration)
     return $srtPath;
 }
 
-function generateVideo($framePaths, $poseNames)
+function generateVideo($framePaths, $poseNames, $inputtedDuration)
 {
     if (!is_dir('output')) {
         mkdir('output', 0777, true);
@@ -157,7 +205,11 @@ function generateVideo($framePaths, $poseNames)
     }
 
     $inputString = implode(' ', $inputs) . ' ' . implode(' ', $audioInputs) . ' ' . implode(' ', $subtitleInputs);
-    $totalAudioDuration = calculateTotalAudioDuration($audioFilePaths);
+    if (isset($inputtedDuration) &&   $inputtedDuration > calculateTotalAudioDuration($audioFilePaths)) {
+        $totalAudioDuration = $inputtedDuration;
+    } else {
+        $totalAudioDuration = calculateTotalAudioDuration($audioFilePaths);
+    } // here
 
     $filterComplexString = implode(";", $filterComplexParts) . ";";
     $audioFilterComplexString = "";
@@ -182,40 +234,3 @@ function generateVideo($framePaths, $poseNames)
     }
     return $videoPath;
 }
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input = json_decode(file_get_contents('php://input'), true);
-    if (!isset($input['poses']) || !is_array($input['poses'])) {
-        echo json_encode(['error' => 'Invalid input']);
-        exit;
-    }
-
-    $poseNames = $input['poses'];
-    $filters = isset($input['filters']) ? $input['filters'] : [];
-
-    $poses = fetchPoses($poseNames, $filters);
-    if (isset($poses['error'])) {
-        echo json_encode(['error' => $poses['error']]);
-        exit;
-    }
-
-    $framePaths = createFrames($poses);
-    if (isset($framePaths['error'])) {
-        echo json_encode(['error' => $framePaths['error']]);
-        exit;
-    }
-
-    $videoPath = generateVideo($framePaths, $poseNames);
-    if (isset($videoPath['error'])) {
-        echo json_encode(['error' => $videoPath['error']]);
-        exit;
-    }
-
-    $fullUrl = 'http://localhost:8001/' . $videoPath;
-    echo json_encode(['videoPath' => $fullUrl]);
-
-    foreach ($framePaths as $framePath) {
-        unlink($framePath);
-    }
-}
-?>

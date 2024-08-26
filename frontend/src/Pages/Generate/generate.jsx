@@ -9,7 +9,11 @@ const VideoGenerator = () => {
   const [loading, setLoading] = useState(false);
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { selectedPoses } = state || { selectedPoses: [] };
+  const { selectedPoses, duration, url_png } = state || {
+    selectedPoses: [],
+    duration: null,
+    url_png: [],
+  };
   const [poseDetails, setPoseDetails] = useState([]);
   const [expandedPoseIndex, setExpandedPoseIndex] = useState(null);
   const [generatedVideos, setGeneratedVideos] = useState([]);
@@ -28,62 +32,73 @@ const VideoGenerator = () => {
     }
   }, [selectedPoses]);
 
-  const handleGenerateVideo = useCallback(() => {
-    if (videoAdded) return; // Prevent generating the same video more than once in a session
+  // Generate video based on selected poses
+  const handleGenerateVideo = useCallback(async () => {
+    if (videoAdded) {
+      alert('Already generated this video');
+      return;
+    }
 
     setLoading(true);
-    axios
-      .post(`${import.meta.env.VITE_BACKEND_URL}/generate_video.php`, {
-        poses: selectedPoses,
-        user_id: user.id,
-        session_token: user.session_token,
-        url_pngs: [],
-      })
-      .then((response) => {
-        setLoading(false);
-        if (response.data.videoPath) {
-          setVideoUrl(response.data.videoPath);
-
-          const newVideo = {
-            videoPath: response.data.videoPath,
-            selectedPoses,
-            imageUrl: 'path_to_thumbnail', // Replace with actual logic to get the thumbnail URL
-            type: selectedPoses.length > 0 ? 'selected' : 'random',
-            generatedAt: new Date().toISOString(), // Add timestamp for generation
-          };
-
-          // Get existing videos from localStorage
-          const existingVideos =
-            JSON.parse(localStorage.getItem('generatedVideos')) || [];
-
-          // Add the new video to the beginning of the array
-          const updatedVideos = [newVideo, ...existingVideos];
-
-          // Update localStorage and state with new video list
-          localStorage.setItem('generatedVideos', JSON.stringify(updatedVideos));
-          setGeneratedVideos(updatedVideos);
-          setVideoAdded(true); // Ensure this flag prevents re-generation in this session
-        } else {
-          console.error('Error generating video:', response.data.error);
-          alert('Failed to generate video.');
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/generate_video.php`,
+        {
+          poses: selectedPoses,
+          user_id: user.id,
+          session_token: user.session_token,
+          url_pngs: url_png,
+          duration,
         }
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.error('Error generating video:', error);
-        alert('Error generating video.');
-      });
-  }, [selectedPoses, user.id, user.session_token, videoAdded]);
+      );
+
+      setLoading(false);
+      if (response.data.videoPath) {
+        const url = new URL(response.data.videoPath);
+        const relativePath = url.pathname.substring(1);
+        setVideoUrl(relativePath);
+
+        const newVideo = {
+          videoPath: relativePath,
+          selectedPoses,
+          imageUrl: 'path_to_thumbnail',
+          type: selectedPoses.length > 0 ? 'selected' : 'random',
+          generatedAt: new Date().toISOString(),
+        };
+
+        const existingVideos =
+          JSON.parse(localStorage.getItem('generatedVideos')) || [];
+        const updatedVideos = [newVideo, ...existingVideos];
+        localStorage.setItem('generatedVideos', JSON.stringify(updatedVideos));
+        setGeneratedVideos(updatedVideos);
+        setVideoAdded(true);
+      } else {
+        console.error('Error generating video:', response.data.error);
+        alert('Failed to generate video.');
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error('Error generating video:', error.response || error.message);
+      alert('Error generating video.');
+    }
+  }, [
+    selectedPoses,
+    user.id,
+    user.session_token,
+    videoAdded,
+    duration,
+    url_png,
+  ]);
 
   // Fetch generated videos from localStorage and ensure no duplicates
   const fetchGeneratedVideos = useCallback(() => {
     const storedGeneratedVideos =
       JSON.parse(localStorage.getItem('generatedVideos')) || [];
-
     const uniqueVideos = Array.from(
-      new Map(storedGeneratedVideos.map((video) => [video.videoPath, video])).values()
+      new Map(
+        storedGeneratedVideos.map((video) => [video.videoPath, video])
+      ).values()
     );
-
     setGeneratedVideos(uniqueVideos);
   }, []);
 
@@ -93,7 +108,13 @@ const VideoGenerator = () => {
       handleGenerateVideo();
     }
     fetchGeneratedVideos();
-  }, [selectedPoses, fetchPoseDetails, handleGenerateVideo, fetchGeneratedVideos, videoAdded]);
+  }, [
+    selectedPoses,
+    videoAdded,
+    fetchPoseDetails,
+    fetchGeneratedVideos,
+    handleGenerateVideo,
+  ]);
 
   const saveVideoToProfile = () => {
     const newVideo = {
@@ -118,10 +139,9 @@ const VideoGenerator = () => {
     navigate('/all-generated-videos');
   };
 
-  // Format the date for display
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleString(); // Format date and time
+    return date.toLocaleString();
   };
 
   return (
@@ -135,7 +155,9 @@ const VideoGenerator = () => {
             <div className="video-wrapper mb-8 flex flex-col items-center">
               <video
                 className="video-content"
-                src={videoUrl}
+                src={`http://localhost:8001/serve_video.php?path=${encodeURIComponent(
+                  videoUrl
+                )}`}
                 controls
                 onError={() => alert('Error loading video.')}
               />
@@ -181,7 +203,6 @@ const VideoGenerator = () => {
         </div>
       </div>
 
-      {/* Preview Bar with vertical scrollable videos */}
       <div className="sidebar w-full md:w-1/4 flex flex-col items-center md:items-start md:pl-4">
         <h2 className="text-2xl font-bold mb-4">Recently Generated Videos</h2>
         {generatedVideos.length > 0 ? (
@@ -201,7 +222,9 @@ const VideoGenerator = () => {
                   muted
                   width="100%"
                 />
-                <p>{video.type === 'random' ? 'Random Video' : 'Selected Video'}</p>
+                <p>
+                  {video.type === 'random' ? 'Random Video' : 'Selected Video'}
+                </p>
                 <p>Generated on: {formatDate(video.generatedAt)}</p>
               </div>
             ))}
