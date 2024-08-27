@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Sequence from '../Pages/sequence/sequence';
@@ -5,6 +6,7 @@ import axios from 'axios';
 import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import { expect } from '@jest/globals';
+import jest from '@testing-library/jest-dom';
 
 
 // Mock localStorage

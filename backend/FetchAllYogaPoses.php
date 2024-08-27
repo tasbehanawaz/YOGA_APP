@@ -5,8 +5,10 @@ error_reporting(E_ALL);
 
 require_once 'db.php';
 
+header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
 
 if (!isset($_SERVER['REQUEST_METHOD'])) {
     $_SERVER['REQUEST_METHOD'] = 'CLI'; // Set default for testing environment
@@ -87,15 +89,32 @@ function applyFilters($poses, $filters)
 
 function classifyPoses($poses)
 {
-    // Classification logic for difficulty level (already present)
-    $advancedCriteria = ['balance', 'strength', 'flexibility', 'advanced', 'challenging', 'complex', 'inversion', 'headstand', 'handstand', 'arm balance', 'backbend'];
-    $intermediateCriteria = ['moderate', 'intermediate', 'flowing', 'dynamic', 'twist', 'lunge', 'core strength'];
+    // Classification logic for difficulty level
+    $advancedCriteria = [
+        'balance', 'strength', 'flexibility', 'advanced', 'challenging',
+        'complex', 'inversion', 'headstand', 'handstand', 'arm balance', 'backbend'
+    ];
+    $intermediateCriteria = [
+        'moderate', 'intermediate', 'flowing', 'dynamic', 'twist', 'lunge', 'core strength'
+    ];
     $beginnerCriteria = ['beginner', 'easy', 'gentle', 'relaxing', 'basic'];
 
     // Focus Area Keywords
     $balanceKeywords = ["stability", "focus", "equilibrium", "alignment", "movement", "center", "concentration", "coordination"];
     $flexibilityKeywords = ["stretch", "elevate", "lengthen", "loosen", "extend", "open", "elasticity", "mobility", "spread"];
     $coreKeywords = ["abdominal", "core", "engagement", "bandhas", "support", "spine", "strengthens", "stabilize"];
+
+    // Specific Pose Adjustments
+    $specificPoseAdjustments = [
+        'Shoulder Stand' => 3,
+        'Splits' => 3,
+        'Pigeon' => 1.5,
+        'Bridge' => 1,
+        'Plow' => 3, // Move Plow to Advanced
+        'Bow' => 3,  // Move Bow to Advanced
+        'Wheel' => 3, // Move Wheel to Advanced
+        'Crow' => 3   // Move Crow to Advanced
+    ];
 
     foreach ($poses as &$pose) {
         $description = strtolower($pose['pose_benefits'] . ' ' . ($pose['pose_description'] ?? '') . ' ' . $pose['english_name']);
@@ -115,6 +134,14 @@ function classifyPoses($poses)
         foreach ($beginnerCriteria as $criterion) {
             if (str_contains($description, $criterion)) {
                 $points -= 1;
+            }
+        }
+
+        // Adjust points for specific poses
+        foreach ($specificPoseAdjustments as $poseName => $adjustment) {
+            if (stripos($pose['english_name'], $poseName) !== false) {
+                $points += $adjustment;
+                break;
             }
         }
 
@@ -140,6 +167,7 @@ function classifyPoses($poses)
     }
     return $poses;
 }
+
 
 // Helper function to check if a description contains any keyword
 function str_contains_any($text, $keywords)

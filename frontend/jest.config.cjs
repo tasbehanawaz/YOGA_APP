@@ -1,11 +1,12 @@
+// eslint-disable-next-line no-undef
 module.exports = {
+  preset: "react-app",
   transform: {
     "^.+\\.(js|jsx)$": "babel-jest",
   },
   moduleFileExtensions: ["js", "jsx"],
   testEnvironment: "jest-environment-jsdom",
-  setupFiles: ['dotenv/config'], // Load .env variables
-  setupFilesAfterEnv: ['./jest.setup.js'], // Jest setup file
+  setupFilesAfterEnv: ['./jest.setup.js'], // Setup after env should be correct
   transformIgnorePatterns: [
     "/node_modules/(?!axios)"
   ],
@@ -15,22 +16,3 @@ module.exports = {
   moduleDirectories: ["node_modules", "src"],
 };
 
-
-
-
-// module.exports = {
-//   transform: {
-//     "^.+\\.(js|jsx)$": "babel-jest",
-//   },
-//   moduleFileExtensions: ["js", "jsx"],
-//   testEnvironment: "jest-environment-jsdom",
-//   setupFiles: ['./jest.setup.js'],
-//   transformIgnorePatterns: [
-//     "/node_modules/(?!axios)"
-//   ],
-//   moduleNameMapper: {
-//     "\\.(css|less|scss|sass)$": "<rootDir>/jest.mock.js",  // Add this line
-//   },
-//   moduleDirectories: ["node_modules", "src"],
-//   setupFilesAfterEnv: ['./jest.setup.js'],
-// };

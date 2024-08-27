@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import { render, screen, act, waitFor, fireEvent } from '@testing-library/react';
 import Categories from '../Pages/categories/categories';
@@ -5,22 +6,11 @@ import axios from 'axios';
 import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import { expect } from '@jest/globals';
+import { jest } from '@jest/globals';
 
-
-
-
-// Mock Axios
 jest.mock('axios');
 
-// Set up environment variable mock
-jest.mock('dotenv', () => ({
-  config: jest.fn(),
-}));
-
-process.env.VITE_BACKEND_URL = 'http://localhost:8001';  // Ensure the env variable is set for the test
-
-// Mock environment variable
-global.import = {
+window.import = {
   meta: {
     env: {
       VITE_BACKEND_URL: 'http://localhost:8001',
@@ -28,7 +18,6 @@ global.import = {
   },
 };
 
-// Mock useNavigate
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => jest.fn(),
@@ -50,12 +39,10 @@ describe('Categories Component', () => {
       },
     ];
 
-    // Mock the initial pose fetch
     axios.post.mockResolvedValueOnce({
       data: { status: 'success', data: mockPoses },
     });
 
-    // Mock the save operation
     axios.post.mockResolvedValueOnce({ data: { success: true } });
 
     await act(async () => {
@@ -66,14 +53,11 @@ describe('Categories Component', () => {
       );
     });
 
-    // Wait for poses to be fetched and displayed
     await waitFor(() => expect(screen.getByText('Found 1 results')).toBeInTheDocument());
 
-    // Trigger Save Pose button click
     const saveButton = screen.getByText('Save Pose');
     fireEvent.click(saveButton);
 
-    // Ensure the save API call was made with the correct data
     await waitFor(() => {
       expect(axios.post).toHaveBeenCalledTimes(2);
       expect(axios.post).toHaveBeenLastCalledWith(
