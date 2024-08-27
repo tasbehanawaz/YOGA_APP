@@ -31,7 +31,7 @@ The project is divided into two main parts:
 
 ### Automated Yoga session
 
-- Users can select multiple yoga poses and generate a video
+- Users can select multiple yoga poses based on preferences applied or use the random selection and generate a video
 
 <video width="600" controls>
   <source src="demo/output.mp4" type="video/mp4">
