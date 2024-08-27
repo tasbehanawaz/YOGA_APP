@@ -22,7 +22,7 @@ const Program = () => {
       <div className="box hero-section text-black">
         {/* Changed text color to black */}
         <Typography variant="h4" className="pt-20 font-bold text-center">
-          Find Your Inner Peace
+          Find Your Inner Peace with Yoga App
         </Typography>
         <div className="mt-4">
           <CarouselDefault />

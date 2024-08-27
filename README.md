@@ -1,10 +1,15 @@
-# A Yoga Sequencer App - University Project
+# A Yoga Sequence generator App - University Project
+
+## Useful Links
+[Frontend Deployment](https://yogaposesapp.netlify.app/)
+
+[Backend Deployment](https://yogaapp-backend-php.appspot.com/)
 
 This project is a full-stack application designed to support the creation and management of yoga sequences. It allows users to explore yoga poses, create sequences, and dynamically monitor sessions.
 
 ## Project Description
 
-This is a group project by Justice Unanka Eke, Tasbeha Nawaz, and Sarah Peters which is divided into UX design, Frontend and Backend.
+This is a group project by Justice Unanka Eke, Tasbeha Nawaz, and Sarah Peters which is divided into UX design, Frontend, Backend and Deployment
 
 ## Project Structure
 
@@ -26,7 +31,7 @@ The project is divided into two main parts:
 
 ### Automated Yoga session
 
-- Users can select multiple yoga poses and generate a video
+- Users can select multiple yoga poses based on preferences applied or use the random selection and generate a video
 
 <video width="600" controls>
   <source src="demo/output.mp4" type="video/mp4">
