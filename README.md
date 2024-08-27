@@ -1,4 +1,4 @@
-# A Yoga Sequencer App - University Project
+# A Yoga Sequence generator App - University Project
 
 ## Useful Links
 [Frontend Deployment](https://yogaposesapp.netlify.app/)
