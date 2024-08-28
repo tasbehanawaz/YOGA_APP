@@ -229,7 +229,6 @@ const VideoGenerator = () => {
             onClick={handleViewAllVideos}
           >
             View All
-            
           </button>
         </div>
       </div>
