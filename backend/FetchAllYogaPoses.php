@@ -3,16 +3,13 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once 'db.php';
+require 'db.php';
 
-
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Headers: Content-Type");
 
-
-if (!isset($_SERVER['REQUEST_METHOD'])) {
-    $_SERVER['REQUEST_METHOD'] = 'CLI'; // Set default for testing environment
-}
 
 if (!isset($_SERVER['REQUEST_METHOD'])) {
     $_SERVER['REQUEST_METHOD'] = 'CLI'; // Set default for testing environment

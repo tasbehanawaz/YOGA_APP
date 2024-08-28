@@ -15,7 +15,6 @@ const Categories = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [error, setError] = useState(null);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const fetchAllPoses = useCallback(async () => {
