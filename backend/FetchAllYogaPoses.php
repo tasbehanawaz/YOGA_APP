@@ -5,10 +5,14 @@ error_reporting(E_ALL);
 
 require_once 'db.php';
 
-header("Access-Control-Allow-Origin: *");
+
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
+
+if (!isset($_SERVER['REQUEST_METHOD'])) {
+    $_SERVER['REQUEST_METHOD'] = 'CLI'; // Set default for testing environment
+}
 
 if (!isset($_SERVER['REQUEST_METHOD'])) {
     $_SERVER['REQUEST_METHOD'] = 'CLI'; // Set default for testing environment

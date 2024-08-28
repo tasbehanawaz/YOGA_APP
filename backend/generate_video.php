@@ -214,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $fullUrl = 'http://localhost:8001/' . $videoPath;
+    $fullUrl = 'https://yogaapp-backend-php.appspot.com/' . $videoPath;
     echo json_encode(['videoPath' => $fullUrl]);
 
     foreach ($framePaths as $framePath) {
