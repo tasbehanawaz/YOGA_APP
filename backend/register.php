@@ -1,7 +1,7 @@
 <?php
+require 'cors.php';
 require 'db.php';
 
-header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 // Get database connection
@@ -36,4 +36,3 @@ if ($result) {
 } else {
     echo json_encode(['error' => 'Registration failed']);
 }
-?>

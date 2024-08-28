@@ -1,7 +1,10 @@
 <?php
+require 'db.php';
+
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Headers: Content-Type");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -76,9 +79,12 @@ function fetchUrlWithCurl($url)
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
     $response = curl_exec($ch);
     if (curl_errno($ch)) {
+        error_log('Curl error: ' . curl_error($ch)); // Log the curl error
+
         $response = false;
     }
     curl_close($ch);
@@ -88,11 +94,12 @@ function fetchUrlWithCurl($url)
 function createFrames($poses)
 {
     $framePaths = [];
-    if (!is_dir('frames')) {
-        mkdir('frames', 0777, true);
+    $framesDir = sys_get_temp_dir() . '/frames';
+    if (!is_dir($framesDir)) {
+        mkdir($framesDir, 0777, true);
     }
     foreach ($poses as $index => $pose) {
-        $imagePath = sprintf('frames/pose%03d.png', $index);
+        $imagePath = sprintf('%s/pose%03d.png', $framesDir, $index);
         $imageContent = file_get_contents($pose['url_png']);
         if ($imageContent === FALSE) {
             return ['error' => 'Failed to fetch image for pose: ' . $pose['name']];
@@ -111,7 +118,7 @@ function createSrtFile($poseName, $floatDuration)
     $duration = (int)round($floatDuration);
     $durationFormatted = gmdate("H:i:s", $duration);
     $srtContent = "1\n00:00:00,000 --> {$durationFormatted},000\n$poseName\n";
-    $srtPath = "subtitles/{$poseName}.srt";
+    $srtPath = sys_get_temp_dir() . "/{$poseName}.srt";
     file_put_contents($srtPath, $srtContent);
     return $srtPath;
 }
@@ -120,9 +127,6 @@ function generateVideo($framePaths, $poseNames)
 {
     if (!is_dir('output')) {
         mkdir('output', 0777, true);
-    }
-    if (!is_dir('subtitles')) {
-        mkdir('subtitles', 0777, true);
     }
 
     $uniqueId = uniqid();
@@ -218,4 +222,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         unlink($framePath);
     }
 }
-?>

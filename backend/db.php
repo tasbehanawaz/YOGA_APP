@@ -2,7 +2,7 @@
 // In summary, this file provides a function that can be used to establish a connection to a MySQL database using PDO.
 function getDbConnection()
 {
-    $host = 'dragon.ukc.ac.uk'; // Your database host
+    $host = 'dragon.kent.ac.uk'; // Your database host
     $db = 'tn277'; // Your database name
     $user = 'tn277'; // Your database username
     $pass = 'topo1op'; // Your database password
@@ -23,5 +23,3 @@ function getDbConnection()
         return null;
     }
 }
-
-
