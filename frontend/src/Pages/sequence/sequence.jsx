@@ -51,6 +51,7 @@ const Sequence = () => {
     }
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({

@@ -1,6 +1,7 @@
 <?php
-require 'cors.php';
+require 'db.php';
 
+header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
@@ -213,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $fullUrl = 'https://yogaapp-backend-php.appspot.com/' . $videoPath;
+    $fullUrl = 'http://localhost:8001/' . $videoPath;
     echo json_encode(['videoPath' => $fullUrl]);
 
     foreach ($framePaths as $framePath) {
