@@ -1,5 +1,5 @@
 <?php
-// get_saved_videos.php
+/*get_saved_videos.php
 header('Content-Type: application/json');
 include 'database.php';
 
