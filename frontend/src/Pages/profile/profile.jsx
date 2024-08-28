@@ -7,6 +7,7 @@ import { useAuth } from '../../contexts/useAuth';
 const Profile = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  // eslint-disable-next-line no-unused-vars
   const [userDetails, setUserDetails] = useState({});
   const [savedPoses, setSavedPoses] = useState([]); // State for saved poses
   const [profileVideos, setProfileVideos] = useState([]); // State for saved videos
@@ -31,7 +32,7 @@ const Profile = () => {
       try {
         const [userResponse, posesResponse] = await Promise.all([
           axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}1/get_user.php?user_id=${
+            `${import.meta.env.VITE_BACKEND_URL}/get_user.php?user_id=${
               user.id
             }`
           ),
@@ -82,6 +83,7 @@ const Profile = () => {
     navigate(`/pose/${poseName}`);
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleDownload = (videoUrl) => {
     const a = document.createElement('a');
     a.href = videoUrl;
