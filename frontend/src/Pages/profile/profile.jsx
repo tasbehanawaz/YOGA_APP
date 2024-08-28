@@ -75,6 +75,8 @@ const Profile = () => {
     }
   };
 
+  
+
   const handleViewAllPoses = () => {
     navigate('/save');
   };
@@ -127,16 +129,22 @@ const Profile = () => {
   }
 
   return (
-    <div className="profile-container">
-      <div className="section-container user-details">
-        <h2>User Details</h2>
-        <p>User ID: {user.id}</p>
-        <p>Username: {user.username}</p>
-        <p>Session Token: {user.session_token}</p>
-        <button className="button" onClick={handleLogout}>
-          Logout
-        </button>
-      </div>
+  <div className="profile-container">
+    <div className="section-container user-details">
+      <h2>User Details</h2>
+      {/* <p>User ID: {user.id}</p> */}
+      <p>Username: {user.username}</p>
+      <p>Email: {user.email}</p>
+    
+      
+      
+      <button className="button" onClick={handleLogout}>
+        Logout
+      </button>
+    </div>
+
+
+
 
       {/* Saved Poses Section */}
       <div className="section-container saved-poses">

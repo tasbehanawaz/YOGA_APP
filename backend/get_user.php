@@ -1,7 +1,6 @@
 <?php
 require 'cors.php';
 
-
 header('Content-Type: application/json');
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
@@ -24,7 +23,7 @@ if (isset($_COOKIE['user_id']) && isset($_COOKIE['session_token'])) {
 
     if ($pdo) {
         // Fetch the user from the database
-        $stmt = $pdo->prepare("SELECT id, username, membership_status FROM users WHERE id = ? AND session_token = ?");
+        $stmt = $pdo->prepare("SELECT id, username, email, membership_status FROM users WHERE id = ? AND session_token = ?");
         $stmt->execute([$user_id, $session_token]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -32,6 +31,7 @@ if (isset($_COOKIE['user_id']) && isset($_COOKIE['session_token'])) {
             echo json_encode([
                 'id' => $user['id'],
                 'username' => $user['username'],
+                'email' => $user['email'], 
                 'membershipStatus' => $user['membership_status']
             ]);
         } else {
@@ -43,3 +43,4 @@ if (isset($_COOKIE['user_id']) && isset($_COOKIE['session_token'])) {
 } else {
     echo json_encode(['error' => 'No active session found']);
 }
+?>
