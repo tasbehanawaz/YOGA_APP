@@ -25,6 +25,8 @@ The project is divided into two main parts:
 - Display the list of all the available yoga poses with descriptions and images
 - Allow users to select yoga poses and automatically generate yoga session
 
+  git clone https://github.com/tasbehanawaz/YOGA_APP.git
+
 ### Available Yoga Poses
 
 ![All Yoga Poses](demo/All%20Yoga%20poses.png)
