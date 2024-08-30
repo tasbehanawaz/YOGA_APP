@@ -5,6 +5,8 @@
 
 [Backend Deployment](https://yogaapp-backend-php.appspot.com/)
 
+git clone https://github.com/tasbehanawaz/YOGA_APP.git
+
 This project is a full-stack application designed to support the creation and management of yoga sequences. It allows users to explore yoga poses, create sequences, and dynamically monitor sessions.
 
 ## Project Description
@@ -25,8 +27,7 @@ The project is divided into two main parts:
 - Display the list of all the available yoga poses with descriptions and images
 - Allow users to select yoga poses and automatically generate yoga session
 
-  git clone https://github.com/tasbehanawaz/YOGA_APP.git
-
+  
 ### Available Yoga Poses
 
 ![All Yoga Poses](demo/All%20Yoga%20poses.png)
