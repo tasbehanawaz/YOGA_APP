@@ -58,8 +58,8 @@ const Result = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-5 bg-gray-100">
-      <h1 className="text-2xl text-gray-700 mb-5">Here is your Pose</h1>
+    <div className="flex flex-col items-center p-5 bg-gray-100 pt-20">
+      <h1 className="text-2xl text-black-700 mb-5">Here is your Pose</h1>
       <CardDefault
         name={english_name}
         imageUrl={url_png}

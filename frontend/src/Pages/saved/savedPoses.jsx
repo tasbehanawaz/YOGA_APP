@@ -245,12 +245,12 @@ const SavedPoses = () => {
         Clear Saved Items
       </button>
 
-      <style jsx>{`
+      <style>{`
         .saved-poses-container {
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 2rem;
+          padding: 5rem 2rem 2rem; /* Add padding at the top */
           background-color: #f0f4f8;
           min-height: 100vh;
         }
@@ -279,6 +279,7 @@ const SavedPoses = () => {
           padding: 0.5rem;
           box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
           transition: transform 0.2s;
+          width: 48%; /* Adjust width to control the number of items shown */
         }
 
         .media-item:hover {
@@ -325,13 +326,7 @@ const SavedPoses = () => {
           }
 
           .media-item {
-            width: 50%;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .media-item {
-            width: 100%;
+            width: 100%; /* Show one item at a time on smaller screens */
           }
         }
       `}</style>
