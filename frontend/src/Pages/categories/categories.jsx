@@ -1,4 +1,4 @@
-import  { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { CardDefault } from '../../components/card/card';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +6,6 @@ import './categories.css';
 import { Spinner, Button } from '@material-tailwind/react';
 
 const getBackendUrl = () => {
-  // Use process.env exclusively for backend URL
   return process.env.VITE_BACKEND_URL || 'http://localhost:8001';
 };
 
@@ -62,13 +61,13 @@ const Categories = () => {
         }
       );
       if (response.data.success) {
-        toast.success('Pose saved successfully!');
+        alert('Pose saved successfully!');
       } else {
-        toast.error(response.data.message);
+        alert('Failed to save pose: ' + response.data.message);
       }
     } catch (error) {
       console.error('Error saving the pose:', error);
-      toast('Error saving pose.');
+      alert('Error saving pose.');
     }
   };
 
