@@ -14,6 +14,7 @@ import About from './Pages/about/about';
 import { AuthProvider } from './contexts/AuthContext';
 import YogaPoseDetails from './Pages/yogaPosesDetails/detailsPage.jsx'; // Add this import
 import AllGeneratedVideos from './Pages/AllGeneratedVideos/AllGeneratedVideos'; // Import for the new component
+import VideoSession from './Pages/VideoSession/VideoSession.jsx'; // Import the VideoSession component
 import { Toaster } from 'react-hot-toast';
 
 function App() {
@@ -46,7 +47,6 @@ function App() {
               </Layout>
             }
           />
-          {/* Change logins to login to match the navigation */}
           <Route
             path="/login"
             element={
@@ -116,6 +116,15 @@ function App() {
             element={
               <Layout>
                 <AllGeneratedVideos />
+              </Layout>
+            }
+          />
+          {/* Add this new route for VideoSession */}
+          <Route
+            path="/session"
+            element={
+              <Layout>
+                <VideoSession selectedPoses={['pose1', 'pose2']} videoType="selected" />
               </Layout>
             }
           />

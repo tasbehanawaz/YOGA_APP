@@ -39,3 +39,4 @@ setcookie('username', '', time() - 3600, '/', '', false, false);
 setcookie('session_token', '', time() - 3600, '/', '', false, false);
 
 echo json_encode(['success' => true]);
+

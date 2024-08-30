@@ -154,3 +154,47 @@ h2 {
   color: red;
   text-align: center;
 }
+
+.tracked {
+  background-color: #4caf50; /* Green to indicate it's tracked */
+  color: white;
+}
+
+/* Container for the pagination controls */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+/* Style for pagination buttons */
+.pagination button {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  color: #333;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+  background-color: rgb(11, 88, 211);
+}
+
+/* Disabled state for buttons */
+.pagination button:disabled {
+  background-color: #e0e0e0;
+  color: #aaa;
+  cursor: not-allowed;
+  border: 1px solid #e0e0e0;
+}
+
+/* Current page display */
+.pagination span {
+  font-size: 16px;
+  color: #333;
+}

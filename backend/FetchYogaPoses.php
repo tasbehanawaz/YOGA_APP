@@ -17,6 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['poseName'])) {
     exit;
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['duration'])) {
+    $duration = intval($_GET['duration']);
+    $poses = fetchRandomPosesForDuration($duration);
+    echo json_encode(['status' => 'success', 'data' => $poses]);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
 
@@ -64,6 +71,57 @@ function fetchYogaPoseByName($poseName)
         $data = json_decode($response, true);
         return $data[0] ?? $data;
     }
+}
+
+function fetchRandomPosesForDuration($duration) {
+    $poses = fetchAllYogaPoses();
+    $totalPoses = count($poses);
+
+    // Number of poses to select based on session duration
+    $numPoses = match ($duration) {
+        3 => 3,   // 3 poses for a 3-minute session
+        10 => 5,  // 5 poses for a 10-minute session
+        20 => 10, // 10 poses for a 20-minute session
+        default => 3,
+    };
+
+    // Randomly shuffle and select the required number of poses
+    shuffle($poses);
+    return array_slice($poses, 0, $numPoses);
+}
+
+function fetchAllYogaPoses()
+{
+    // Fetch poses from the external API
+    $apiUrl = "https://yoga-api-nzy4.onrender.com/v1/poses";
+    return makeApiRequest($apiUrl);
+}
+
+function makeApiRequest($apiUrl)
+{
+    $curl = curl_init();
+    curl_setopt_array($curl, [
+        CURLOPT_URL => $apiUrl,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "GET",
+    ]);
+
+    $response = curl_exec($curl);
+    $err = curl_error($curl);
+    curl_close($curl);
+
+    if ($err) {
+        throw new Exception("cURL Error #:" . $err);
+    }
+
+    $data = json_decode($response, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new Exception("JSON decoding error: " . json_last_error_msg());
+    }
+
+    return $data ?? [];
 }
 
 function saveYogaPoseToDb($poseData)
