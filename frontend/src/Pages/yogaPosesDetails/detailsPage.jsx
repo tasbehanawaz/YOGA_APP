@@ -44,7 +44,7 @@ const YogaPoseDetails = () => {
   return (
     <div
       id="container"
-      className="flex flex-col justify-center items-center p-6 bg-gray-100 min-h-screen"
+      className="flex flex-col justify-center items-center p-6 bg-gray-100 min-h-screen pt-20 md:pt-24"
     >
       {/* If loading show spinner else show the UI */}
       {loading ? (
@@ -64,21 +64,21 @@ const YogaPoseDetails = () => {
             <h1 className="text-4xl font-bold mb-4  text-gray-800">
               {poseDetails.name} ({poseDetails.sanskritName})
             </h1>
-
+  
             <div className="mb-4">
               <h2 className="text-2xl font-semibold mb-2 text-gray-700">
                 Translation:
               </h2>
               <p className="text-gray-600">{poseDetails.translationName}</p>
             </div>
-
+  
             <div className="mb-4">
               <h2 className="text-2xl font-semibold mb-2 text-gray-700">
                 Description
               </h2>
               <p className="text-gray-600">{poseDetails.poseDescription}</p>
             </div>
-
+  
             <div className="mb-4">
               <h2 className="text-2xl font-semibold mb-2 text-gray-700">
                 Benefits
@@ -90,6 +90,6 @@ const YogaPoseDetails = () => {
       )}
     </div>
   );
-};
+};  
 
 export default YogaPoseDetails;
